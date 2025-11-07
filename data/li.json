@@ -1,0 +1,500 @@
+{
+  "exams": [
+    {
+      "id": "exam_12_01",
+      "title": "Đề trắc nghiệm tổng hợp - Khoa học tự nhiên",
+      "time_limit": 20,
+      "description": "Kiểm tra kiến thức Hóa học, Vật lý, Sinh học lớp 12",
+      "questions": [
+        {
+          "id": 1,
+          "number": 1,
+          "question": "Tính chất vật lý của khí ethylene",
+          "options": {
+            "A": "là chất khí không màu, không mùi, tan trong nước, nhẹ hơn không khí.",
+            "B": "là chất khí, không màu, không mùi, ít tan trong nước, nhẹ hơn không khí.",
+            "C": "là chất khí màu vàng lục, không mùi, ít tan trong nước, nặng hơn không khí.",
+            "D": "là chất khí không màu, mùi hắc, ít tan trong nước, nặng hơn không khí."
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 2,
+          "number": 2,
+          "question": "Ứng dụng nào sau đây không phải ứng dụng của ethylene?",
+          "options": {
+            "A": "Điều chế PE.",
+            "B": "Điều chế ethylic alcohol và acetic acid.",
+            "C": "Điều chế khí gas.",
+            "D": "Dùng để ủ trái cây mau chín."
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 3,
+          "number": 3,
+          "question": "Ở thiết bị nào dòng điện xoay chiều chỉ gây tác dụng nhiệt?",
+          "options": {
+            "A": "Bóng đèn sợi đốt.",
+            "B": "Ấm điện.",
+            "C": "Quạt điện.",
+            "D": "Máy sấy tóc."
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 4,
+          "number": 4,
+          "question": "Dòng điện cảm ứng trong cuộn dây dẫn kín đổi chiều khi số đường sức từ xuyên qua tiết diện S của cuộn dây",
+          "options": {
+            "A": "tăng lên.",
+            "B": "đang tăng mà chuyển sang giảm hoặc ngược lại đang giảm mà chuyển sang tăng.",
+            "C": "giảm đi.",
+            "D": "không thay đổi."
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 5,
+          "number": 5,
+          "question": "Điều nào sau đây không đúng khi so sánh tác dụng của dòng điện một chiều và dòng điện xoay chiều?",
+          "options": {
+            "A": "Dòng điện xoay chiều và dòng điện một chiều đều có khả năng trực tiếp nạp điện cho acquy.",
+            "B": "Dòng điện xoay chiều và dòng điện một chiều đều tỏa ra nhiệt khi chạy qua một dây dẫn.",
+            "C": "Dòng điện xoay chiều và dòng điện một chiều đều có khả năng làm phát quang bóng đèn.",
+            "D": "Dòng điện xoay chiều và dòng điện một chiều đều gây ra từ trường."
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 6,
+          "number": 6,
+          "question": "Đâu không phải là ưu điểm của năng lượng hóa thạch?",
+          "options": {
+            "A": "Nguồn sẵn có",
+            "B": "Không bị cạn kiệt",
+            "C": "Dễ khai thác",
+            "D": "Dễ tích trữ khối lượng lớn"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 7,
+          "number": 7,
+          "question": "Đâu không phải là nhược điểm của năng lượng hóa thạch?",
+          "options": {
+            "A": "Ngày càng trở nên cạn kiệt",
+            "B": "Làm thay đổi cấu trúc địa tầng",
+            "C": "Bị ảnh hưởng bởi các yếu tố thời tiết",
+            "D": "Làm thay đổi hệ sinh thái"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 8,
+          "number": 8,
+          "question": "Tính chất vật lí của cellulose là",
+          "options": {
+            "A": "Chất rắn, màu trắng, tan trong nước.",
+            "B": "Chất rắn, màu trắng, tan trong nước nóng.",
+            "C": "Chất rắn, không màu, tan trong nước.",
+            "D": "Chất rắn, màu trắng, không tan trong nước."
+          },
+          "correct_answer": "D"
+        },
+        {
+          "id": 9,
+          "number": 9,
+          "question": "Phát biểu đúng là",
+          "options": {
+            "A": "Tinh bột và cellulose dễ tan trong nước.",
+            "B": "Tinh bột dễ tan trong nước còn cellulose không tan trong nước.",
+            "C": "Tinh bột và cellulose không tan trong nước lạnh nhưng tan trong nước nóng.",
+            "D": "Tinh bột không tan trong nước lạnh nhưng tan một phần trong nước nóng. Còn cellulose không tan trong cả nước lạnh và nước nóng."
+          },
+          "correct_answer": "D"
+        },
+        {
+          "id": 10,
+          "number": 10,
+          "question": "Nguyên liệu nào sau đây được sử dụng để làm phấn viết bảng?",
+          "options": {
+            "A": "Đá vôi.",
+            "B": "Cát.",
+            "C": "Sỏi.",
+            "D": "Than đá."
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 11,
+          "number": 11,
+          "question": "SiO2 là nguyên liệu quan trọng để sản xuất:",
+          "options": {
+            "A": "Thủy tinh, đồ gốm.",
+            "B": "Thạch cao.",
+            "C": "Chất dẻo.",
+            "D": "Phân bón hóa học."
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 12,
+          "number": 12,
+          "question": "Nhiên liệu hóa thạch",
+          "options": {
+            "A": "là nguồn nhiên liệu tái tạo.",
+            "B": "là đá chứa ít nhất 50% xác động và thực vật.",
+            "C": "được tạo thành từ quá trình phân hủy các sinh vật chôn vùi hàng triệu năm trước.",
+            "D": "chỉ bao gồm dầu mỏ, than đá."
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 13,
+          "number": 13,
+          "question": "Dạng tồn tại của carbon trong tự nhiên ở dạng đơn chất là",
+          "options": {
+            "A": "than chì, kim cương.",
+            "B": "than chì, khí carbonic.",
+            "C": "carboxylic acid.",
+            "D": "Đá vôi."
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 14,
+          "number": 14,
+          "question": "Quặng nào sau đây được khai thác để sản xuất phân bón?",
+          "options": {
+            "A": "Quặng bauxite",
+            "B": "Quặng apatite",
+            "C": "Quặng hematite",
+            "D": "Quặng titanium"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 15,
+          "number": 15,
+          "question": "Dựa trên cơ sở sinh học, tại sao pháp luật nghiêm cấm kết hôn trong phạm vi 3 đời?",
+          "options": {
+            "A": "Ảnh hưởng đến chất lượng dân số.",
+            "B": "Làm cho các đột biến lặn có hại được biểu hiện ở cơ thể đồng hợp.",
+            "C": "Tăng áp lực và chí phí xã hội.",
+            "D": "Gây mất cân bằng sinh thái."
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 16,
+          "number": 16,
+          "question": "Đâu là ứng dụng của công nghệ di truyền trong pháp y?",
+          "options": {
+            "A": "Xác định danh tính hài cốt liệt sĩ trong chiến tranh từ lâu.",
+            "B": "Điều trị các bệnh di truyền do gene sai hỏng gây ra trên cơ thể người.",
+            "C": "Công nghệ tạo giống cây trồng biến đổi gene.",
+            "D": "Công nghệ tạo giống động vật biến đổi gene."
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 17,
+          "number": 17,
+          "question": "Đâu không phải ứng dụng của công nghệ di truyền trong làm sạch môi trường và an toàn sinh học?",
+          "options": {
+            "A": "Định danh, xác định huyết thống bằng dữ liệu DNA.",
+            "B": "Tạo vi khuẩn tổng hợp enzyme phân giải chất gây ô nhiễm.",
+            "C": "Xác định và loại bỏ tác nhân gây mất an toàn của vi khuẩn gây ngộ độc thực phẩm.",
+            "D": "Xác định và loại bỏ tác nhân gây mất an toàn của vũ khí sinh học mang vi khuẩn gây bệnh."
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 18,
+          "number": 18,
+          "question": "Khi nói về học thuyết tiến hóa của Darwin, phát biểu nào sau đây không đúng?",
+          "options": {
+            "A": "Nguyên nhân dẫn đến sự hình thành các đặc điểm thích nghi trên cơ thể sinh vật là do CLTN tác động thông qua đặc tính biến dị và di truyền của sinh vật.",
+            "B": "CLTN là quá trình đào thải các sinh vật mang các biến dị không thích nghi và giữ lại các sinh vật mang các biến dị di truyền giúp chúng thích nghi.",
+            "C": "Hạn chế của học thuyết tiến hóa Darwin là chưa làm rõ được nguyên nhân phát sinh và cơ chế di truyền của biến dị.",
+            "D": "Để giải thích về nguồn gốc các loài, theo Darwin nhân tố tiến hóa quan trọng nhất là biến dị cá thể."
+          },
+          "correct_answer": "D"
+        },
+        {
+          "id": 19,
+          "number": 19,
+          "question": "Tiến hóa hóa học là quá trình tổng hợp",
+          "options": {
+            "A": "các chất hữu cơ từ các chất vô cơ theo phương thức hóa học.",
+            "B": "các chất hữu cơ từ các chất vô cơ theo phương thức sinh học.",
+            "C": "các chất vô cơ từ các chất hữu cơ theo phương thức sinh học.",
+            "D": "các chất vô cơ từ các chất hữu cơ theo phương thức hóa học."
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 20,
+          "number": 20,
+          "question": "Khái niệm của chọn lọc tự nhiên:",
+          "options": {
+            "A": "Là quá trình đào thải các biến dị có hại, tích lũy những biến dị có lợi cho cơ thể sinh vật",
+            "B": "Là quá trình phân hóa khả năng sống sót và sinh sản của các cá thể trong quần thể",
+            "C": "Là quá trình hình thành nên các đặc điểm thích nghi của sinh vật và hình thành loài mới.",
+            "D": "Là một quá trình có thể tác động lên mọi sinh vật."
+          },
+          "correct_answer": "B"
+        }
+      ]
+    },
+    {
+      "id": "exam_09_01",
+      "title": "Đề trắc nghiệm Vật lý 9",
+      "time_limit": 20,
+      "description": "Kiểm tra kiến thức Vật lý lớp 9 - Điện học và Quang học",
+      "questions": [
+        {
+          "id": 1,
+          "number": 1,
+          "question": "Công thức tính điện trở của dây dẫn là?",
+          "options": {
+            "A": "R = U/I",
+            "B": "R = I/U",
+            "C": "R = U × I",
+            "D": "R = I - U"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 2,
+          "number": 2,
+          "question": "Đơn vị của điện trở là gì?",
+          "options": {
+            "A": "Ampe (A)",
+            "B": "Vôn (V)",
+            "C": "Ôm (Ω)",
+            "D": "Oát (W)"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 3,
+          "number": 3,
+          "question": "Định luật Ôm cho đoạn mạch có công thức là?",
+          "options": {
+            "A": "I = U/R",
+            "B": "I = U × R",
+            "C": "I = R/U",
+            "D": "I = U + R"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 4,
+          "number": 4,
+          "question": "Khi mắc nối tiếp các điện trở, điện trở tương đương được tính như thế nào?",
+          "options": {
+            "A": "Rtd = R1 + R2 + R3",
+            "B": "Rtd = R1 × R2 × R3",
+            "C": "1/Rtd = 1/R1 + 1/R2 + 1/R3",
+            "D": "Rtd = R1 - R2 - R3"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 5,
+          "number": 5,
+          "question": "Khi mắc song song các điện trở bằng nhau, điện trở tương đương được tính?",
+          "options": {
+            "A": "Rtd = n × R",
+            "B": "Rtd = R/n",
+            "C": "Rtd = R × n²",
+            "D": "Rtd = R - n"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 6,
+          "number": 6,
+          "question": "Công thức tính công suất điện là?",
+          "options": {
+            "A": "P = U/I",
+            "B": "P = U × I",
+            "C": "P = U - I",
+            "D": "P = I/U"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 7,
+          "number": 7,
+          "question": "Đơn vị của công suất điện là gì?",
+          "options": {
+            "A": "Jun (J)",
+            "B": "Oát (W)",
+            "C": "Kilôoát giờ (kWh)",
+            "D": "Ampe (A)"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 8,
+          "number": 8,
+          "question": "Công thức tính điện năng tiêu thụ là?",
+          "options": {
+            "A": "A = P/t",
+            "B": "A = P + t",
+            "C": "A = P × t",
+            "D": "A = t/P"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 9,
+          "number": 9,
+          "question": "1 kWh bằng bao nhiêu Jun?",
+          "options": {
+            "A": "3600 J",
+            "B": "36000 J",
+            "C": "360000 J",
+            "D": "3600000 J"
+          },
+          "correct_answer": "D"
+        },
+        {
+          "id": 10,
+          "number": 10,
+          "question": "Định luật Jun - Lenxơ cho biết nhiệt lượng tỏa ra trên dây dẫn tỉ lệ với?",
+          "options": {
+            "A": "Cường độ dòng điện",
+            "B": "Bình phương cường độ dòng điện",
+            "C": "Hiệu điện thế",
+            "D": "Điện trở"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 11,
+          "number": 11,
+          "question": "Góc tới là góc tạo bởi?",
+          "options": {
+            "A": "Tia tới và mặt phản xạ",
+            "B": "Tia tới và pháp tuyến",
+            "C": "Tia phản xạ và mặt phản xạ",
+            "D": "Tia tới và tia phản xạ"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 12,
+          "number": 12,
+          "question": "Định luật phản xạ ánh sáng cho biết góc tới và góc phản xạ có mối quan hệ gì?",
+          "options": {
+            "A": "Bằng nhau",
+            "B": "Bù nhau",
+            "C": "Tỉ lệ nghịch",
+            "D": "Tỉ lệ thuận"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 13,
+          "number": 13,
+          "question": "Gương cầu lồi có tính chất gì?",
+          "options": {
+            "A": "Hội tụ ánh sáng",
+            "B": "Phân kỳ ánh sáng",
+            "C": "Không phản xạ ánh sáng",
+            "D": "Không có tính chất đặc biệt"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 14,
+          "number": 14,
+          "question": "Thấu kính hội tụ có đặc điểm gì?",
+          "options": {
+            "A": "Mỏng ở giữa, dày ở rìa",
+            "B": "Dày ở giữa, mỏng ở rìa",
+            "C": "Dày đều",
+            "D": "Mỏng đều"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 15,
+          "number": 15,
+          "question": "Tiêu cự của thấu kính là khoảng cách từ?",
+          "options": {
+            "A": "Quang tâm đến vật",
+            "B": "Quang tâm đến ảnh",
+            "C": "Quang tâm đến tiêu điểm",
+            "D": "Tiêu điểm đến ảnh"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 16,
+          "number": 16,
+          "question": "Khi vật đặt ngoài tiêu cự của thấu kính hội tụ, ảnh có tính chất gì?",
+          "options": {
+            "A": "Ảnh ảo, cùng chiều, lớn hơn vật",
+            "B": "Ảnh thật, ngược chiều",
+            "C": "Ảnh ảo, ngược chiều",
+            "D": "Không có ảnh"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 17,
+          "number": 17,
+          "question": "Công thức của thấu kính là?",
+          "options": {
+            "A": "1/f = 1/d + 1/d'",
+            "B": "1/f = 1/d - 1/d'",
+            "C": "f = d + d'",
+            "D": "f = d × d'"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 18,
+          "number": 18,
+          "question": "Mắt có tật cận thị được khắc phục bằng?",
+          "options": {
+            "A": "Thấu kính hội tụ",
+            "B": "Thấu kính phân kỳ",
+            "C": "Gương cầu lồi",
+            "D": "Gương cầu lõm"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 19,
+          "number": 19,
+          "question": "Mắt có tật viễn thị được khắc phục bằng?",
+          "options": {
+            "A": "Thấu kính phân kỳ",
+            "B": "Thấu kính hội tụ",
+            "C": "Gương phẳng",
+            "D": "Kính lúp"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 20,
+          "number": 20,
+          "question": "Hiện tượng khúc xạ ánh sáng xảy ra khi ánh sáng?",
+          "options": {
+            "A": "Truyền trong cùng một môi trường",
+            "B": "Truyền qua mặt phân cách giữa hai môi trường",
+            "C": "Bị hấp thụ hoàn toàn",
+            "D": "Phản xạ toàn phần"
+          },
+          "correct_answer": "B"
+        }
+      ]
+    }
+  ]
+}

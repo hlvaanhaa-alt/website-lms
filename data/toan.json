@@ -1,0 +1,500 @@
+{
+  "exams": [
+    {
+      "id": "exam_math_09_01",
+      "title": "Đề trắc nghiệm Toán 9 - Đề 1",
+      "time_limit": 30,
+      "description": "Kiểm tra kiến thức Toán lớp 9 - Đại số và Hình học",
+      "questions": [
+        {
+          "id": 1,
+          "number": 1,
+          "question": "Điều kiện xác định của căn thức √(x-3) là",
+          "options": {
+            "A": "x > 3",
+            "B": "x ≥ 3",
+            "C": "x < 3",
+            "D": "x ≤ 3"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 2,
+          "number": 2,
+          "question": "Nghiệm của phương trình 2x - 6 = 0 là",
+          "options": {
+            "A": "x = 2",
+            "B": "x = -3",
+            "C": "x = 3",
+            "D": "x = -2"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 3,
+          "number": 3,
+          "question": "Bất phương trình 3x - 9 < 0 có bao nhiêu nghiệm là số tự nhiên?",
+          "options": {
+            "A": "2",
+            "B": "3",
+            "C": "4",
+            "D": "Vô số"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 4,
+          "number": 4,
+          "question": "Phương trình nào sau đây không phải là phương trình bậc nhất hai ẩn của x và y?",
+          "options": {
+            "A": "2x + 3y = 5",
+            "B": "x - y = 1",
+            "C": "xy + 2 = 0",
+            "D": "3x + 4 = 0"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 5,
+          "number": 5,
+          "question": "Hệ phương trình {x + y = 5; x - y = 1} có nghiệm là",
+          "options": {
+            "A": "(2; 3)",
+            "B": "(3; 2)",
+            "C": "(4; 1)",
+            "D": "(1; 4)"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 6,
+          "number": 6,
+          "question": "Gọi x₁, x₂ là hai nghiệm của phương trình x² - 5x + 6 = 0 khi đó x₁ + x₂ bằng",
+          "options": {
+            "A": "5",
+            "B": "-5",
+            "C": "6",
+            "D": "-6"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 7,
+          "number": 7,
+          "question": "Đồ thị hàm số y = 2x + 1 đi qua điểm nào trong các điểm dưới đây?",
+          "options": {
+            "A": "(1; 2)",
+            "B": "(0; 1)",
+            "C": "(2; 4)",
+            "D": "(-1; -1)"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 8,
+          "number": 8,
+          "question": "Cho tam giác ABC vuông tại A có AB = 3, AC = 4. Khi đó BC bằng",
+          "options": {
+            "A": "5",
+            "B": "6",
+            "C": "7",
+            "D": "8"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 9,
+          "number": 9,
+          "question": "Tại thời điểm tia nắng chiếu xuống mặt đất tạo với mặt đất một góc 45° thì chiều dài bóng cây đo được là 8 mét. Hỏi cây cao bao nhiêu mét?",
+          "options": {
+            "A": "6 mét",
+            "B": "7 mét",
+            "C": "8 mét",
+            "D": "9 mét"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 10,
+          "number": 10,
+          "question": "Một hộp có 10 quả bóng trong đó có 4 quả bóng màu vàng và 6 quả bóng màu xanh. Lấy ngẫu nhiên một quả bóng. Xác suất lấy được quả bóng màu vàng bằng",
+          "options": {
+            "A": "0,2",
+            "B": "0,4",
+            "C": "0,5",
+            "D": "0,6"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 11,
+          "number": 11,
+          "question": "Cho tam giác ABC nội tiếp đường tròn và góc BAC = 50°. Số đo góc BOC bằng",
+          "options": {
+            "A": "50°",
+            "B": "100°",
+            "C": "25°",
+            "D": "80°"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 12,
+          "number": 12,
+          "question": "Cho đường tròn (O; 5cm) và đường tròn (O'; 3cm) tiếp xúc ngoài với nhau. Độ dài đoạn thẳng OO' bằng",
+          "options": {
+            "A": "2 cm",
+            "B": "8 cm",
+            "C": "5 cm",
+            "D": "3 cm"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 13,
+          "number": 13,
+          "question": "Rút gọn biểu thức √48 - √12 ta được",
+          "options": {
+            "A": "2√3",
+            "B": "3√2",
+            "C": "√6",
+            "D": "6"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 14,
+          "number": 14,
+          "question": "Phương trình x² - 4 = 0 có bao nhiêu nghiệm?",
+          "options": {
+            "A": "0",
+            "B": "1",
+            "C": "2",
+            "D": "3"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 15,
+          "number": 15,
+          "question": "Trong tam giác vuông ABC, vuông tại A, sin B bằng",
+          "options": {
+            "A": "AC/BC",
+            "B": "AB/BC",
+            "C": "AB/AC",
+            "D": "BC/AC"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 16,
+          "number": 16,
+          "question": "Cho hàm số y = ax² (a ≠ 0). Đồ thị hàm số đi qua điểm A(2; 8). Giá trị của a là",
+          "options": {
+            "A": "2",
+            "B": "4",
+            "C": "1",
+            "D": "8"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 17,
+          "number": 17,
+          "question": "Diện tích hình tròn có bán kính 5 cm là",
+          "options": {
+            "A": "10π cm²",
+            "B": "25π cm²",
+            "C": "5π cm²",
+            "D": "50π cm²"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 18,
+          "number": 18,
+          "question": "Giá trị của biểu thức √9 + √16 bằng",
+          "options": {
+            "A": "5",
+            "B": "6",
+            "C": "7",
+            "D": "8"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 19,
+          "number": 19,
+          "question": "Cho tam giác ABC có AB = AC = 5cm, BC = 6cm. Độ dài đường cao AH là",
+          "options": {
+            "A": "3 cm",
+            "B": "4 cm",
+            "C": "5 cm",
+            "D": "6 cm"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 20,
+          "number": 20,
+          "question": "Phương trình nào sau đây vô nghiệm?",
+          "options": {
+            "A": "x² + 1 = 0",
+            "B": "x² - 1 = 0",
+            "C": "x² = 0",
+            "D": "x² - 4 = 0"
+          },
+          "correct_answer": "A"
+        }
+      ]
+    },
+    {
+      "id": "exam_math_09_02",
+      "title": "Đề trắc nghiệm Toán 9 - Đề 2",
+      "time_limit": 30,
+      "description": "Kiểm tra kiến thức Toán lớp 9 - Đại số và Hình học nâng cao",
+      "questions": [
+        {
+          "id": 1,
+          "number": 1,
+          "question": "Điều kiện xác định của căn thức √(2x-4) là",
+          "options": {
+            "A": "x > 2",
+            "B": "x ≥ 2",
+            "C": "x < 2",
+            "D": "x ≤ 2"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 2,
+          "number": 2,
+          "question": "Nghiệm của phương trình 3x + 9 = 0 là",
+          "options": {
+            "A": "x = 3",
+            "B": "x = -3",
+            "C": "x = 9",
+            "D": "x = -9"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 3,
+          "number": 3,
+          "question": "Bất phương trình 2x + 4 > 0 có nghiệm là",
+          "options": {
+            "A": "x > -2",
+            "B": "x < -2",
+            "C": "x > 2",
+            "D": "x < 2"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 4,
+          "number": 4,
+          "question": "Hệ số góc của đường thẳng y = -3x + 2 là",
+          "options": {
+            "A": "3",
+            "B": "-3",
+            "C": "2",
+            "D": "-2"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 5,
+          "number": 5,
+          "question": "Hệ phương trình {2x + y = 7; x - y = 2} có nghiệm là",
+          "options": {
+            "A": "(2; 3)",
+            "B": "(3; 1)",
+            "C": "(1; 5)",
+            "D": "(4; -1)"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 6,
+          "number": 6,
+          "question": "Tích hai nghiệm của phương trình x² - 7x + 12 = 0 bằng",
+          "options": {
+            "A": "7",
+            "B": "-7",
+            "C": "12",
+            "D": "-12"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 7,
+          "number": 7,
+          "question": "Parabol y = x² đi qua điểm nào sau đây?",
+          "options": {
+            "A": "(1; 2)",
+            "B": "(2; 4)",
+            "C": "(3; 6)",
+            "D": "(4; 8)"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 8,
+          "number": 8,
+          "question": "Trong tam giác vuông ABC, vuông tại A, có AB = 6, BC = 10. Độ dài AC bằng",
+          "options": {
+            "A": "6",
+            "B": "7",
+            "C": "8",
+            "D": "9"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 9,
+          "number": 9,
+          "question": "Cho tam giác ABC vuông tại A có AB = 4, AC = 3. Giá trị của tan B là",
+          "options": {
+            "A": "3/4",
+            "B": "4/3",
+            "C": "3/5",
+            "D": "4/5"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 10,
+          "number": 10,
+          "question": "Gieo một con xúc xắc cân đối, đồng chất. Xác suất để xuất hiện mặt có số chấm chẵn là",
+          "options": {
+            "A": "1/6",
+            "B": "1/3",
+            "C": "1/2",
+            "D": "2/3"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 11,
+          "number": 11,
+          "question": "Cho đường tròn (O) có dây AB = 8cm và khoảng cách từ O đến AB là 3cm. Bán kính của đường tròn là",
+          "options": {
+            "A": "3 cm",
+            "B": "4 cm",
+            "C": "5 cm",
+            "D": "6 cm"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 12,
+          "number": 12,
+          "question": "Hai đường tròn (O; 4cm) và (O'; 6cm) tiếp xúc trong. Độ dài OO' bằng",
+          "options": {
+            "A": "2 cm",
+            "B": "4 cm",
+            "C": "6 cm",
+            "D": "10 cm"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 13,
+          "number": 13,
+          "question": "Rút gọn biểu thức √75 + √27 ta được",
+          "options": {
+            "A": "8√3",
+            "B": "6√3",
+            "C": "5√3",
+            "D": "7√3"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 14,
+          "number": 14,
+          "question": "Phương trình x² + 2x - 3 = 0 có nghiệm là",
+          "options": {
+            "A": "x = 1 hoặc x = -3",
+            "B": "x = -1 hoặc x = 3",
+            "C": "x = 2 hoặc x = -3",
+            "D": "x = -2 hoặc x = 3"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 15,
+          "number": 15,
+          "question": "Cho tam giác ABC vuông tại A, có cos B = 0,6. Giá trị của sin C là",
+          "options": {
+            "A": "0,4",
+            "B": "0,6",
+            "C": "0,8",
+            "D": "1"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 16,
+          "number": 16,
+          "question": "Độ dài cung tròn có số đo 60° trên đường tròn bán kính 6cm là",
+          "options": {
+            "A": "π cm",
+            "B": "2π cm",
+            "C": "3π cm",
+            "D": "4π cm"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 17,
+          "number": 17,
+          "question": "Diện tích hình quạt tròn có bán kính 10cm và số đo cung 90° là",
+          "options": {
+            "A": "25π cm²",
+            "B": "50π cm²",
+            "C": "75π cm²",
+            "D": "100π cm²"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 18,
+          "number": 18,
+          "question": "Giá trị của biểu thức √(25 - 16) bằng",
+          "options": {
+            "A": "1",
+            "B": "2",
+            "C": "3",
+            "D": "4"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 19,
+          "number": 19,
+          "question": "Cho hình trụ có bán kính đáy 3cm và chiều cao 4cm. Diện tích xung quanh của hình trụ là",
+          "options": {
+            "A": "12π cm²",
+            "B": "24π cm²",
+            "C": "36π cm²",
+            "D": "48π cm²"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 20,
+          "number": 20,
+          "question": "Phương trình x² - 6x + 9 = 0 có nghiệm kép là",
+          "options": {
+            "A": "x = 2",
+            "B": "x = 3",
+            "C": "x = 4",
+            "D": "x = 6"
+          },
+          "correct_answer": "B"
+        }
+      ]
+    }
+  ]
+}

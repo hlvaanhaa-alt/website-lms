@@ -1,0 +1,500 @@
+{
+  "exams": [
+    {
+      "id": "exam_english_09_01",
+      "title": "Đề trắc nghiệm Tiếng Anh 9 - Đề 1",
+      "time_limit": 25,
+      "description": "Kiểm tra kiến thức Tiếng Anh lớp 9 - Ngữ pháp và từ vựng",
+      "questions": [
+        {
+          "id": 1,
+          "number": 1,
+          "question": "Teenagers can find a lot of career advice on ______ Internet.",
+          "options": {
+            "A": "a",
+            "B": "an",
+            "C": "the",
+            "D": "∅"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 2,
+          "number": 2,
+          "question": "Would you like to join our party ______ Saturday night?",
+          "options": {
+            "A": "on",
+            "B": "about",
+            "C": "in",
+            "D": "to"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 3,
+          "number": 3,
+          "question": "Sa Pa is famous for its ______ landmarks such as Fansipan Mountain, Tả Phìn Village and Mường Hoa Valley.",
+          "options": {
+            "A": "attract",
+            "B": "attractive",
+            "C": "attraction",
+            "D": "attractively"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 4,
+          "number": 4,
+          "question": "Although plastic bags are convenient, they are ______ to the environment.",
+          "options": {
+            "A": "polite",
+            "B": "modern",
+            "C": "friendly",
+            "D": "harmful"
+          },
+          "correct_answer": "D"
+        },
+        {
+          "id": 5,
+          "number": 5,
+          "question": "When riding a bike, you should wear ______ equipment such as helmets and knee pads.",
+          "options": {
+            "A": "fashion",
+            "B": "art",
+            "C": "safety",
+            "D": "gym"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 6,
+          "number": 6,
+          "question": "She tried hard so that she ______ win a scholarship to study abroad.",
+          "options": {
+            "A": "ought to",
+            "B": "could",
+            "C": "had to",
+            "D": "may"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 7,
+          "number": 7,
+          "question": "We love the song 'Viết tiếp câu chuyện hòa bình' ______ its meaningful lyrics.",
+          "options": {
+            "A": "because of",
+            "B": "despite",
+            "C": "because",
+            "D": "although"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 8,
+          "number": 8,
+          "question": "The test was ______ that many students could finish it in only a few minutes.",
+          "options": {
+            "A": "too easy",
+            "B": "so easy",
+            "C": "easy enough",
+            "D": "such easy"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 9,
+          "number": 9,
+          "question": "We should plan a menu before shopping and ______ healthy food choices.",
+          "options": {
+            "A": "make",
+            "B": "do",
+            "C": "take",
+            "D": "get"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 10,
+          "number": 10,
+          "question": "Wait a second! I need to ______ my running shoes before we go for a run.",
+          "options": {
+            "A": "get off",
+            "B": "go out",
+            "C": "look up",
+            "D": "put on"
+          },
+          "correct_answer": "D"
+        },
+        {
+          "id": 11,
+          "number": 11,
+          "question": "Sarah (wait) ______ for me when I arrived at the airport yesterday.",
+          "options": {
+            "A": "waited",
+            "B": "was waiting",
+            "C": "has waited",
+            "D": "had waited"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 12,
+          "number": 12,
+          "question": "Linda (go) ______ to the cooking class every Thursday evening.",
+          "options": {
+            "A": "go",
+            "B": "is going",
+            "C": "goes",
+            "D": "went"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 13,
+          "number": 13,
+          "question": "Children should avoid (spend) ______ too much screen time.",
+          "options": {
+            "A": "spend",
+            "B": "spending",
+            "C": "to spend",
+            "D": "spent"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 14,
+          "number": 14,
+          "question": "Don't forget (buy) ______ some sugar. We haven't got any now.",
+          "options": {
+            "A": "buy",
+            "B": "buying",
+            "C": "to buy",
+            "D": "bought"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 15,
+          "number": 15,
+          "question": "If you ______ harder, you would pass the exam easily.",
+          "options": {
+            "A": "study",
+            "B": "studied",
+            "C": "will study",
+            "D": "had studied"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 16,
+          "number": 16,
+          "question": "The book ______ by my brother last week was very interesting.",
+          "options": {
+            "A": "bought",
+            "B": "buying",
+            "C": "to buy",
+            "D": "was bought"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 17,
+          "number": 17,
+          "question": "She wishes she ______ more time to spend with her family.",
+          "options": {
+            "A": "has",
+            "B": "had",
+            "C": "will have",
+            "D": "would have"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 18,
+          "number": 18,
+          "question": "My father suggested ______ a trip to the countryside this weekend.",
+          "options": {
+            "A": "take",
+            "B": "taking",
+            "C": "to take",
+            "D": "took"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 19,
+          "number": 19,
+          "question": "The movie was ______ boring that I fell asleep.",
+          "options": {
+            "A": "so",
+            "B": "such",
+            "C": "too",
+            "D": "very"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 20,
+          "number": 20,
+          "question": "I haven't seen my best friend ______ last summer.",
+          "options": {
+            "A": "for",
+            "B": "since",
+            "C": "from",
+            "D": "ago"
+          },
+          "correct_answer": "B"
+        }
+      ]
+    },
+    {
+      "id": "exam_english_09_02",
+      "title": "Đề trắc nghiệm Tiếng Anh 9 - Đề 2",
+      "time_limit": 25,
+      "description": "Kiểm tra kiến thức Tiếng Anh lớp 9 - Ngữ pháp nâng cao",
+      "questions": [
+        {
+          "id": 1,
+          "number": 1,
+          "question": "My teacher always encourages us ______ our best in every exam.",
+          "options": {
+            "A": "do",
+            "B": "doing",
+            "C": "to do",
+            "D": "did"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 2,
+          "number": 2,
+          "question": "The children are looking forward ______ their grandparents next month.",
+          "options": {
+            "A": "visit",
+            "B": "to visiting",
+            "C": "to visit",
+            "D": "visited"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 3,
+          "number": 3,
+          "question": "I can't remember ______ my keys. I've been looking for them all morning.",
+          "options": {
+            "A": "where I put",
+            "B": "where did I put",
+            "C": "where I have put",
+            "D": "where do I put"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 4,
+          "number": 4,
+          "question": "The bridge ______ last year has made traveling much easier.",
+          "options": {
+            "A": "building",
+            "B": "built",
+            "C": "to build",
+            "D": "was built"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 5,
+          "number": 5,
+          "question": "______ the bad weather, we decided to go hiking.",
+          "options": {
+            "A": "Although",
+            "B": "Despite",
+            "C": "Because",
+            "D": "Because of"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 6,
+          "number": 6,
+          "question": "She asked me ______ I could help her with the homework.",
+          "options": {
+            "A": "that",
+            "B": "if",
+            "C": "what",
+            "D": "which"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 7,
+          "number": 7,
+          "question": "By the time we arrived, the concert ______.",
+          "options": {
+            "A": "started",
+            "B": "has started",
+            "C": "had started",
+            "D": "was starting"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 8,
+          "number": 8,
+          "question": "This is the most interesting book ______ I have ever read.",
+          "options": {
+            "A": "which",
+            "B": "that",
+            "C": "who",
+            "D": "what"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 9,
+          "number": 9,
+          "question": "You ______ wear a helmet when riding a motorbike. It's the law.",
+          "options": {
+            "A": "should",
+            "B": "must",
+            "C": "can",
+            "D": "may"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 10,
+          "number": 10,
+          "question": "I wish I ______ speak English as fluently as a native speaker.",
+          "options": {
+            "A": "can",
+            "B": "could",
+            "C": "will",
+            "D": "would"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 11,
+          "number": 11,
+          "question": "The students (study) ______ hard for the exam at the moment.",
+          "options": {
+            "A": "study",
+            "B": "studied",
+            "C": "are studying",
+            "D": "have studied"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 12,
+          "number": 12,
+          "question": "My sister enjoys (listen) ______ to music in her free time.",
+          "options": {
+            "A": "listen",
+            "B": "listening",
+            "C": "to listen",
+            "D": "listened"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 13,
+          "number": 13,
+          "question": "If I (be) ______ you, I would accept that job offer.",
+          "options": {
+            "A": "am",
+            "B": "was",
+            "C": "were",
+            "D": "will be"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 14,
+          "number": 14,
+          "question": "They decided (not go) ______ to the party because of the rain.",
+          "options": {
+            "A": "not go",
+            "B": "not going",
+            "C": "not to go",
+            "D": "don't go"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 15,
+          "number": 15,
+          "question": "He is used to (work) ______ late at night.",
+          "options": {
+            "A": "work",
+            "B": "working",
+            "C": "worked",
+            "D": "works"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 16,
+          "number": 16,
+          "question": "The house ______ we lived in our childhood has been sold.",
+          "options": {
+            "A": "which",
+            "B": "where",
+            "C": "when",
+            "D": "who"
+          },
+          "correct_answer": "B"
+        },
+        {
+          "id": 17,
+          "number": 17,
+          "question": "Neither my friends nor I ______ interested in watching horror movies.",
+          "options": {
+            "A": "is",
+            "B": "are",
+            "C": "am",
+            "D": "be"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 18,
+          "number": 18,
+          "question": "She is ______ kind person that everyone loves her.",
+          "options": {
+            "A": "so",
+            "B": "such",
+            "C": "such a",
+            "D": "so a"
+          },
+          "correct_answer": "C"
+        },
+        {
+          "id": 19,
+          "number": 19,
+          "question": "I would rather ______ at home than go out tonight.",
+          "options": {
+            "A": "stay",
+            "B": "staying",
+            "C": "to stay",
+            "D": "stayed"
+          },
+          "correct_answer": "A"
+        },
+        {
+          "id": 20,
+          "number": 20,
+          "question": "No sooner ______ the office than it started to rain heavily.",
+          "options": {
+            "A": "I had left",
+            "B": "had I left",
+            "C": "I left",
+            "D": "did I leave"
+          },
+          "correct_answer": "B"
+        }
+      ]
+    }
+  ]
+}

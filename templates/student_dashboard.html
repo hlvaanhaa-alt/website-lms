@@ -1,0 +1,756 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Học sinh - Học Vui THCS{% endblock %}
+
+{% block content %}
+<div class="container dashboard">
+    <div class="welcome-section">
+        <div class="welcome-content">
+            <h1>Chào mừng, {{ username }}! </h1>
+            <p class="subtitle">Tiếp tục hành trình học tập của bạn</p>
+        </div>
+        <div class="welcome-decoration"></div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card stat-1">
+            <div class="stat-icon">📚</div>
+            <div class="stat-content">
+                <h3>{{ courses|length }}</h3>
+                <p>Khóa học khả dụng</p>
+            </div>
+        </div>
+        <div class="stat-card stat-2">
+            <div class="stat-icon">📖</div>
+            <div class="stat-content">
+                <h3>{{ enrolled_courses|length }}</h3>
+                <p>Đang học</p>
+            </div>
+        </div>
+        <div class="stat-card stat-3">
+            <div class="stat-icon">✅</div>
+            <div class="stat-content">
+                <h3>{{ enrolled_courses|selectattr('percentage', 'equalto', 100)|list|length }}</h3>
+                <p>Đã hoàn thành</p>
+            </div>
+        </div>
+        <div class="stat-card stat-4">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <h3>{% if enrolled_courses|length > 0 %}{{ ((enrolled_courses|sum(attribute='percentage'))/enrolled_courses|length)|round(1) }}{% else %}0{% endif %}%</h3>
+                <p>Tiến độ trung bình</p>
+            </div>
+        </div>
+    </div>
+
+    {% if enrolled_courses %}
+    <section class="dashboard-section">
+        <div class="section-header-main">
+            <h2>📚 Khóa học của bạn</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="courses-grid">
+            {% for item in enrolled_courses %}
+            <div class="course-card enrolled">
+                <div class="course-badge {% if item.percentage == 100 %}completed{% endif %}">
+                    {% if item.percentage == 100 %}✓ Hoàn thành{% else %}Đang học{% endif %}
+                </div>
+                <div class="course-header">
+                    <h3>{{ item.course.title }}</h3>
+                </div>
+                <p class="course-description">{{ item.course.description[:100] }}{% if item.course.description|length > 100 %}...{% endif %}</p>
+                
+                <div class="progress-section">
+                    <div class="progress-info">
+                        <span>Tiến độ</span>
+                        <strong>{{ item.percentage }}%</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ item.percentage }}%"></div>
+                    </div>
+                    <p class="lesson-count">{{ item.progress.completed_lessons|length }}/{{ item.course.lessons|length }} bài học</p>
+                </div>
+                
+                <a href="{{ url_for('course_detail', course_id=item.course.id) }}" class="btn btn-primary btn-block">
+                    {% if item.percentage == 100 %}
+                        Xem lại
+                    {% else %}
+                        Tiếp tục học
+                    {% endif %}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <div class="section-header-main">
+                <h2>🔍 Khám phá khóa học</h2>
+                <div class="section-line"></div>
+            </div>
+            <a href="{{ url_for('courses') }}" class="btn btn-secondary btn-small">Xem tất cả →</a>
+        </div>
+        
+        {% if courses %}
+        <div class="courses-grid">
+            {% for course in courses[:6] %}
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>{{ course.title }}</h3>
+                </div>
+                <p class="course-description">{{ course.description[:80] }}{% if course.description|length > 80 %}...{% endif %}</p>
+                
+                <div class="course-meta">
+                    <span>📝 {{ course.lessons|length }} bài học</span>
+                </div>
+                
+                <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-outline btn-block">
+                    Xem chi tiết
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-message">Chưa có khóa học nào.</p>
+        {% endif %}
+    </section>
+
+    <section class="dashboard-section quick-actions-section">
+        <div class="section-header-main">
+            <h2>⚡ Truy cập nhanh</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="quick-actions-grid">
+            <a href="{{ url_for('documents') }}" class="quick-action-card">
+                <div class="quick-icon">📁</div>
+                <h4>Kho tài liệu</h4>
+                <p>Video và tài liệu học tập</p>
+            </a>
+            <a href="{{ url_for('exercises') }}" class="quick-action-card">
+                <div class="quick-icon">✏️</div>
+                <h4>Bài tập</h4>
+                <p>Luyện tập thực hành</p>
+            </a>
+            <a href="{{ url_for('tracnghiem') }}" class="quick-action-card tracnghiem-highlight">
+                <div class="quick-icon">📝</div>
+                <h4>Trắc nghiệm</h4>
+                <p>Đề thi trắc nghiệm online</p>
+                <span class="new-badge">MỚI</span>
+            </a>
+            <a href="{{ url_for('chatbot') }}" class="quick-action-card">
+                <div class="quick-icon">🤖</div>
+                <h4>Chatbot AI</h4>
+                <p>Hỏi đáp với AI</p>
+            </a>
+        </div>
+    </section>
+</div>
+
+<style>
+.dashboard {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.welcome-section {
+    position: relative;
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #e8eaf6 100%);
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.welcome-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(236, 64, 122, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.welcome-section::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -5%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(156, 39, 176, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-section h1 {
+    margin: 0 0 0.75rem 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d81b60 0%, #8e24aa 50%, #5e35b1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    color: #6a1b9a;
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(216, 27, 96, 0.2);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+.stat-1 {
+    border-color: #f8bbd0;
+    background: linear-gradient(135deg, #fff 0%, #fce4ec 100%);
+}
+
+.stat-1::before {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+}
+
+.stat-2 {
+    border-color: #e1bee7;
+    background: linear-gradient(135deg, #fff 0%, #f3e5f5 100%);
+}
+
+.stat-2::before {
+    background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+}
+
+.stat-3 {
+    border-color: #d1c4e9;
+    background: linear-gradient(135deg, #fff 0%, #ede7f6 100%);
+}
+
+.stat-3::before {
+    background: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%);
+}
+
+.stat-4 {
+    border-color: #f48fb1;
+    background: linear-gradient(135deg, #fff 0%, #fce4ec 100%);
+}
+
+.stat-4::before {
+    background: linear-gradient(135deg, #fce4ec 0%, #f48fb1 100%);
+}
+
+.stat-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    position: relative;
+    z-index: 1;
+}
+
+.stat-content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-card h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 2.25rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d81b60 0%, #8e24aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card p {
+    margin: 0;
+    color: #6a1b9a;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dashboard-section {
+    margin-bottom: 4rem;
+}
+
+.section-header-main {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.section-header-main h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #d81b60 0%, #8e24aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 0.75rem 0;
+}
+
+.section-line {
+    height: 4px;
+    width: 80px;
+    background: linear-gradient(90deg, #f06292, #ba68c8, #9575cd);
+    border-radius: 2px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.course-card {
+    background: white;
+    border: 2px solid #f8bbd0;
+    border-radius: 20px;
+    padding: 1.75rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.course-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #f06292, #ba68c8, #9575cd);
+    transform: scaleX(0);
+    transition: transform 0.4s;
+}
+
+.course-card:hover::before {
+    transform: scaleX(1);
+}
+
+.course-card:hover {
+    box-shadow: 0 16px 32px rgba(216, 27, 96, 0.15);
+    transform: translateY(-8px);
+    border-color: #f48fb1;
+}
+
+.course-card.enrolled {
+    border-color: #ba68c8;
+    background: linear-gradient(to bottom, #f3e5f5 0%, white 100%);
+}
+
+.course-badge {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: linear-gradient(135deg, #ec407a 0%, #ab47bc 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(236, 64, 122, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.course-badge.completed {
+    background: linear-gradient(135deg, #66bb6a 0%, #26a69a 100%);
+}
+
+.course-header {
+    margin-bottom: 1rem;
+}
+
+.course-card h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #4a148c;
+    min-height: 3rem;
+    line-height: 1.4;
+}
+
+.course-description {
+    color: #7b1fa2;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+    min-height: 4rem;
+}
+
+.progress-section {
+    margin: 1.25rem 0;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #fff 0%, #fce4ec 100%);
+    border-radius: 16px;
+    border: 2px solid #f8bbd0;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6a1b9a;
+}
+
+.progress-info strong {
+    font-size: 1.125rem;
+    background: linear-gradient(135deg, #d81b60 0%, #8e24aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #f3e5f5;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f06292 0%, #ba68c8 50%, #9575cd 100%);
+    transition: width 0.6s ease;
+    box-shadow: 0 0 10px rgba(240, 98, 146, 0.5);
+}
+
+.lesson-count {
+    font-size: 0.8125rem;
+    color: #8e24aa;
+    margin: 0;
+    font-weight: 600;
+}
+
+.course-meta {
+    margin: 1.25rem 0;
+    padding: 0.875rem 0;
+    border-top: 2px solid #fce4ec;
+    font-size: 0.875rem;
+    color: #7b1fa2;
+    font-weight: 600;
+}
+
+.quick-actions-section {
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #ede7f6 100%);
+    padding: 2.5rem;
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-actions-section::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(186, 104, 200, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.quick-action-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #f8bbd0;
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.quick-action-card:hover::before {
+    opacity: 1;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 32px rgba(216, 27, 96, 0.2);
+    border-color: #f48fb1;
+}
+
+.tracnghiem-highlight {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffffff 100%);
+    border-color: #ffb74d;
+}
+
+.tracnghiem-highlight::before {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%);
+}
+
+.tracnghiem-highlight:hover {
+    border-color: #ff9800;
+    box-shadow: 0 16px 32px rgba(255, 152, 0, 0.25);
+}
+
+.new-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    animation: pulse 2s infinite;
+    z-index: 1;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+.quick-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    position: relative;
+    z-index: 1;
+}
+
+.quick-action-card h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #4a148c;
+    position: relative;
+    z-index: 1;
+}
+
+.quick-action-card p {
+    margin: 0;
+    color: #7b1fa2;
+    font-size: 0.875rem;
+    position: relative;
+    z-index: 1;
+}
+
+.empty-message {
+    text-align: center;
+    color: #8e24aa;
+    padding: 3rem;
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+    border-radius: 16px;
+    font-weight: 600;
+    border: 2px dashed #f8bbd0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.875rem 1.75rem;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ec407a 0%, #ab47bc 50%, #7e57c2 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(236, 64, 122, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(236, 64, 122, 0.5);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #ba68c8 0%, #9575cd 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(186, 104, 200, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(186, 104, 200, 0.4);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #8e24aa;
+    border: 2px solid #ba68c8;
+}
+
+.btn-outline:hover {
+    background: linear-gradient(135deg, #ec407a 0%, #ab47bc 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.btn-block {
+    width: 100%;
+    display: block;
+}
+
+.btn-small {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .dashboard {
+        padding: 1rem;
+    }
+
+    .welcome-section {
+        padding: 2rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .welcome-section h1 {
+        font-size: 1.75rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+    }
+
+    .stat-card h3 {
+        font-size: 1.75rem;
+    }
+    
+    .courses-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+</style>
+{% endblock %}

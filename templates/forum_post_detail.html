@@ -1,0 +1,546 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Diễn đàn{% endblock %}
+
+{% block content %}
+<style>
+body {
+    background: linear-gradient(135deg, #ffeef8 0%, #f8e8ff 50%, #ffe8f5 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.btn-back {
+    background: linear-gradient(135deg, #ff9bd9, #c89ef5);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(200, 158, 245, 0.3);
+}
+
+.btn-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(200, 158, 245, 0.5);
+    color: white;
+}
+
+.post-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(254, 245, 255, 0.95));
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(200, 158, 245, 0.2);
+    overflow: hidden;
+}
+
+.post-card-body {
+    padding: 2.5rem;
+}
+
+.post-title {
+    background: linear-gradient(135deg, #d946ef, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.post-meta {
+    color: #a855f7;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.post-meta span {
+    margin-right: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badge-teacher {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+.btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(251, 191, 36, 0.5);
+    color: white;
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #f43f5e, #e11d48);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    margin-left: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(244, 63, 94, 0.5);
+    color: white;
+}
+
+.tag-badge {
+    background: linear-gradient(135deg, #ffc9e8, #dfc3ff);
+    color: #7c3aed;
+    padding: 6px 14px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.post-content {
+    color: #4a044e;
+    line-height: 1.8;
+    font-size: 1.05rem;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border-left: 4px solid #d946ef;
+}
+
+.attachment-section {
+    background: linear-gradient(135deg, rgba(255, 230, 250, 0.5), rgba(245, 230, 255, 0.5));
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-top: 1.5rem;
+}
+
+.attachment-section h5 {
+    color: #a855f7;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.attachment-image {
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.2);
+    transition: all 0.3s ease;
+}
+
+.attachment-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+}
+
+.btn-download {
+    background: linear-gradient(135deg, #ec4899, #d946ef);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+.btn-download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(236, 72, 153, 0.5);
+    color: white;
+}
+
+.comment-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(254, 245, 255, 0.95));
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(200, 158, 245, 0.2);
+    margin-top: 2rem;
+}
+
+.comment-header {
+    background: linear-gradient(135deg, #ffc9e8, #dfc3ff);
+    padding: 1.5rem;
+    border-radius: 20px 20px 0 0;
+}
+
+.comment-header h5 {
+    color: #7c3aed;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comment-body {
+    padding: 2rem;
+}
+
+.comment-form-control {
+    border: 2px solid #f0d9ff;
+    border-radius: 15px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.comment-form-control:focus {
+    border-color: #d946ef;
+    box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.1);
+    outline: none;
+    background: white;
+}
+
+.form-label-custom {
+    color: #a855f7;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.btn-submit-comment {
+    background: linear-gradient(135deg, #d946ef, #a855f7);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(169, 85, 247, 0.4);
+}
+
+.btn-submit-comment:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(169, 85, 247, 0.6);
+    color: white;
+}
+
+.comment-divider {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #f0d9ff, transparent);
+    margin: 2rem 0;
+}
+
+.comment-item {
+    background: linear-gradient(135deg, rgba(255, 250, 255, 0.8), rgba(250, 245, 255, 0.8));
+    border: 2px solid #ffc9e8;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.comment-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 20px rgba(255, 201, 232, 0.3);
+}
+
+.comment-author {
+    color: #a855f7;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.comment-time {
+    color: #d946ef;
+    font-size: 0.85rem;
+}
+
+.btn-delete-comment {
+    background: linear-gradient(135deg, #ff9bd9, #f472b6);
+    color: white;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-delete-comment:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 155, 217, 0.5);
+    color: white;
+}
+
+.comment-content {
+    color: #4a044e;
+    line-height: 1.7;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.comment-attachment {
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+    margin-right: 0.5rem;
+    max-width: 150px;
+    transition: all 0.3s ease;
+}
+
+.comment-attachment:hover {
+    transform: scale(1.05);
+}
+
+.btn-download-small {
+    background: linear-gradient(135deg, #c89ef5, #b794f6);
+    color: white;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-download-small:hover {
+    transform: translateY(-2px);
+    color: white;
+}
+
+.no-comment-text {
+    color: #a855f7;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+    font-style: italic;
+}
+
+.help-text {
+    color: #c89ef5;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+</style>
+
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('forum') }}" class="btn-back">
+            Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="post-card">
+        <div class="post-card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div style="flex: 1;">
+                    <h3 class="post-title">{{ post.title }}</h3>
+                    <div class="post-meta">
+                        <span>
+                            <strong>{{ post.author_name }}</strong>
+                            {% if post.author_role == 'teacher' %}
+                                <span class="badge-teacher">Giáo viên</span>
+                            {% endif %}
+                        </span>
+                        <span>
+                            {{ post.created_at_formatted }}
+                        </span>
+                        {% if post.updated_at %}
+                        <span>
+                            Chỉnh sửa: {{ post.updated_at_formatted }}
+                        </span>
+                        {% endif %}
+                        <span>
+                            {{ post.views }} lượt xem
+                        </span>
+                    </div>
+                </div>
+                {% if is_author %}
+                <div>
+                    <a href="{{ url_for('forum_edit_post', post_id=post.id) }}" class="btn-edit">
+                        Sửa
+                    </a>
+                    <button class="btn-delete" onclick="deletePost('{{ post.id }}')">
+                        Xóa
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if post.tags %}
+            <div class="mb-3">
+                {% for tag in post.tags %}
+                    <span class="tag-badge">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="post-content" style="white-space: pre-wrap;">{{ post.content }}</div>
+
+            {% if post.attachments %}
+            <div class="attachment-section">
+                <h5>File đính kèm:</h5>
+                <div class="row">
+                    {% for attachment in post.attachments %}
+                        {% if attachment.type == 'image' %}
+                        <div class="col-md-4 mb-3">
+                            <img src="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                                 class="img-fluid attachment-image" 
+                                 alt="{{ attachment.filename }}">
+                            <small class="d-block text-muted mt-2">{{ attachment.filename }}</small>
+                        </div>
+                        {% else %}
+                        <div class="col-md-6 mb-2">
+                            <a href="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                               class="btn-download" download>
+                                {{ attachment.filename }}
+                                ({{ (attachment.size / 1024) | round(1) }} KB)
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="comment-card">
+        <div class="comment-header">
+            <h5>Bình luận ({{ comments|length }})</h5>
+        </div>
+        <div class="comment-body">
+            <form id="commentForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <textarea class="comment-form-control form-control" id="commentContent" name="content" 
+                              rows="3" placeholder="Viết bình luận..." required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label-custom">File đính kèm (tùy chọn):</label>
+                    <input type="file" class="comment-form-control form-control" name="files" multiple 
+                           accept=".png,.jpg,.jpeg,.gif,.pdf,.doc,.docx,.txt,.zip,.rar">
+                    <small class="help-text">Tối đa 10MB mỗi file. Hỗ trợ: ảnh, PDF, Word, ZIP, RAR</small>
+                </div>
+                <button type="submit" class="btn-submit-comment">
+                    Gửi bình luận
+                </button>
+            </form>
+
+            <hr class="comment-divider">
+
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="comment-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong class="comment-author">{{ comment.author_name }}</strong>
+                            {% if comment.author_role == 'teacher' %}
+                                <span class="badge-teacher">Giáo viên</span>
+                            {% endif %}
+                            <small class="comment-time d-block">{{ comment.created_at_formatted }}</small>
+                        </div>
+                        {% if comment.author_id == session.user_id %}
+                        <button class="btn-delete-comment" 
+                                onclick="deleteComment('{{ comment.id }}')">
+                            Xóa
+                        </button>
+                        {% endif %}
+                    </div>
+                    <p class="comment-content" style="white-space: pre-wrap;">{{ comment.content }}</p>
+                    {% if comment.attachments %}
+                    <div class="mt-2">
+                        {% for attachment in comment.attachments %}
+                            {% if attachment.type == 'image' %}
+                            <img src="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                                 class="comment-attachment img-thumbnail" 
+                                 alt="{{ attachment.filename }}">
+                            {% else %}
+                            <a href="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                               class="btn-download-small" download>
+                                {{ attachment.filename }}
+                            </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-comment-text">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('commentForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    try {
+        const response = await fetch('{{ url_for("forum_add_comment", post_id=post.id) }}', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert('Lỗi: ' + result.message);
+        }
+    } catch (error) {
+        alert('Có lỗi xảy ra: ' + error);
+    }
+});
+
+function deletePost(postId) {
+    if (!confirm('Bạn có chắc muốn xóa bài viết này?')) return;
+    
+    fetch(`/forum/delete/${postId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert(result.message);
+            window.location.href = '{{ url_for("forum") }}';
+        } else {
+            alert('Lỗi: ' + result.message);
+        }
+    });
+}
+
+function deleteComment(commentId) {
+    if (!confirm('Bạn có chắc muốn xóa bình luận này?')) return;
+    
+    fetch(`/forum/delete-comment/${commentId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert('Lỗi: ' + result.message);
+        }
+    });
+}
+</script>
+{% endblock %}

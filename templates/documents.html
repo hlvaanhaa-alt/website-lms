@@ -1,0 +1,395 @@
+{% extends "base.html" %}
+
+{% block title %}Kho tài liệu - Vui Học THCS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>📚 Kho tài liệu học tập THCS</h1>
+        <p class="subtitle">Tài liệu, bài giảng và đề thi theo từng lớp (6, 7, 8, 9)</p>
+        {% if session.role == 'teacher' %}
+        <a href="{{ url_for('add_document') }}" class="btn btn-primary">➕ Thêm tài liệu mới</a>
+        {% endif %}
+    </div>
+
+    <!-- Bộ LỌC THEO LỚP -->
+    <div class="grade-filters">
+        <button class="grade-btn {% if current_grade == 'all' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade='all', type=current_type) }}'">🎯 Tất cả lớp</button>
+        <button class="grade-btn {% if current_grade == '6' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade='6', type=current_type) }}'">📘 Lớp 6</button>
+        <button class="grade-btn {% if current_grade == '7' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade='7', type=current_type) }}'">📗 Lớp 7</button>
+        <button class="grade-btn {% if current_grade == '8' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade='8', type=current_type) }}'">📙 Lớp 8</button>
+        <button class="grade-btn {% if current_grade == '9' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade='9', type=current_type) }}'">📕 Lớp 9</button>
+    </div>
+
+    <!-- Bộ LỌC THEO LOẠI -->
+    <div class="type-filters">
+        <button class="type-btn {% if current_type == 'all' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade=current_grade, type='all') }}'">🌐 Tất cả</button>
+        <button class="type-btn {% if current_type == 'document' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade=current_grade, type='document') }}'">📄 Tài liệu</button>
+        <button class="type-btn {% if current_type == 'lecture' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade=current_grade, type='lecture') }}'">🎓 Bài giảng</button>
+        <button class="type-btn {% if current_type == 'exam' %}active{% endif %}" 
+                onclick="location.href='{{ url_for('documents', grade=current_grade, type='exam') }}'">📝 Bộ đề thi</button>
+    </div>
+
+    <!-- HIỂN THỊ TÀI LIỆU -->
+    {% if current_grade == 'all' %}
+        {% for grade, docs in docs_by_grade.items() %}
+            {% if docs %}
+            <div class="grade-section">
+                <h2 class="grade-title">
+                    {% if grade == '6' %}📘 Lớp 6{% elif grade == '7' %}📗 Lớp 7{% elif grade == '8' %}📙 Lớp 8{% elif grade == '9' %}📕 Lớp 9{% endif %}
+                    <span class="doc-count">({{ docs|length }} tài liệu)</span>
+                </h2>
+                <div class="documents-grid">
+                    {% for doc in docs %}
+                    <div class="document-card">
+                        <div class="doc-header">
+                            <span class="doc-type-badge {{ doc.doc_type }}">
+                                {% if doc.doc_type == 'document' %}📄 Tài liệu{% elif doc.doc_type == 'lecture' %}🎓 Bài giảng{% elif doc.doc_type == 'exam' %}📝 Đề thi{% else %}📋 Khác{% endif %}
+                            </span>
+                            <span class="doc-grade-badge grade-{{ doc.grade }}">Lớp {{ doc.grade }}</span>
+                        </div>
+                        
+                        <h3 class="doc-title">{{ doc.title }}</h3>
+                        <p class="doc-description">{{ doc.description or 'Không có mô tả' }}</p>
+                        
+                        <div class="doc-meta">
+                            <span class="link-type">{% if doc.link_type == 'youtube' %}🎥 YouTube{% elif doc.link_type == 'drive' %}☁️ Google Drive{% else %}🔗 Link{% endif %}</span>
+                            <span class="doc-date">📅 {{ doc.created_at[:10] if doc.created_at else 'N/A' }}</span>
+                        </div>
+                        
+                        <div class="doc-actions">
+                            {% if doc.link_type == 'youtube' %}
+                            <button onclick="openVideoModal('{{ doc.url }}', '{{ doc.title }}')" class="btn btn-primary btn-action">▶️ Xem video</button>
+                            {% else %}
+                            <a href="{{ doc.url }}" target="_blank" class="btn btn-primary btn-action">{% if doc.link_type == 'drive' %}📥 Tải tài liệu{% else %}👁️ Xem tài liệu{% endif %}</a>
+                            {% endif %}
+                            
+                            {% if session.role == 'teacher' and doc.get('teacher_id') == session.user_id %}
+                            <button onclick="deleteDocument('{{ doc.id }}', '{{ doc.title }}')" class="btn btn-danger btn-action" title="Xóa tài liệu">🗑️</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+        
+        {% if not docs_by_grade['6'] and not docs_by_grade['7'] and not docs_by_grade['8'] and not docs_by_grade['9'] %}
+        <div class="empty-state">
+            <div class="empty-icon">🔭</div>
+            <h3>Chưa có tài liệu nào</h3>
+            <p>Hiện tại chưa có tài liệu nào trong hệ thống.</p>
+            {% if session.role == 'teacher' %}<a href="{{ url_for('add_document') }}" class="btn btn-primary">➕ Thêm tài liệu đầu tiên</a>{% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        {% set selected_docs = docs_by_grade.get(current_grade, []) %}
+        {% if selected_docs %}
+        <div class="grade-section">
+            <h2 class="grade-title">
+                {% if current_grade == '6' %}📘 Lớp 6{% elif current_grade == '7' %}📗 Lớp 7{% elif current_grade == '8' %}📙 Lớp 8{% elif current_grade == '9' %}📕 Lớp 9{% endif %}
+                <span class="doc-count">({{ selected_docs|length }} tài liệu)</span>
+            </h2>
+            <div class="documents-grid">
+                {% for doc in selected_docs %}
+                <div class="document-card">
+                    <div class="doc-header">
+                        <span class="doc-type-badge {{ doc.doc_type }}">
+                            {% if doc.doc_type == 'document' %}📄 Tài liệu{% elif doc.doc_type == 'lecture' %}🎓 Bài giảng{% elif doc.doc_type == 'exam' %}📝 Đề thi{% else %}📋 Khác{% endif %}
+                        </span>
+                        <span class="doc-grade-badge grade-{{ doc.grade }}">Lớp {{ doc.grade }}</span>
+                    </div>
+                    
+                    <h3 class="doc-title">{{ doc.title }}</h3>
+                    <p class="doc-description">{{ doc.description or 'Không có mô tả' }}</p>
+                    
+                    <div class="doc-meta">
+                        <span class="link-type">{% if doc.link_type == 'youtube' %}🎥 YouTube{% elif doc.link_type == 'drive' %}☁️ Google Drive{% else %}🔗 Link{% endif %}</span>
+                        <span class="doc-date">📅 {{ doc.created_at[:10] if doc.created_at else 'N/A' }}</span>
+                    </div>
+                    
+                    <div class="doc-actions">
+                        {% if doc.link_type == 'youtube' %}
+                        <button onclick="openVideoModal('{{ doc.url }}', '{{ doc.title }}')" class="btn btn-primary btn-action">▶️ Xem video</button>
+                        {% else %}
+                        <a href="{{ doc.url }}" target="_blank" class="btn btn-primary btn-action">{% if doc.link_type == 'drive' %}📥 Tải tài liệu{% else %}👁️ Xem tài liệu{% endif %}</a>
+                        {% endif %}
+                        
+                        {% if session.role == 'teacher' and doc.get('teacher_id') == session.user_id %}
+                        <button onclick="deleteDocument('{{ doc.id }}', '{{ doc.title }}')" class="btn btn-danger btn-action" title="Xóa tài liệu">🗑️</button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔭</div>
+            <h3>Chưa có tài liệu nào</h3>
+            <p>Chưa có tài liệu cho lớp {{ current_grade }} trong danh mục này.</p>
+            {% if session.role == 'teacher' %}<a href="{{ url_for('add_document') }}" class="btn btn-primary">➕ Thêm tài liệu đầu tiên</a>{% endif %}
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<!-- MODAL XÓA XÁC NHẬN -->
+<div id="deleteModal" class="delete-modal">
+    <div class="delete-modal-content">
+        <div class="delete-icon">⚠️</div>
+        <h2>Xác nhận xóa tài liệu</h2>
+        <p>Bạn có chắc chắn muốn xóa tài liệu:</p>
+        <p class="delete-doc-title" id="deleteDocTitle"></p>
+        <p class="warning-text">⚠️ Hành động này không thể hoàn tác!</p>
+        <div class="delete-actions">
+            <button onclick="confirmDelete()" class="btn btn-danger">🗑️ Xóa tài liệu</button>
+            <button onclick="closeDeleteModal()" class="btn btn-secondary">❌ Hủy</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL XEM VIDEO -->
+<div id="videoModal" class="video-modal">
+    <div class="video-modal-backdrop" onclick="closeVideoModal()"></div>
+    <button class="close-modal-big" onclick="closeVideoModal()" title="Đóng (ESC)">✕</button>
+    <div class="video-title-overlay"><h2 id="videoTitle">Video bài giảng</h2></div>
+    <div class="video-player-wrapper">
+        <div class="video-loading"><div class="spinner"></div><p>Đang tải video...</p></div>
+        <iframe id="videoFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+</div>
+
+<script>
+let currentVideoUrl = '';
+let deleteDocId = '';
+let deleteDocTitle = '';
+
+// ==================== XÓA TÀI LIỆU ====================
+function deleteDocument(docId, docTitle) {
+    deleteDocId = docId;
+    deleteDocTitle = docTitle;
+    document.getElementById('deleteDocTitle').textContent = `"${docTitle}"`;
+    document.getElementById('deleteModal').style.display = 'flex';
+    setTimeout(() => document.getElementById('deleteModal').classList.add('active'), 10);
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('active');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        deleteDocId = '';
+        deleteDocTitle = '';
+    }, 300);
+}
+
+async function confirmDelete() {
+    if (!deleteDocId) return;
+    
+    try {
+        const response = await fetch(`/teacher/delete_document/${deleteDocId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('✅ ' + result.message);
+            closeDeleteModal();
+            location.reload();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch (error) {
+        alert('❌ Có lỗi xảy ra: ' + error.message);
+        console.error(error);
+    }
+}
+
+// ==================== VIDEO MODAL ====================
+function getYouTubeVideoId(url) {
+    let videoId = '';
+    if (url.includes('youtube.com')) {
+        try {
+            const urlParams = new URLSearchParams(new URL(url).search);
+            videoId = urlParams.get('v');
+        } catch (e) {
+            console.error('Invalid YouTube URL');
+        }
+    } else if (url.includes('youtu.be')) {
+        try {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } catch (e) {
+            console.error('Invalid YouTube URL');
+        }
+    }
+    return videoId;
+}
+
+function openVideoModal(url, title) {
+    const videoId = getYouTubeVideoId(url);
+    if (!videoId) {
+        alert('⚠️ Không thể nhúng video này. Vui lòng thử mở trên YouTube.');
+        window.open(url, '_blank');
+        return;
+    }
+    
+    const modal = document.getElementById('videoModal');
+    const iframe = document.getElementById('videoFrame');
+    const loading = modal.querySelector('.video-loading');
+    
+    document.getElementById('videoTitle').textContent = title;
+    loading.style.display = 'flex';
+    iframe.style.display = 'none';
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('active'), 10);
+    
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    iframe.onload = () => { loading.style.display = 'none'; iframe.style.display = 'block'; };
+    document.body.style.overflow = 'hidden';
+    currentVideoUrl = url;
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    modal.classList.remove('active');
+    setTimeout(() => {
+        document.getElementById('videoFrame').src = '';
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }, 300);
+}
+
+document.addEventListener('keydown', e => { 
+    if (e.key === 'Escape') {
+        closeVideoModal();
+        closeDeleteModal();
+    }
+});
+</script>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.page-header { text-align: center; margin-bottom: 40px; padding: 30px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white; }
+.page-header h1 { font-size: 32px; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+.subtitle { font-size: 16px; margin-bottom: 20px; opacity: 0.9; }
+.grade-filters, .type-filters { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+.grade-btn { padding: 14px 28px; border: 3px solid #667eea; background: white; border-radius: 12px; cursor: pointer; transition: all 0.3s; font-size: 16px; font-weight: 700; color: #667eea; box-shadow: 0 2px 8px rgba(102,126,234,0.2); }
+.grade-btn:hover { background: #667eea; color: white; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(102,126,234,0.4); }
+.grade-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-color: #764ba2; color: white; transform: translateY(-2px); }
+.type-btn { padding: 10px 24px; border: 2px solid #ddd; background: white; border-radius: 25px; cursor: pointer; transition: all 0.3s; font-size: 14px; font-weight: 600; color: #666; }
+.type-btn:hover { border-color: #28a745; color: #28a745; transform: translateY(-2px); }
+.type-btn.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-color: #28a745; color: white; }
+.grade-section { margin-bottom: 60px; }
+.grade-title { font-size: 28px; color: #333; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 4px solid #667eea; display: flex; align-items: center; gap: 10px; }
+.doc-count { font-size: 18px; color: #888; font-weight: 400; }
+.documents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-bottom: 40px; }
+.document-card { background: white; border: 2px solid #f0f0f0; border-radius: 16px; padding: 24px; transition: all 0.3s; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.document-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); border-color: #667eea; }
+.doc-header { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.doc-type-badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.doc-type-badge.document { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; }
+.doc-type-badge.lecture { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
+.doc-type-badge.exam { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
+.doc-grade-badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+.doc-grade-badge.grade-6 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+.doc-grade-badge.grade-7 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+.doc-grade-badge.grade-8 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+.doc-grade-badge.grade-9 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; }
+.doc-title { font-size: 19px; color: #333; margin-bottom: 12px; min-height: 55px; font-weight: 700; line-height: 1.4; }
+.doc-description { color: #666; font-size: 14px; margin-bottom: 16px; flex-grow: 1; min-height: 45px; line-height: 1.6; }
+.doc-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-top: 12px; border-top: 2px solid #f5f5f5; gap: 10px; }
+.link-type { padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; background: linear-gradient(135deg, #6c757d 0%, #495057 100%); color: white; }
+.doc-date { font-size: 12px; color: #999; font-weight: 600; }
+
+/* NÚT HÀNH ĐỘNG */
+.doc-actions { display: flex; gap: 10px; }
+.btn { display: inline-block; padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; text-decoration: none; font-size: 15px; font-weight: 700; transition: all 0.3s; text-align: center; }
+.btn-action { flex: 1; padding: 10px 16px; font-size: 14px; }
+.btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(102,126,234,0.4); }
+.btn-danger { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 10px 16px; min-width: 45px; }
+.btn-danger:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(220,53,69,0.4); }
+.btn-secondary { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); color: white; }
+.btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(108,117,125,0.4); }
+
+.empty-state { text-align: center; padding: 80px 20px; background: white; border-radius: 16px; border: 3px dashed #ddd; }
+.empty-icon { font-size: 80px; margin-bottom: 20px; }
+.empty-state h3 { font-size: 24px; margin-bottom: 12px; color: #333; }
+.empty-state p { color: #666; margin-bottom: 25px; font-size: 16px; }
+
+/* MODAL XÓA */
+.delete-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+.delete-modal.active { opacity: 1; }
+.delete-modal-content { background: white; border-radius: 20px; padding: 40px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); transform: scale(0.9); transition: transform 0.3s; }
+.delete-modal.active .delete-modal-content { transform: scale(1); }
+.delete-icon { font-size: 60px; text-align: center; margin-bottom: 20px; }
+.delete-modal-content h2 { font-size: 24px; color: #333; margin-bottom: 15px; text-align: center; }
+.delete-modal-content p { color: #666; margin-bottom: 10px; text-align: center; font-size: 16px; }
+.delete-doc-title { font-weight: 700; color: #dc3545; font-size: 18px; margin: 15px 0; }
+.warning-text { color: #dc3545; font-weight: 600; margin-top: 20px; }
+.delete-actions { display: flex; gap: 15px; margin-top: 30px; }
+.delete-actions .btn { flex: 1; }
+
+/* VIDEO MODAL */
+.video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+.video-modal.active { opacity: 1; }
+.video-modal-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); }
+.close-modal-big { position: fixed; top: 20px; left: 20px; width: 60px; height: 60px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; color: white; font-size: 32px; font-weight: 300; cursor: pointer; z-index: 10002; transition: all 0.3s; display: flex; align-items: center; justify-content: center; line-height: 1; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.close-modal-big:hover { background: rgba(220,53,69,0.9); border-color: #dc3545; transform: rotate(90deg) scale(1.1); box-shadow: 0 12px 48px rgba(220,53,69,0.6); }
+.video-title-overlay { position: fixed; top: 20px; left: 100px; right: 20px; z-index: 10001; background: linear-gradient(135deg, rgba(102,126,234,0.95) 0%, rgba(118,75,162,0.95) 100%); backdrop-filter: blur(10px); padding: 18px 28px; border-radius: 50px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); }
+.video-title-overlay h2 { margin: 0; color: white; font-size: 20px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.video-player-wrapper { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 80vw; max-width: 1200px; aspect-ratio: 16/9; z-index: 10001; transition: transform 0.3s; }
+.video-modal.active .video-player-wrapper { transform: translate(-50%, -50%) scale(1); }
+.video-loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; color: white; z-index: 1; border-radius: 16px; }
+.spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.1); border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 24px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.video-loading p { font-size: 16px; opacity: 0.8; font-weight: 600; }
+.video-player-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; border-radius: 16px; box-shadow: 0 20px 80px rgba(0,0,0,0.8); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .documents-grid { grid-template-columns: 1fr; }
+    .grade-filters, .type-filters { flex-direction: column; }
+    .grade-btn, .type-btn { width: 100%; }
+    .page-header h1 { font-size: 24px; }
+    .grade-title { font-size: 22px; }
+    .doc-actions { flex-direction: column; }
+    .btn-action { width: 100%; }
+    .close-modal-big { width: 50px; height: 50px; font-size: 28px; top: 15px; left: 15px; }
+    .video-title-overlay { top: 15px; left: 80px; right: 15px; padding: 14px 20px; border-radius: 40px; }
+    .video-title-overlay h2 { font-size: 16px; }
+    .video-player-wrapper { width: 95vw; }
+    .delete-modal-content { padding: 30px; }
+    .delete-actions { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+    .container { padding: 10px; }
+    .document-card { padding: 16px; }
+    .doc-title { font-size: 16px; min-height: auto; }
+    .doc-description { min-height: auto; }
+    .close-modal-big { width: 44px; height: 44px; font-size: 24px; top: 10px; left: 10px; }
+    .video-title-overlay { top: 10px; left: 70px; right: 10px; padding: 12px 18px; border-radius: 30px; }
+    .video-title-overlay h2 { font-size: 14px; }
+    .video-player-wrapper { width: 98vw; }
+    .video-player-wrapper iframe, .video-loading { border-radius: 12px; }
+    .delete-modal-content { padding: 20px; }
+    .delete-icon { font-size: 50px; }
+    .delete-modal-content h2 { font-size: 20px; }
+    .delete-doc-title { font-size: 16px; }
+}
+</style>
+{% endblock %}

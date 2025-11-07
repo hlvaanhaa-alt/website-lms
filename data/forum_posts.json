@@ -1,0 +1,16 @@
+[
+  {
+    "id": "post_0001",
+    "title": "test",
+    "content": "testttt",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-11-06T22:35:48.869879",
+    "updated_at": null,
+    "attachments": [],
+    "tags": [],
+    "views": 2,
+    "comments_count": 0
+  }
+]

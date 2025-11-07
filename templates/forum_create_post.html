@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+
+{% block title %}{% if edit_mode %}Chỉnh sửa bài viết{% else %}Tạo bài viết mới{% endif %} - Diễn đàn{% endblock %}
+
+{% block content %}
+<style>
+.forum-create-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #ede7f6 100%);
+    padding: 3rem 0;
+    position: relative;
+}
+
+.forum-create-container::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(236, 64, 122, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.forum-create-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.forum-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(216, 27, 96, 0.15);
+    overflow: hidden;
+    border: 2px solid #f8bbd0;
+}
+
+.forum-card-header {
+    background: linear-gradient(135deg, #ec407a 0%, #ab47bc 50%, #7e57c2 100%);
+    padding: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.forum-card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.forum-card-header h4 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.forum-card-body {
+    padding: 2.5rem;
+}
+
+.form-group-custom {
+    margin-bottom: 2rem;
+}
+
+.form-label-custom {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4a148c;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.3px;
+}
+
+.form-label-custom .text-danger {
+    color: #ec407a;
+}
+
+.form-control-custom {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    border: 2px solid #f3e5f5;
+    border-radius: 14px;
+    background: #fdf4ff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+    color: #4a148c;
+    font-family: inherit;
+}
+
+.form-control-custom::placeholder {
+    color: #c4b5fd;
+}
+
+.form-control-custom:focus {
+    outline: none;
+    border-color: #ec407a;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(236, 64, 122, 0.1), 0 4px 12px rgba(171, 71, 188, 0.15);
+    transform: translateY(-2px);
+}
+
+textarea.form-control-custom {
+    resize: vertical;
+    min-height: 250px;
+    line-height: 1.6;
+}
+
+.text-helper {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #8e24aa;
+    font-weight: 500;
+}
+
+.file-info {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #8e24aa;
+    font-weight: 500;
+}
+
+.attachments-preview {
+    margin-top: 1.5rem;
+}
+
+.attachments-label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4a148c;
+    margin-bottom: 1rem;
+}
+
+.attachments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.attachment-item {
+    position: relative;
+}
+
+.attachment-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #f8bbd0;
+}
+
+.attachment-filename {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    color: #7b1fa2;
+    text-align: center;
+    font-weight: 600;
+}
+
+.attachment-file-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 2px solid #f8bbd0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.attachment-file-box i {
+    font-size: 1.5rem;
+    color: #ab47bc;
+}
+
+.attachment-file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.attachment-file-name {
+    font-size: 0.875rem;
+    color: #4a148c;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.attachment-file-size {
+    font-size: 0.8125rem;
+    color: #8e24aa;
+    margin: 0;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 2px solid #f3e5f5;
+}
+
+.btn-custom {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-custom::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-custom:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary-custom {
+    background: linear-gradient(135deg, #ec407a 0%, #ab47bc 50%, #7e57c2 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(236, 64, 122, 0.4);
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(236, 64, 122, 0.5);
+}
+
+.btn-primary-custom:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary-custom {
+    background: linear-gradient(135deg, #ba68c8 0%, #9575cd 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(186, 104, 200, 0.3);
+}
+
+.btn-secondary-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(186, 104, 200, 0.4);
+}
+
+@media (max-width: 768px) {
+    .forum-create-container {
+        padding: 2rem 0;
+    }
+
+    .forum-card-header {
+        padding: 1.5rem;
+    }
+
+    .forum-card-header h4 {
+        font-size: 1.5rem;
+    }
+
+    .forum-card-body {
+        padding: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+
+    .btn-custom {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .attachments-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="forum-create-container">
+    <div class="forum-create-wrapper">
+        <div class="forum-card">
+            <div class="forum-card-header">
+                <h4>
+                    {% if edit_mode %}
+                        ✏️ Chỉnh sửa bài viết
+                    {% else %}
+                        ➕ Tạo bài viết mới
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="forum-card-body">
+                <form id="postForm" enctype="multipart/form-data">
+                    <div class="form-group-custom">
+                        <label for="title" class="form-label-custom">
+                            Tiêu đề <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control-custom" id="title" name="title" 
+                               value="{% if edit_mode %}{{ post.title }}{% endif %}" 
+                               placeholder="Nhập tiêu đề bài viết..." required>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="content" class="form-label-custom">
+                            Nội dung <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control-custom" id="content" name="content" 
+                                  placeholder="Nhập nội dung bài viết..." required>{% if edit_mode %}{{ post.content }}{% endif %}</textarea>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="tags" class="form-label-custom">
+                            Thẻ tag (phân cách bằng dấu phẩy)
+                        </label>
+                        <input type="text" class="form-control-custom" id="tags" name="tags" 
+                               value="{% if edit_mode %}{{ post.tags|join(', ') }}{% endif %}"
+                               placeholder="VD: python, lập trình, thuật toán">
+                        <small class="text-helper">Giúp người khác dễ tìm kiếm bài viết của bạn</small>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="files" class="form-label-custom">
+                            File đính kèm (ảnh, tài liệu)
+                        </label>
+                        <input type="file" class="form-control-custom" id="files" name="files" multiple 
+                               accept=".png,.jpg,.jpeg,.gif,.pdf,.doc,.docx,.txt,.zip,.rar">
+                        <small class="file-info">
+                            Tối đa 10MB mỗi file. Hỗ trợ: ảnh (png, jpg, jpeg, gif), tài liệu (pdf, doc, docx, txt, zip, rar)
+                        </small>
+                    </div>
+
+                    {% if edit_mode and post.attachments %}
+                    <div class="attachments-preview">
+                        <label class="attachments-label">File đã đính kèm:</label>
+                        <div class="attachments-grid">
+                            {% for attachment in post.attachments %}
+                                {% if attachment.type == 'image' %}
+                                <div class="attachment-item">
+                                    <img src="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                                         class="attachment-image" alt="{{ attachment.filename }}">
+                                    <small class="attachment-filename">{{ attachment.filename }}</small>
+                                </div>
+                                {% else %}
+                                <div class="attachment-file-box">
+                                    <i class="fas fa-file"></i>
+                                    <div class="attachment-file-info">
+                                        <p class="attachment-file-name">{{ attachment.filename }}</p>
+                                        <p class="attachment-file-size">{{ (attachment.size / 1024) | round(1) }} KB</p>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="form-actions">
+                        <a href="{% if edit_mode %}{{ url_for('forum_post_detail', post_id=post.id) }}{% else %}{{ url_for('forum') }}{% endif %}" 
+                           class="btn-custom btn-secondary-custom">
+                            ✖️ Hủy
+                        </a>
+                        <button type="submit" class="btn-custom btn-primary-custom">
+                            💾 {% if edit_mode %}Cập nhật{% else %}Đăng bài{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('postForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    const title = document.getElementById('title').value.trim();
+    const content = document.getElementById('content').value.trim();
+    
+    if (!title || !content) {
+        alert('Vui lòng nhập đầy đủ tiêu đề và nội dung');
+        return;
+    }
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '⏳ Đang xử lý...';
+    
+    try {
+        {% if edit_mode %}
+        const url = '{{ url_for("forum_edit_post", post_id=post.id) }}';
+        {% else %}
+        const url = '{{ url_for("forum_create_post") }}';
+        {% endif %}
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            {% if edit_mode %}
+            window.location.href = '{{ url_for("forum_post_detail", post_id=post.id) }}';
+            {% else %}
+            window.location.href = '/forum/post/' + result.post_id;
+            {% endif %}
+        } else {
+            alert('Lỗi: ' + result.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '💾 {% if edit_mode %}Cập nhật{% else %}Đăng bài{% endif %}';
+        }
+    } catch (error) {
+        alert('Có lỗi xảy ra: ' + error);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '💾 {% if edit_mode %}Cập nhật{% else %}Đăng bài{% endif %}';
+    }
+});
+
+document.getElementById('files').addEventListener('change', function(e) {
+    const files = e.target.files;
+    const maxSize = 10 * 1024 * 1024;
+    
+    for (let file of files) {
+        if (file.size > maxSize) {
+            alert(`File ${file.name} quá lớn (tối đa 10MB)`);
+            this.value = '';
+            return;
+        }
+    }
+});
+</script>
+{% endblock %}

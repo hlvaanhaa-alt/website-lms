@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+
+{% block title %}Thêm tài liệu - Học Tin THCS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>➕ Thêm tài liệu mới</h1>
+        <p class="subtitle">Thêm video YouTube hoặc tài liệu Google Drive cho học sinh THCS</p>
+    </div>
+
+    <form id="addDocumentForm">
+        <!-- TIÊU ĐỀ -->
+        <div class="form-group">
+            <label for="docTitle">
+                📝 Tiêu đề tài liệu: 
+                <span class="required">*</span>
+            </label>
+            <input type="text" id="docTitle" placeholder="VD: Hệ phương trình bậc nhất hai ẩn - Lớp 9" required>
+        </div>
+
+        <!-- LỚP HỌC - CẬP NHẬT CHO THCS -->
+        <div class="form-group">
+            <label for="docGrade">
+                📚 Lớp học: 
+                <span class="required">*</span>
+            </label>
+            <select id="docGrade" required>
+                <option value="">Chọn lớp học</option>
+                <option value="6">📘 Lớp 6</option>
+                <option value="7">📗 Lớp 7</option>
+                <option value="8">📙 Lớp 8</option>
+                <option value="9">📕 Lớp 9</option>
+            </select>
+        </div>
+
+        <!-- LOẠI TÀI LIỆU -->
+        <div class="form-group">
+            <label for="docTypeCategory">
+                📋 Loại tài liệu: 
+                <span class="required">*</span>
+            </label>
+            <select id="docTypeCategory" required>
+                <option value="">Chọn loại tài liệu</option>
+                <option value="document">📄 Tài liệu</option>
+                <option value="lecture">🎓 Bài giảng</option>
+                <option value="exam">📝 Đề thi</option>
+            </select>
+        </div>
+
+        <!-- LINK TÀI LIỆU -->
+        <div class="form-group">
+            <label for="docUrl">
+                🔗 Link tài liệu: 
+                <span class="required">*</span>
+            </label>
+            <input type="url" id="docUrl" placeholder="https://youtube.com/... hoặc https://drive.google.com/..." required>
+            <small class="form-hint">💡 Hỗ trợ: YouTube, Google Drive, hoặc link trực tiếp</small>
+        </div>
+
+        <!-- LOẠI LINK (TỰ ĐỘNG NHẬN DIỆN) -->
+        <div class="form-group">
+            <label for="docType">🎯 Loại link:</label>
+            <select id="docType">
+                <option value="auto">Tự động nhận diện</option>
+                <option value="youtube">🎥 Video YouTube</option>
+                <option value="drive">☁️ Google Drive</option>
+                <option value="pdf">📄 File PDF</option>
+                <option value="other">🔗 Khác</option>
+            </select>
+        </div>
+
+        <!-- MÔ TẢ -->
+        <div class="form-group">
+            <label for="docDescription">✍️ Mô tả:</label>
+            <textarea id="docDescription" rows="5" placeholder="Mô tả ngắn gọn về nội dung tài liệu, phù hợp với học sinh THCS..."></textarea>
+        </div>
+
+        <!-- NÚT BẤM -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                ✅ Thêm tài liệu
+            </button>
+            <a href="{{ url_for('documents') }}" class="btn btn-secondary">
+                ❌ Hủy
+            </a>
+        </div>
+    </form>
+
+    <!-- XEM TRƯỚC -->
+    <div class="preview-section" id="previewSection" style="display: none;">
+        <h3>👁️ Xem trước:</h3>
+        <div id="previewContent"></div>
+    </div>
+</div>
+
+<script>
+const urlInput = document.getElementById('docUrl');
+const typeSelect = document.getElementById('docType');
+const previewSection = document.getElementById('previewSection');
+const previewContent = document.getElementById('previewContent');
+
+// Tự động nhận diện loại link khi nhập URL
+urlInput.addEventListener('input', function() {
+    const url = this.value.trim();
+    
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        typeSelect.value = 'youtube';
+        showPreview(url, 'youtube');
+    } else if (url.includes('drive.google.com')) {
+        typeSelect.value = 'drive';
+        showPreview(url, 'drive');
+    } else {
+        previewSection.style.display = 'none';
+    }
+});
+
+// Hiển thị preview
+function showPreview(url, type) {
+    previewSection.style.display = 'block';
+    
+    if (type === 'youtube') {
+        let videoId = '';
+        if (url.includes('youtube.com')) {
+            try {
+                const urlParams = new URLSearchParams(new URL(url).search);
+                videoId = urlParams.get('v');
+            } catch (e) {
+                console.error('Invalid YouTube URL');
+            }
+        } else if (url.includes('youtu.be')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        }
+        
+        if (videoId) {
+            previewContent.innerHTML = `
+                <div class="youtube-preview">
+                    <iframe width="100%" height="400" 
+                        src="https://www.youtube.com/embed/${videoId}" 
+                        frameborder="0" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            `;
+        }
+    } else if (type === 'drive') {
+        previewContent.innerHTML = `
+            <div class="drive-preview">
+                <p>☁️ <strong>Google Drive:</strong> ${url}</p>
+                <small>Link sẽ được lưu để học sinh tải về</small>
+            </div>
+        `;
+    }
+}
+
+// Xử lý submit form
+document.getElementById('addDocumentForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('docTitle').value.trim();
+    const grade = document.getElementById('docGrade').value;
+    const docTypeCategory = document.getElementById('docTypeCategory').value;
+    const url = document.getElementById('docUrl').value.trim();
+    const type = document.getElementById('docType').value;
+    const description = document.getElementById('docDescription').value.trim();
+    
+    // Validation
+    if (!title || !url) {
+        alert('⚠️ Vui lòng nhập đầy đủ tiêu đề và link!');
+        return;
+    }
+    
+    if (!grade) {
+        alert('⚠️ Vui lòng chọn lớp học!');
+        return;
+    }
+    
+    if (!docTypeCategory) {
+        alert('⚠️ Vui lòng chọn loại tài liệu!');
+        return;
+    }
+    
+    // Chuẩn bị dữ liệu
+    const data = {
+        title: title,
+        url: url,
+        grade: grade,
+        doc_type: docTypeCategory,
+        link_type: type === 'auto' ? detectType(url) : type,
+        description: description
+    };
+    
+    try {
+        const response = await fetch('/teacher/add_document', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('✅ Thêm tài liệu thành công!');
+            window.location.href = '/documents';
+        } else {
+            alert('❌ Lỗi: ' + result.message);
+        }
+    } catch (error) {
+        alert('❌ Có lỗi xảy ra: ' + error.message);
+        console.error(error);
+    }
+});
+
+// Hàm tự động nhận diện loại link
+function detectType(url) {
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        return 'youtube';
+    } else if (url.includes('drive.google.com')) {
+        return 'drive';
+    } else if (url.endsWith('.pdf')) {
+        return 'pdf';
+    }
+    return 'other';
+}
+</script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* HEADER */
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    color: white;
+}
+
+.page-header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* FORM */
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #333;
+    font-size: 15px;
+}
+
+.required {
+    color: #dc3545;
+    font-weight: 900;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.form-hint {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+/* NÚT BẤM */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 35px;
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    flex: 1;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4);
+}
+
+/* PREVIEW SECTION */
+.preview-section {
+    margin-top: 40px;
+    padding: 25px;
+    background: white;
+    border: 3px solid #667eea;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.preview-section h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 22px;
+}
+
+.youtube-preview iframe {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.drive-preview {
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.drive-preview p {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.drive-preview small {
+    color: #666;
+    font-size: 13px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .page-header h1 {
+        font-size: 24px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header {
+        padding: 20px 15px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+</style>
+{% endblock %}

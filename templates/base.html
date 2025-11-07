@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EDU WEBSITE{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 25%, #fce7f3 50%, #fdf2f8 75%, #fff1f2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(219, 39, 119, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #c084fc 0%, #e879f9 50%, #f472b6 100%);
+            padding: 0;
+            box-shadow: 0 6px 30px rgba(236, 72, 153, 0.25), 0 3px 15px rgba(168, 85, 247, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, #fce7f3 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            transition: all 0.3s ease;
+            text-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+            z-index: 1001;
+            filter: drop-shadow(0 3px 8px rgba(236, 72, 153, 0.4));
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 5px 15px rgba(236, 72, 153, 0.6)) brightness(1.2);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.3rem;
+            align-items: center;
+            margin: 0;
+        }
+
+        .nav-menu li {
+            position: relative;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dropdown-menu-custom {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: linear-gradient(135deg, #c084fc 0%, #e879f9 100%);
+            border-radius: 10px;
+            padding: 0.5rem 0;
+            min-width: 180px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-top: 0.5rem;
+        }
+
+        .dropdown:hover .dropdown-menu-custom {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu-custom a {
+            padding: 0.7rem 1.2rem !important;
+            margin: 0 0.5rem;
+            border-radius: 8px !important;
+            display: block;
+        }
+
+        .dropdown-menu-custom a:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .nav-menu a,
+        .nav-menu span {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu a:hover::before {
+            transform: translateX(0);
+        }
+
+        .nav-menu a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+            backdrop-filter: blur(10px);
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 0.6rem 1.2rem !important;
+            color: #ffffff !important;
+        }
+
+        .btn-logout,
+        .btn-register,
+        .btn-login {
+            background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 50%, #fce7f3 100%) !important;
+            color: #a855f7 !important;
+            font-weight: 700 !important;
+            padding: 0.6rem 1.3rem !important;
+            border-radius: 10px !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 3px 10px rgba(236, 72, 153, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.5) !important;
+            text-shadow: none !important;
+        }
+
+        .btn-logout::before,
+        .btn-register::before,
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+            transform: translate(-50%, -50%);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-logout:hover::before,
+        .btn-login:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-logout:hover,
+        .btn-login:hover {
+            color: white !important;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.5), 0 5px 15px rgba(168, 85, 247, 0.3);
+            border-color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .btn-register::before {
+            background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+        }
+
+        .btn-register:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-register:hover {
+            color: white !important;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.5), 0 5px 15px rgba(236, 72, 153, 0.3);
+            border-color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 18px;
+            padding: 1.3rem 1.8rem;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.5s ease-out;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(167, 243, 208, 0.95) 0%, rgba(134, 239, 172, 0.95) 100%);
+            color: #065f46;
+            border-left: 6px solid #10b981;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(254, 202, 202, 0.95) 0%, rgba(252, 165, 165, 0.95) 100%);
+            color: #991b1b;
+            border-left: 6px solid #ef4444;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(254, 240, 138, 0.95) 0%, rgba(253, 224, 71, 0.95) 100%);
+            color: #92400e;
+            border-left: 6px solid #f59e0b;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(191, 219, 254, 0.95) 0%, rgba(147, 197, 253, 0.95) 100%);
+            color: #1e3a8a;
+            border-left: 6px solid #3b82f6;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2.5rem 0;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+            color: rgba(255, 255, 255, 0.95);
+            padding: 3.5rem 0;
+            margin-top: auto;
+            box-shadow: 0 -8px 30px rgba(168, 85, 247, 0.25), 0 -4px 15px rgba(236, 72, 153, 0.15);
+            position: relative;
+            border-top: 3px solid transparent;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #c084fc 0%, #e879f9 25%, #f472b6 50%, #e879f9 75%, #c084fc 100%);
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 100%;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .footer .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #fce7f3 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 992px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 320px;
+                height: 100vh;
+                background: linear-gradient(180deg, #c084fc 0%, #e879f9 50%, #f472b6 100%);
+                flex-direction: column;
+                padding: 5rem 1.5rem 2rem;
+                gap: 0;
+                box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
+                transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                overflow-y: auto;
+                align-items: stretch;
+                border-left: 3px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .nav-menu li {
+                margin-bottom: 0.5rem;
+            }
+
+            .dropdown-menu-custom {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+                margin-top: 0.5rem;
+                margin-left: 1rem;
+                box-shadow: none;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .dropdown-toggle {
+                justify-content: space-between;
+            }
+
+            .nav-menu a,
+            .nav-menu span {
+                padding: 1rem 1.2rem;
+                border-radius: 12px;
+                font-size: 1rem;
+                text-align: left;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
+
+            .user-info {
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .btn-logout,
+            .btn-register,
+            .btn-login {
+                text-align: center;
+                margin-top: 0.5rem;
+            }
+
+            .navbar .container {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-menu {
+                width: 280px;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+        }
+
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-overlay" id="menuOverlay"></div>
+    
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="logo">Edu LMS</a>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            
+            <ul class="nav-menu" id="navMenu">
+                {% if session.user_id %}
+                    <li><a href="{{ url_for('courses') }}">Khóa học</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            Học tập ▾
+                        </a>
+                        <div class="dropdown-menu-custom">
+                            <a href="{{ url_for('documents') }}">Tài liệu</a>
+                            <a href="{{ url_for('exercises') }}">Bài tập</a>
+                            <a href="{{ url_for('tracnghiem') }}">Trắc nghiệm</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            Cộng đồng ▾
+                        </a>
+                        <div class="dropdown-menu-custom">
+                            <a href="{{ url_for('forum') }}">Diễn đàn</a>
+                            <a href="{{ url_for('chat_room') }}">Chat</a>
+                        </div>
+                    </li>
+                    <li><a href="{{ url_for('chatbot') }}">Trợ lí AI</a></li>
+                    {% if session.role == 'teacher' %}
+                        <li><a href="{{ url_for('teacher_dashboard') }}">Dashboard</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('student_dashboard') }}">Dashboard</a></li>
+                    {% endif %}
+                    <li><span class="user-info">{{ session.username }}</span></li>
+                    <li><a href="{{ url_for('logout') }}" class="btn-logout">Đăng xuất</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" class="btn-login">Đăng nhập</a></li>
+                    <li><a href="{{ url_for('register') }}" class="btn-register">Đăng ký</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Vui Học THCS - Hệ thống học tập trực tuyến</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const navLinks = document.querySelectorAll('.nav-menu a');
+
+        function toggleMenu() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        hamburger.addEventListener('click', toggleMenu);
+        menuOverlay.addEventListener('click', toggleMenu);
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    toggleMenu();
+                }
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
