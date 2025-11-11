@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Game Toán & HDTN</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
+            color: #2c3e50;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+
+        #game-container {
+            max-width: 700px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #00796b;
+        }
+
+        #timer {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #d84315;
+            font-weight: bold;
+        }
+
+        .question {
+            font-size: 22px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+
+        /* Bố trí đáp án 2 cột đối xứng */
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            background-color: #2196f3;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: #1976d2;
+            transform: translateY(-3px);
+        }
+
+        .score {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #00796b;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 18px;
+            background-color: #ff7043;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #e64a19;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h2> Game giải trí</h2>
+        <div id="timer">⏱ Thời gian: 20s</div>
+        <div id="question-box">
+            <p class="question">Đang tải câu hỏi...</p>
+        </div>
+        <div class="score" id="score-box">Điểm: 0</div>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let countdown;
+        let timeLeft = 20;
+
+        async function loadQuestions() {
+            try {
+                const res = await fetch("/get_questions");
+                questions = await res.json();
+
+                if (!questions || questions.length === 0) {
+                    document.getElementById("question-box").innerHTML = "<p>❌ Không có câu hỏi nào.</p>";
+                    return;
+                }
+
+                showQuestion();
+            } catch (err) {
+                document.getElementById("question-box").innerHTML = "<p>❌ Lỗi khi tải câu hỏi.</p>";
+                console.error(err);
+            }
+        }
+
+        function startTimer() {
+            timeLeft = 20;
+            document.getElementById("timer").textContent = `⏱ Thời gian: ${timeLeft}s`;
+            countdown = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").textContent = `⏱ Thời gian: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    currentIndex++;
+                    showQuestion();
+                }
+            }, 1000);
+        }
+
+        function showQuestion() {
+            if (currentIndex >= questions.length) {
+                fetch("/submit_score", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ score })
+                }).then(() => {
+                    document.getElementById("game-container").innerHTML = `
+                        <h3>🎉 Hoàn thành! Điểm của bạn: ${score}/${questions.length}</h3>
+                        <a href="/leaderboard" class="back-btn"> Xem bảng vinh danh</a>
+                        <a href="/enter_nickname" class="back-btn">🔁 Quay về</a>
+                    `;
+                });
+                return;
+            }
+
+            clearInterval(countdown);
+            startTimer();
+
+            const q = questions[currentIndex];
+            const box = document.getElementById("question-box");
+            box.innerHTML = `<p class="question">${q.question}</p><div class="options-container"></div>`;
+
+            const optionsContainer = box.querySelector(".options-container");
+            q.options.forEach(opt => {
+                const btn = document.createElement("div");
+                btn.className = "option";
+                btn.textContent = opt;
+                btn.onclick = () => {
+                    clearInterval(countdown);
+                    if (opt === q.answer) score++;
+                    currentIndex++;
+                    document.getElementById("score-box").textContent = `Điểm: ${score}`;
+                    showQuestion();
+                };
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        loadQuestions();
+    </script>
+</body>
+</html>

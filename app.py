@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from functools import wraps
 import os
+import random
 from werkzeug.utils import secure_filename
 import uuid
 from utils.auth import register_user, login_user, get_user_by_id
@@ -1581,6 +1582,106 @@ def delete_chat_message(message_id):
     except Exception as e:
         return jsonify({'success': False, 'message': f'Lỗi: {str(e)}'})
 ################
+#game
+
+@app.route("/enter_nickname")
+def enter_nickname():
+    return render_template("nickname.html")
+
+@app.route("/start_game", methods=["POST"])
+def start_game():
+    nickname = request.form["nickname"]
+    bai = request.form["bai"]
+    session["nickname"] = nickname
+    session["bai"] = bai
+    return redirect("/game")
+
+@app.route("/game")
+def game():
+    if "nickname" not in session or "bai" not in session:
+        return redirect("/enter_nickname")
+    return render_template("game.html")
+
+@app.route("/get_questions")
+def get_questions():
+    bai = session.get("bai", "bai_1")
+    with open("questions.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+    questions = data.get(bai, [])
+    random.shuffle(questions)
+    for q in questions:
+        random.shuffle(q["options"])
+    return jsonify(questions[:20])
+
+@app.route("/submit_score", methods=["POST"])
+def submit_score():
+    nickname = session.get("nickname")
+    bai = session.get("bai")
+    score = request.json["score"]
+
+    if not nickname:
+        return jsonify({"status": "error", "message": "No nickname found"})
+    if not bai:
+        return jsonify({"status": "error", "message": "No bai found"})
+
+    if not os.path.exists("scores.json"):
+        with open("scores.json", "w", encoding="utf-8") as f:
+            json.dump([], f)
+
+    with open("scores.json", "r+", encoding="utf-8") as f:
+        scores = json.load(f)
+        now = datetime.now().strftime("%d/%m/%Y %H:%M")
+
+        existing = next((s for s in scores if s["nickname"] == nickname and s.get("bai") == bai), None)
+
+        if existing:
+            if score > existing["score"]:
+                existing["score"] = score
+                existing["time"] = now
+        else:
+            scores.append({
+                "nickname": nickname,
+                "score": score,
+                "time": now,
+                "bai": bai
+            })
+
+        filtered = [s for s in scores if s.get("bai") == bai]
+        top50 = sorted(filtered, key=lambda x: x["score"], reverse=True)[:50]
+
+        others = [s for s in scores if s.get("bai") != bai]
+        final_scores = others + top50
+
+        f.seek(0)
+        json.dump(final_scores, f, ensure_ascii=False, indent=2)
+        f.truncate()
+
+    return jsonify({"status": "ok"})
+
+@app.route("/leaderboard")
+def leaderboard():
+    bai = session.get("bai")
+
+    if not bai:
+        bai = "bai_1"
+
+    if not os.path.exists("scores.json"):
+        top5 = []
+    else:
+        with open("scores.json", "r", encoding="utf-8") as f:
+            scores = json.load(f)
+
+        filtered = [s for s in scores if s.get("bai") == bai]
+        top5 = sorted(filtered, key=lambda x: x["score"], reverse=True)[:5]
+
+    return render_template("leaderboard.html", players=top5, bai=bai)
+
+# Nếu cần giữ cả hai, đổi tên route
+@app.route("/logout_old")  # Đổi URL
+def logout_old():
+    session.clear()
+    return redirect("/login")
+##############
 if __name__ == '__main__':
     os.makedirs('data', exist_ok=True)
     os.makedirs('static/css', exist_ok=True)
