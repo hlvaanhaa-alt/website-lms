@@ -8,19 +8,19 @@
         <h1>{{ course.title }}</h1>
         <p class="course-description">{{ course.description }}</p>
         <div class="course-meta">
-            <span>👨 Giáo viên: <strong>{{ course.teacher_name }}</strong></span>
-            <span> Số bài học: <strong>{{ course.lessons|length }}</strong></span>
-            <span>✓ Đã hoàn thành: <strong>{{ completed_lessons|length }}/{{ course.lessons|length }}</strong></span>
+            <span>Giáo viên: <strong>{{ course.teacher_name }}</strong></span>
+            <span>Số bài học: <strong>{{ course.lessons|length }}</strong></span>
+            <span>Đã hoàn thành: <strong>{{ completed_lessons|length }}/{{ course.lessons|length }}</strong></span>
         </div>
         
         {% if is_teacher %}
         <div class="teacher-actions">
-            <a href="/teacher/edit_course/{{ course.id }}" class="btn btn-secondary btn-small">✏️ Chỉnh sửa</a>
+            <a href="/teacher/edit_course/{{ course.id }}" class="btn btn-secondary btn-small">Chỉnh sửa</a>
         </div>
         {% endif %}
     </div>
     
-    <h2> Danh sách bài học</h2>
+    <h2>Danh sách bài học</h2>
     
     {% if course.lessons %}
         {% for lesson in course.lessons %}
@@ -52,14 +52,14 @@
             {% if lesson.document_url %}
             <div class="document-link">
                 <a href="{{ lesson.document_url }}" target="_blank" class="btn btn-secondary">
-                     Tải tài liệu
+                    Tải tài liệu
                 </a>
             </div>
             {% endif %}
             
             {% if lesson.questions %}
             <div class="questions-section">
-                <h4> Câu hỏi kiểm tra ({{ lesson.questions|length }} câu)</h4>
+                <h4>Câu hỏi kiểm tra ({{ lesson.questions|length }} câu)</h4>
                 <form class="question-form" id="form_{{ lesson.id }}">
                     {% for q in lesson.questions %}
                     {% set question_idx = loop.index0 %}
@@ -92,17 +92,17 @@
                         <button type="button" 
                                 onclick="submitAnswers('{{ course.id }}', '{{ lesson.id }}')" 
                                 class="btn btn-primary">
-                             Nộp bài
+                            Nộp bài
                         </button>
                         
                         {% if lesson.id not in completed_lessons %}
                         <button type="button"
                                 onclick="markComplete('{{ course.id }}', '{{ lesson.id }}')" 
                                 class="btn btn-success">
-                            ✓ Đánh dấu hoàn thành
+                            Đánh dấu hoàn thành
                         </button>
                         {% else %}
-                        <span class="completed-badge">✓ Đã hoàn thành</span>
+                        <span class="completed-badge">Đã hoàn thành</span>
                         {% endif %}
                     </div>
                 </form>
@@ -115,10 +115,10 @@
                 {% if lesson.id not in completed_lessons %}
                 <button onclick="markComplete('{{ course.id }}', '{{ lesson.id }}')" 
                         class="btn btn-success">
-                    ✓ Đánh dấu hoàn thành
+                    Đánh dấu hoàn thành
                 </button>
                 {% else %}
-                <span class="completed-badge">✓ Đã hoàn thành</span>
+                <span class="completed-badge">Đã hoàn thành</span>
                 {% endif %}
             </div>
             {% endif %}
@@ -129,7 +129,7 @@
     {% endif %}
     
     <div class="back-link">
-        <a href="{{ url_for('courses') }}" class="btn btn-secondary">← Quay lại danh sách khóa học</a>
+        <a href="{{ url_for('courses') }}" class="btn btn-secondary">Quay lại danh sách khóa học</a>
     </div>
 </div>
 
@@ -176,22 +176,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (originalUrl) {
             const embedUrl = convertYouTubeToEmbed(originalUrl);
             iframe.setAttribute('src', embedUrl);
-            console.log('Original:', originalUrl);
-            console.log('Converted:', embedUrl);
         }
     });
 });
 
 async function submitAnswers(courseId, lessonId) {
     const form = document.getElementById(`form_${lessonId}`);
-    const formData = new FormData(form);
+    const questionItems = form.querySelectorAll('.question-item');
     const answers = {};
     
-    let index = 0;
-    for (let [key, value] of formData.entries()) {
-        answers[index] = value;
-        index++;
-    }
+    // Lấy câu trả lời từng câu hỏi
+    questionItems.forEach((item, index) => {
+        const radioChecked = item.querySelector('input[type="radio"]:checked');
+        const textInput = item.querySelector('input[type="text"]');
+        
+        if (radioChecked) {
+            answers[String(index)] = radioChecked.value.trim();
+        } else if (textInput && textInput.value.trim()) {
+            answers[String(index)] = textInput.value.trim();
+        }
+    });
+    
+    console.log('Answers being sent:', answers);
     
     if (Object.keys(answers).length === 0) {
         alert('Vui lòng trả lời ít nhất một câu hỏi!');
@@ -216,29 +222,40 @@ async function submitAnswers(courseId, lessonId) {
             resultDiv.style.display = 'block';
             
             if (data.score !== undefined) {
+                // Hiển thị kết quả
                 resultDiv.innerHTML = `
                     <div class="result-card ${data.score >= 70 ? 'result-pass' : 'result-fail'}">
                         <h4>Kết quả: ${data.score}%</h4>
                         <p>Số câu đúng: <strong>${data.correct}/${data.total}</strong></p>
-                        <p>${data.score >= 70 ? '🎉 Chúc mừng! Bạn đã đạt yêu cầu.' : ' Cố gắng lên! Hãy xem lại bài học.'}</p>
+                        <p>${data.score >= 70 ? 'Chúc mừng! Bạn đã đạt yêu cầu và hoàn thành bài học!' : 'Cố gắng lên! Hãy xem lại bài học.'}</p>
                     </div>
                 `;
                 
+                // Nếu đạt điểm, tự động đánh dấu hoàn thành KHÔNG reload
                 if (data.score >= 70) {
-                    await markComplete(courseId, lessonId);
+                    await markComplete(courseId, lessonId, false);
                 }
             } else {
                 resultDiv.innerHTML = `
                     <div class="result-card result-pass">
-                        <h4>✓ Đã nộp bài thành công!</h4>
+                        <h4>Đã nộp bài thành công!</h4>
                         <p>Giáo viên sẽ chấm điểm sau.</p>
                     </div>
                 `;
             }
             
-            form.querySelectorAll('input, button[type="button"]').forEach(el => {
+            // Disable form sau khi nộp
+            form.querySelectorAll('input').forEach(el => {
                 el.disabled = true;
             });
+            
+            // Disable nút nộp bài
+            const submitBtn = form.querySelector('button[onclick*="submitAnswers"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Đã nộp bài';
+                submitBtn.style.opacity = '0.6';
+            }
         } else {
             alert('Lỗi: ' + data.message);
         }
@@ -248,7 +265,7 @@ async function submitAnswers(courseId, lessonId) {
     }
 }
 
-async function markComplete(courseId, lessonId) {
+async function markComplete(courseId, lessonId, autoReload = true) {
     try {
         const response = await fetch('/update_progress', {
             method: 'POST',
@@ -263,7 +280,39 @@ async function markComplete(courseId, lessonId) {
         const data = await response.json();
         
         if (data.success) {
-            location.reload();
+            if (autoReload) {
+                // Reload trang khi user click nút thủ công
+                location.reload();
+            } else {
+                // Chỉ cập nhật UI khi tự động đánh dấu (không reload)
+                const form = document.getElementById(`form_${lessonId}`);
+                if (!form) return;
+                
+                const lessonItem = form.closest('.lesson-item');
+                if (lessonItem) {
+                    lessonItem.classList.add('completed');
+                }
+                
+                // Ẩn nút "Đánh dấu hoàn thành"
+                const completeBtn = form.querySelector('button[onclick*="markComplete"]');
+                if (completeBtn && completeBtn.parentElement) {
+                    completeBtn.style.display = 'none';
+                    
+                    // Thêm badge "Đã hoàn thành"
+                    const badge = document.createElement('span');
+                    badge.className = 'completed-badge';
+                    badge.textContent = 'Đã hoàn thành';
+                    completeBtn.parentElement.appendChild(badge);
+                }
+                
+                // Cập nhật số liệu trong header
+                const metaCompleted = document.querySelector('.course-meta span:last-child strong');
+                if (metaCompleted) {
+                    const [current, total] = metaCompleted.textContent.split('/');
+                    const newCurrent = parseInt(current) + 1;
+                    metaCompleted.textContent = `${newCurrent}/${total}`;
+                }
+            }
         } else {
             alert('Lỗi: ' + data.message);
         }
@@ -491,6 +540,11 @@ async function markComplete(courseId, lessonId) {
 
 .btn-primary:hover {
     background-color: #0056b3;
+}
+
+.btn-primary:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
 }
 
 .btn-secondary {

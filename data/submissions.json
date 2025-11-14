@@ -121,5 +121,115 @@
       "4": "B. False False False"
     },
     "submitted_at": "2025-10-23T11:31:10.509126"
+  },
+  {
+    "id": "sub_12",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T21:35:57.663144"
+  },
+  {
+    "id": "sub_13",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T21:36:06.070214"
+  },
+  {
+    "id": "sub_14",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T21:36:14.028261"
+  },
+  {
+    "id": "sub_15",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T21:36:32.391070"
+  },
+  {
+    "id": "sub_16",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T21:36:40.116147"
+  },
+  {
+    "id": "sub_17",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T21:36:49.041982"
+  },
+  {
+    "id": "sub_18",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "B. x³y+3x"
+    },
+    "submitted_at": "2025-11-14T21:38:20.311005"
+  },
+  {
+    "id": "sub_19",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T22:14:13.093810"
+  },
+  {
+    "id": "sub_20",
+    "user_id": "1",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T22:32:45.228549"
+  },
+  {
+    "id": "sub_21",
+    "user_id": "4",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "B. x³y+3x"
+    },
+    "submitted_at": "2025-11-14T22:33:19.108489"
+  },
+  {
+    "id": "sub_22",
+    "user_id": "4",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. x³+3xy"
+    },
+    "submitted_at": "2025-11-14T22:33:24.389034"
   }
 ]

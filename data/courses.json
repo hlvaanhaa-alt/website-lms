@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": "course_1",
+    "teacher_id": "1",
+    "title": "tesst",
+    "description": "tesst",
+    "lessons": [
+      {
+        "id": "1",
+        "title": "tesst1",
+        "video_url": "",
+        "document_url": "",
+        "questions": [
+          {
+            "question": "Trong các biểu thức sau, biểu thức nào là đơn thức?",
+            "correct_answer": "C. x³+3xy",
+            "options": [
+              "A. 6x²y",
+              "B. x³y+3x",
+              "C. x³+3xy",
+              "D. yy²"
+            ]
+          }
+        ]
+      }
+    ],
+    "created_at": "2025-11-14T21:35:40.647275"
+  }
+]
