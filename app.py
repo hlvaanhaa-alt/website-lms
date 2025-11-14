@@ -969,7 +969,7 @@ def nop_bai_tracnghiem():
                     
                     return jsonify({
                         'success': False,
-                        'message': '⏰ Đã hết thời gian làm bài! Không thể nộp.'
+                        'message': ' Đã hết thời gian làm bài! Không thể nộp.'
                     }), 403
             
             except (ValueError, KeyError):
@@ -1034,10 +1034,10 @@ def nop_bai_tracnghiem():
                 with open(results_file, 'w', encoding='utf-8') as f:
                     json.dump(all_results, f, ensure_ascii=False, indent=2)
                 
-                print(f"✅ Saved result: User {session['user_id']}, Score: {score}")
+                print(f" Saved result: User {session['user_id']}, Score: {score}")
             
             except Exception as e:
-                print(f"❌ Error saving result: {e}")
+                print(f" Error saving result: {e}")
             
             return jsonify({
                 'success': True,
