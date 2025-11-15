@@ -10,7 +10,7 @@ def chat_with_gemini(user_message):
     Gửi tin nhắn đến Gemini AI và nhận phản hồi
     """
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        model = genai.GenerativeModel('gemini-2.0-flash')
         
         system_prompt = """
         Bạn là trợ lý AI cho học sinh THCS Việt Nam.
