@@ -28,7 +28,6 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 8px;
-    letter-spacing: -0.5px;
 }
 
 .subtitle {
@@ -81,10 +80,6 @@ body {
     border-radius: 10px;
 }
 
-.chat-box::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #c026d3, #9333ea);
-}
-
 .message {
     margin-bottom: 28px;
     animation: fadeIn 0.4s ease-out;
@@ -106,7 +101,6 @@ body {
     font-size: 0.9rem;
     font-weight: 700;
     margin-bottom: 10px;
-    letter-spacing: 0.3px;
 }
 
 .message-content {
@@ -124,35 +118,9 @@ body {
 .message-content .katex-display {
     margin: 1.2em 0;
     overflow-x: auto;
-    overflow-y: hidden;
     padding: 10px;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 10px;
-}
-
-.message-content strong {
-    font-weight: 700;
-    color: inherit;
-}
-
-.message-content em {
-    font-style: italic;
-}
-
-.message-content h1, 
-.message-content h2, 
-.message-content h3 {
-    margin: 1em 0 0.6em 0;
-    font-weight: 700;
-}
-
-.message-content ul {
-    margin: 0.8em 0;
-    padding-left: 1.8em;
-}
-
-.message-content li {
-    margin: 0.5em 0;
 }
 
 .diagram-wrapper {
@@ -196,17 +164,12 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(217, 70, 239, 0.3);
     z-index: 10;
 }
 
 .download-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(217, 70, 239, 0.5);
-}
-
-.download-btn:active {
-    transform: translateY(0);
 }
 
 .user-message {
@@ -241,10 +204,6 @@ body {
     box-shadow: 0 6px 20px rgba(255, 201, 232, 0.3);
 }
 
-.loading {
-    opacity: 0.7;
-}
-
 .loading .message-content::after {
     content: '';
     display: inline-block;
@@ -259,7 +218,6 @@ body {
 @keyframes pulse {
     0%, 100% {
         opacity: 0.3;
-        transform: scale(1);
     }
     50% {
         opacity: 1;
@@ -276,7 +234,6 @@ body {
 .chat-input-container form {
     display: flex;
     gap: 15px;
-    align-items: center;
 }
 
 .chat-input-container input {
@@ -287,11 +244,6 @@ body {
     font-size: 1.05rem;
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.8);
-    color: #4a044e;
-}
-
-.chat-input-container input::placeholder {
-    color: #c89ef5;
 }
 
 .chat-input-container input:focus {
@@ -311,16 +263,11 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 20px rgba(169, 85, 247, 0.4);
 }
 
 .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(169, 85, 247, 0.6);
-}
-
-.btn-primary:active {
-    transform: translateY(-1px);
 }
 
 .suggestions {
@@ -360,7 +307,6 @@ body {
     color: #7c3aed;
     font-size: 1rem;
     font-weight: 600;
-    display: block;
 }
 
 .suggestion-btn:hover {
@@ -372,21 +318,6 @@ body {
 
 .suggestion-btn:hover .suggestion-text {
     color: white;
-}
-
-.suggestion-btn:active {
-    transform: translateY(-2px);
-}
-
-@media (max-width: 1024px) {
-    .container {
-        max-width: 100%;
-        padding: 30px 20px;
-    }
-    
-    .chatbot-container {
-        max-width: 100%;
-    }
 }
 
 @media (max-width: 768px) {
@@ -411,15 +342,6 @@ body {
     .message-content {
         padding: 14px 18px;
         font-size: 1rem;
-    }
-
-    .message-content .katex {
-        font-size: 1em;
-    }
-
-    .message-content .katex-display {
-        font-size: 0.95em;
-        padding: 8px;
     }
     
     .suggestions-grid {
@@ -477,6 +399,9 @@ body {
         <div class="suggestions">
             <div class="suggestions-header">Gợi ý câu hỏi</div>
             <div class="suggestions-grid">
+                <button onclick="quickQuestion('Giải hệ phương trình: 2x + y = 7 và x - y = 2')" class="suggestion-btn">
+                    <span class="suggestion-text">Giải hệ phương trình</span>
+                </button>
                 <button onclick="quickQuestion('Giải thích công thức động năng')" class="suggestion-btn">
                     <span class="suggestion-text">Giải thích công thức động năng</span>
                 </button>
@@ -494,12 +419,12 @@ body {
     </div>
 </div>
 
-<!-- KaTeX cho công thức toán học -->
+<!-- KaTeX -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
-<!-- Mermaid cho sơ đồ -->
+<!-- Mermaid -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script>
     mermaid.initialize({ 
@@ -517,6 +442,7 @@ body {
 </script>
 
 <script>
+// ============== SEND MESSAGE ==============
 async function sendMessage(event) {
     event.preventDefault();
     
@@ -541,7 +467,6 @@ async function sendMessage(event) {
         
         removeMessage(loadingId);
         
-        // Xu ly response co processed data
         if (data.processed) {
             addMessageWithDiagrams(data.response, data.processed);
         } else {
@@ -555,24 +480,52 @@ async function sendMessage(event) {
     }
 }
 
+// ============== FORMAT TEXT - IMPROVED ==============
 function formatText(text) {
-    // Loai bo code blocks truoc khi format
-    text = text.replace(/```svg[\s\S]*?```/g, '');
-    text = text.replace(/```mermaid[\s\S]*?```/g, '');
+    // BƯỚC 1: BẢO VỆ LATEX
+    const latexBlocks = [];
+    let index = 0;
     
-    // Format markdown co ban
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // Bảo vệ display math $$...$$
+    text = text.replace(/\$\$([\s\S]*?)\$\$/g, (match, formula) => {
+        const placeholder = `__LATEX_BLOCK_${index}__`;
+        latexBlocks.push({ placeholder, content: match });
+        index++;
+        return placeholder;
+    });
+    
+    // Bảo vệ inline math $...$
+    text = text.replace(/\$([^\$\n]+?)\$/g, (match, formula) => {
+        const placeholder = `__LATEX_INLINE_${index}__`;
+        latexBlocks.push({ placeholder, content: match });
+        index++;
+        return placeholder;
+    });
+    
+    // BƯỚC 2: XÓA CODE BLOCKS
+    text = text.replace(/```[\s\S]*?```/g, '');
+    
+    // BƯỚC 3: FORMAT MARKDOWN (chỉ những phần an toàn)
+    // Bold
+    text = text.replace(/\*\*([^\*]+?)\*\*/g, '<strong>$1</strong>');
+    
+    // Headers (chỉ nếu ở đầu dòng)
     text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
     text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
     text = text.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    
+    // Line breaks
     text = text.replace(/\n/g, '<br>');
-    text = text.replace(/^\- (.*$)/gim, '<li>$1</li>');
-    text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    
+    // BƯỚC 4: KHÔI PHỤC LATEX
+    latexBlocks.forEach(({ placeholder, content }) => {
+        text = text.replace(placeholder, content);
+    });
     
     return text;
 }
 
+// ============== ADD MESSAGE - IMPROVED ==============
 function addMessage(text, sender, isLoading = false) {
     const chatBox = document.getElementById('chatBox');
     const messageDiv = document.createElement('div');
@@ -584,32 +537,54 @@ function addMessage(text, sender, isLoading = false) {
     const formattedText = formatText(text);
     
     if (sender === 'user') {
-        messageDiv.innerHTML = `<div class="message-header">Bạn</div><div class="message-content"><div>${formattedText}</div></div>`;
+        messageDiv.innerHTML = `
+            <div class="message-header">Bạn</div>
+            <div class="message-content"><div>${formattedText}</div></div>
+        `;
     } else {
-        messageDiv.innerHTML = `<div class="message-header">AI Assistant</div><div class="message-content"><div>${formattedText}</div></div>`;
+        messageDiv.innerHTML = `
+            <div class="message-header">AI Assistant</div>
+            <div class="message-content"><div>${formattedText}</div></div>
+        `;
     }
     
     chatBox.appendChild(messageDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
     
-    // Render LaTeX
+    // RENDER LATEX với error handling tốt hơn
     if (!isLoading && sender === 'bot') {
         setTimeout(() => {
-            renderMathInElement(messageDiv, {
-                delimiters: [
-                    {left: '$$', right: '$$', display: true},
-                    {left: '$', right: '$', display: false},
-                    {left: '\\(', right: '\\)', display: false},
-                    {left: '\\[', right: '\\]', display: true}
-                ],
-                throwOnError: false
-            });
-        }, 100);
+            if (typeof renderMathInElement !== 'undefined') {
+                try {
+                    renderMathInElement(messageDiv, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false,
+                        trust: true,
+                        strict: false,
+                        macros: {
+                            "\\RR": "\\mathbb{R}",
+                            "\\NN": "\\mathbb{N}"
+                        }
+                    });
+                    
+                    console.log('✅ LaTeX rendered successfully');
+                } catch (e) {
+                    console.error('❌ LaTeX render error:', e);
+                    console.log('HTML content:', messageDiv.innerHTML.substring(0, 300));
+                }
+            } else {
+                console.warn('⚠️ KaTeX auto-render not loaded yet');
+            }
+        }, 150); // Tăng timeout để đảm bảo KaTeX đã load
     }
     
     return messageId;
 }
 
+// ============== ADD MESSAGE WITH DIAGRAMS - IMPROVED ==============
 function addMessageWithDiagrams(fullResponse, processed) {
     const chatBox = document.getElementById('chatBox');
     const messageDiv = document.createElement('div');
@@ -620,12 +595,10 @@ function addMessageWithDiagrams(fullResponse, processed) {
     
     let contentHTML = '<div class="message-header">AI Assistant</div><div class="message-content"><div>';
     
-    // Them text
     if (processed.text) {
         contentHTML += formatText(processed.text);
     }
     
-    // Them SVG diagrams
     if (processed.svgs && processed.svgs.length > 0) {
         processed.svgs.forEach((svg, index) => {
             const svgId = `svg-${Date.now()}-${index}`;
@@ -638,7 +611,6 @@ function addMessageWithDiagrams(fullResponse, processed) {
         });
     }
     
-    // Them Mermaid diagrams
     if (processed.mermaids && processed.mermaids.length > 0) {
         processed.mermaids.forEach((mermaid, index) => {
             const mermaidId = `mermaid-${Date.now()}-${index}`;
@@ -657,30 +629,44 @@ function addMessageWithDiagrams(fullResponse, processed) {
     chatBox.appendChild(messageDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
     
-    // Render LaTeX
+    // RENDER LATEX & MERMAID với error handling
     setTimeout(() => {
-        renderMathInElement(messageDiv, {
-            delimiters: [
-                {left: '$$', right: '$$', display: true},
-                {left: '$', right: '$', display: false},
-                {left: '\\(', right: '\\)', display: false},
-                {left: '\\[', right: '\\]', display: true}
-            ],
-            throwOnError: false
-        });
+        // Render LaTeX
+        if (typeof renderMathInElement !== 'undefined') {
+            try {
+                renderMathInElement(messageDiv, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false,
+                    trust: true,
+                    strict: false
+                });
+                console.log('✅ LaTeX rendered in diagram message');
+            } catch (e) {
+                console.error('❌ LaTeX render error:', e);
+            }
+        }
         
         // Render Mermaid
         if (processed.mermaids && processed.mermaids.length > 0) {
             const mermaidElements = messageDiv.querySelectorAll('.mermaid');
             mermaidElements.forEach(element => {
-                mermaid.run({ nodes: [element] });
+                try {
+                    mermaid.run({ nodes: [element] });
+                    console.log('✅ Mermaid rendered');
+                } catch (e) {
+                    console.error('❌ Mermaid render error:', e);
+                }
             });
         }
-    }, 100);
+    }, 150);
     
     return messageId;
 }
 
+// ============== UTILITY FUNCTIONS ==============
 function removeMessage(messageId) {
     const message = document.getElementById(messageId);
     if (message) {
@@ -693,38 +679,29 @@ function quickQuestion(question) {
     document.getElementById('chatForm').dispatchEvent(new Event('submit'));
 }
 
-// Ham tai ve SVG thanh PNG
 function downloadSVG(elementId, filename) {
     const svgElement = document.getElementById(elementId).querySelector('svg');
     if (!svgElement) return;
     
-    // Clone SVG
-    const clonedSvg = svgElement.cloneNode(true);
-    
-    // Tao canvas
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Lay kich thuoc SVG
     const svgWidth = svgElement.width.baseVal.value || 500;
     const svgHeight = svgElement.height.baseVal.value || 500;
     
-    canvas.width = svgWidth * 2; // Tang do phan giai
+    canvas.width = svgWidth * 2;
     canvas.height = svgHeight * 2;
     
-    // Convert SVG thanh data URL
-    const svgData = new XMLSerializer().serializeToString(clonedSvg);
+    const svgData = new XMLSerializer().serializeToString(svgElement);
     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
     
-    // Load vao image
     const img = new Image();
     img.onload = function() {
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         
-        // Download
         canvas.toBlob(function(blob) {
             const link = document.createElement('a');
             link.download = filename;
@@ -736,18 +713,16 @@ function downloadSVG(elementId, filename) {
     img.src = url;
 }
 
-// Ham tai ve Mermaid thanh PNG
 function downloadMermaid(elementId, filename) {
     const element = document.getElementById(elementId);
     if (!element) return;
     
     const svgElement = element.querySelector('svg');
     if (!svgElement) {
-        alert('Vui long doi so do render xong!');
+        alert('Vui lòng đợi sơ đồ render xong!');
         return;
     }
     
-    // Su dung chung ham voi SVG
     downloadSVG(elementId, filename);
 }
 </script>

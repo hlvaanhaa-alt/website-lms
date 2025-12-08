@@ -1,223 +1,149 @@
 import google.generativeai as genai
 import re
 import json
+
 # Cấu hình API key
-GEMINI_API_KEY = "AIzaSyBkLdxy3pn3gHmXcm9Z2aW0cxr9XXKpVsg"
+GEMINI_API_KEY = "AIzaSyCJFuhVNjk_yV4HIP-mLlvLQHF3Nwz_jPg"
 genai.configure(api_key=GEMINI_API_KEY)
 
-def chat_with_gemini(user_message):
-    """
-    Gửi tin nhắn đến Gemini AI và nhận phản hồi
-    CO CHUC NANG VE HINH
-    """
-    try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        
-        system_prompt = """
-        Bạn là trợ lý AI cho học sinh THCS Việt Nam.
-        
-        QUAN TRONG - BAT BUOC PHAI TUAN THU:
-        Khi trả lời câu hỏi về toán, vật lý, hóa học, bạn PHẢI viết công thức theo định dạng LaTeX:
-        - Công thức block (riêng dòng): $$công_thức$$
-        - Công thức inline (trong câu): $công_thức$
-        
-        CU PHAP LATEX:
-        - Phân số: \\frac{tử}{mẫu}
-        - Lũy thừa: x^2
-        - Chỉ số dưới: x_1
-        
-        VI DU CU THE:
-        
-        Học sinh hỏi: "công thức động năng"
-        Bạn PHẢI trả lời:
-        
-        Công thức động năng:
-        
-        $$W_đ = \\frac{1}{2}mv^2$$
-        
-        Trong đó:
-        - $W_đ$ là động năng (J)
-        - $m$ là khối lượng (kg)  
-        - $v$ là vận tốc (m/s)
-        
-        TUYET DOI KHONG viết: "Wđ = 1/2 * m * v²"
-        PHẢI viết: $$W_đ = \\frac{1}{2}mv^2$$
-        
-        KHI HOC SINH YEU CAU VE HINH:
-        
-        1. HINH HOC (tam giác, tứ giác, hình tròn...):
-           - Trả về code SVG hoàn chỉnh
-           - Đặt trong ```svg ... ```
-           - Vẽ chính xác theo số đo
-           - Thêm label cho các đỉnh, cạnh
-           
-           VI DU:
-           ```svg
-           <svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-             <polygon points="200,50 100,350 300,350" fill="none" stroke="#d946ef" stroke-width="2"/>
-             <text x="200" y="40" text-anchor="middle" fill="#7c3aed" font-size="18" font-weight="bold">A</text>
-             <text x="90" y="370" text-anchor="middle" fill="#7c3aed" font-size="18" font-weight="bold">B</text>
-             <text x="310" y="370" text-anchor="middle" fill="#7c3aed" font-size="18" font-weight="bold">C</text>
-           </svg>
-           ```
-        
-        2. SO DO MACH DIEN:
-           - Vẽ các linh kiện: pin, bóng đèn, điện trở, công tắc
-           - Dùng ký hiệu chuẩn
-           - Hiển thị giá trị (6V, 3 ohm, 2A...)
-           - Dùng SVG
-           
-           KY HIEU CHUAN:
-           - Pin: Hai vạch song song (dài-ngắn)
-           - Bóng đèn: Hình tròn có dây tóc
-           - Điện trở: Hình chữ nhật răng cưa
-           - Công tắc: Đường gấp khúc
-           - Dây dẫn: Đường thẳng
-           
-           VI DU:
-           ```svg
-           <svg width="500" height="300" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
-             <line x1="50" y1="150" x2="150" y2="150" stroke="#333" stroke-width="2"/>
-             <rect x="150" y="130" width="20" height="40" fill="none" stroke="#333" stroke-width="2"/>
-             <line x1="155" y1="130" x2="165" y2="170" stroke="#333" stroke-width="2"/>
-             <text x="160" y="120" text-anchor="middle" fill="#333" font-size="14">6V</text>
-             <line x1="170" y1="150" x2="250" y2="150" stroke="#333" stroke-width="2"/>
-             <circle cx="280" cy="150" r="25" fill="none" stroke="#333" stroke-width="2"/>
-             <line x1="270" y1="160" x2="290" y2="140" stroke="#333" stroke-width="1.5"/>
-             <line x1="305" y1="150" x2="400" y2="150" stroke="#333" stroke-width="2"/>
-           </svg>
-           ```
-        
-        3. DO THI HAM SO:
-           - Vẽ hệ trục tọa độ Oxy
-           - Vẽ đường biểu diễn hàm số
-           - Đánh dấu các điểm đặc biệt
-           - Ghi chú phương trình
-           
-           VI DU:
-           ```svg
-           <svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-             <line x1="50" y1="350" x2="350" y2="350" stroke="#333" stroke-width="2"/>
-             <line x1="50" y1="350" x2="50" y2="50" stroke="#333" stroke-width="2"/>
-             <text x="360" y="355" fill="#333" font-size="16">x</text>
-             <text x="45" y="40" fill="#333" font-size="16">y</text>
-             <path d="M 50,350 Q 200,50 350,350" fill="none" stroke="#d946ef" stroke-width="2"/>
-             <text x="200" y="30" text-anchor="middle" fill="#d946ef" font-size="14">y = x^2</text>
-           </svg>
-           ```
-        
-        4. SO DO TU DUY / FLOWCHART:
-           - Dùng Mermaid diagram syntax
-           - Đặt trong ```mermaid ... ```
-           - Cấu trúc rõ ràng, logic
-           
-           VI DU:
-           ```mermaid
-           graph TD
-             A[Quang hợp] --> B[Điều kiện]
-             A --> C[Sản phẩm]
-             B --> D[Ánh sáng]
-             B --> E[Nước]
-             B --> F[CO2]
-             C --> G[Glucose]
-             C --> H[O2]
-           ```
-        
-        QUY TAC QUAN TRONG:
-        - LUON giải thích trước khi vẽ
-        - Code SVG/Mermaid phải HOAN CHINH, có thể render ngay
-        - KHONG dùng ảnh external, chỉ dùng code SVG
-        - Màu sắc đẹp: #d946ef, #a855f7, #ec4899, #7c3aed
-        - Kích thước hợp lý: 300-500px
-        - Sau khi vẽ, giải thích chi tiết về hình vẽ
-        
-        KHONG DUOC:
-        - Trả về link ảnh
-        - Yêu cầu học sinh tự vẽ
-        - Code SVG sai cú pháp
-        - Quên đóng thẻ SVG
-        
-        Không dùng dấu ** __ # trong văn bản.
-        Không dùng icon, emoji.
-        """
-        
-        full_prompt = f"{system_prompt}\n\nCâu hỏi của học sinh: {user_message}"
-        
-        response = model.generate_content(full_prompt)
-        
-        return response.text
-    
-    except Exception as e:
-        return f"Xin lỗi, có lỗi xảy ra: {str(e)}"
+# ==================== CONSTANTS ====================
+MODEL_NAME = 'gemini-2.5-flash'
 
-def chat_with_context(user_message, chat_history=[]):
+SYSTEM_PROMPT_BASE = """
+Bạn là trợ lý AI cho học sinh THCS Việt Nam.
+
+QUY TẮC LATEX - BẮT BUỘC:
+
+1. MỌI công thức toán phải nằm RIÊNG BIỆT trên dòng mới:
+
+   SAI:
+   "Giải phương trình 2x + 3 = 7, ta có x = 2"
+
+   ĐÚNG:
+   "Giải phương trình
+
+   $$2x + 3 = 7$$
+
+   Ta có
+
+   $$x = 2$$"
+
+2. HỆ PHƯƠNG TRÌNH - Format chuẩn:
+
+   $$\\begin{cases}
+   2x + y = 7 \\\\
+   x - y = 2
+   \\end{cases}$$
+
+   CHÚ Ý:
+   - Dùng 2 dấu \\\\ (4 backslash) giữa các dòng
+   - Mỗi phương trình trên 1 dòng riêng
+   - KHÔNG thêm số thứ tự (1), (2) trong cases
+
+3. CÚ PHÁP LATEX:
+   - Phân số: \\frac{tử}{mẫu}
+   - Lũy thừa: x^2 hoặc x^{10}
+   - Chỉ số dưới: x_1 hoặc x_{10}
+   - Căn bậc hai: \\sqrt{x}
+   - Nhân: \\times hoặc \\cdot
+   - Chia: \\div
+
+4. INLINE MATH ($...$):
+   - CHỈ dùng cho số/biến đơn giản trong câu: "với $x = 3$"
+   - KHÔNG dùng cho công thức phức tạp
+
+5. QUY TẮC QUAN TRỌNG:
+   - Sau mỗi $$...$$ phải có dòng trống
+   - TUYỆT ĐỐI KHÔNG trộn công thức với text:
+     ❌ "Bước 1: $$x = 2$$ nên ta có..."
+     ✅ "Bước 1:
+
+     $$x = 2$$
+
+     Vậy ta có..."
+
+6. VẼ HÌNH:
+   - Hình học/mạch điện/đồ thị: Dùng SVG trong ```svg ... ```
+   - Sơ đồ tư duy: Dùng Mermaid trong ```mermaid ... ```
+   - Luôn giải thích trước và sau khi vẽ
+
+7. FORMAT VĂN BẢN:
+   - KHÔNG dùng markdown **, __, # trong văn bản thường
+   - KHÔNG dùng icon, emoji không cần thiết
+   - Viết rõ ràng, dễ hiểu, phù hợp học sinh THCS
+"""
+
+
+# ==================== CORE FUNCTIONS ====================
+
+def chat_with_gemini(user_message, chat_history=None):
     """
-    Chat với context (lịch sử hội thoại)
+    Chat với Gemini AI (có hỗ trợ context)
+    
+    Args:
+        user_message (str): Câu hỏi của học sinh
+        chat_history (list, optional): Lịch sử chat [{'role': 'user/model', 'parts': ['...']}]
+    
+    Returns:
+        str: Phản hồi từ AI
     """
     try:
+        if not user_message or not user_message.strip():
+            return "Vui lòng nhập câu hỏi."
+        
         model = genai.GenerativeModel(
-            'gemini-2.0-flash-exp',
-            generation_config={
-                'temperature': 0.7,
-            },
-            system_instruction="""
-            Bạn là trợ lý AI cho học sinh THCS Việt Nam.
-            
-            BAT BUOC:
-            - Công thức toán học PHẢI dùng LaTeX: $$công_thức$$
-            - Không dùng markdown **, __, #, ```
-            - Không dùng icon, emoji
-            
-            VI DU: $$\\rho = \\frac{m}{V}$$
-            
-            KHI HOC SINH YEU CAU VE HINH:
-            - Hình học: Trả về SVG trong ```svg ... ```
-            - Mạch điện: Trả về SVG với ký hiệu chuẩn
-            - Đồ thị: Trả về SVG với trục tọa độ
-            - Sơ đồ tư duy: Trả về Mermaid trong ```mermaid ... ```
-            
-            LUON giải thích trước và sau khi vẽ hình.
-            """
+            MODEL_NAME,
+            system_instruction=SYSTEM_PROMPT_BASE
         )
         
-        chat = model.start_chat(history=[])
+        if chat_history:
+            chat = model.start_chat(history=chat_history)
+            response = chat.send_message(user_message)
+        else:
+            response = model.generate_content(user_message)
         
-        for msg in chat_history:
-            if msg['role'] == 'user':
-                chat.send_message(msg['content'])
+        response_text = response.text
         
-        response = chat.send_message(user_message)
+        # DEBUG: In ra để kiểm tra
+        print("=" * 60)
+        print("RAW RESPONSE (first 500 chars):")
+        print(response_text[:500])
+        print("=" * 60)
         
-        return response.text
+        formatted = format_latex(response_text)
+        
+        print("AFTER FORMAT (first 500 chars):")
+        print(formatted[:500])
+        print("=" * 60)
+        
+        return formatted
     
     except Exception as e:
-        return f"Xin lỗi, có lỗi xảy ra: {str(e)}"
+        print(f"❌ Error in chat_with_gemini: {str(e)}")
+        return f"❌ Lỗi: {str(e)}"
 
 
-# Ham xu ly response de tach text va diagram
 def process_response(response_text):
     """
-    Tách text và diagrams từ response của Gemini
-    Return: {
-        'text': str,
-        'svgs': list,
-        'mermaids': list,
-        'has_diagrams': bool
-    }
-    """
-    # Tìm SVG
-    svg_pattern = r'```svg\s*(.*?)\s*```'
-    svgs = re.findall(svg_pattern, response_text, re.DOTALL)
+    Tách text và diagrams từ response
     
-    # Tìm Mermaid
+    Returns:
+        dict: {
+            'text': str,
+            'svgs': list,
+            'mermaids': list,
+            'has_diagrams': bool
+        }
+    """
+    svg_pattern = r'```svg\s*(.*?)\s*```'
     mermaid_pattern = r'```mermaid\s*(.*?)\s*```'
+    
+    svgs = re.findall(svg_pattern, response_text, re.DOTALL)
     mermaids = re.findall(mermaid_pattern, response_text, re.DOTALL)
     
-    # Loại bỏ code blocks khỏi text
     clean_text = response_text
     for svg in svgs:
         clean_text = re.sub(r'```svg\s*' + re.escape(svg) + r'\s*```', '', clean_text, flags=re.DOTALL)
-    
     for mermaid in mermaids:
         clean_text = re.sub(r'```mermaid\s*' + re.escape(mermaid) + r'\s*```', '', clean_text, flags=re.DOTALL)
     
@@ -228,46 +154,128 @@ def process_response(response_text):
         'has_diagrams': len(svgs) > 0 or len(mermaids) > 0
     }
 
-###############
+
+def format_latex(text):
+    """
+    Format LaTeX ổn định cho KaTeX.
+    Bảo toàn mọi môi trường LaTeX quan trọng.
+    """
+
+    import re
+
+    # 1. Chuẩn hoá xuống dòng
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    # ======================================================
+    # 2. XỬ LÝ HỆ PHƯƠNG TRÌNH (CASES)
+    # ======================================================
+    def fix_cases(match):
+        content = match.group(1)
+
+        lines = [l.strip() for l in content.split("\n") if l.strip()]
+        cleaned = " \\\\\n".join(lines)
+
+        return f"\n\n$$\n\\begin{{cases}}\n{cleaned}\n\\end{{cases}}\n$$\n\n"
+
+    text = re.sub(
+        r"\\begin\{cases\}(.*?)\\end\{cases\}",
+        fix_cases,
+        text,
+        flags=re.DOTALL
+    )
+
+    # ======================================================
+    # 3. CHUYỂN \[ ... \] → $$ ... $$
+    # ======================================================
+    text = re.sub(
+        r"\\\[(.*?)\\\]",
+        lambda m: f"\n\n$$\n{m.group(1).strip()}\n$$\n\n",
+        text,
+        flags=re.DOTALL
+    )
+
+    # ======================================================
+    # 4. CHUYỂN \( ... \) → $ ... $
+    # ======================================================
+    text = re.sub(
+        r"\\\((.*?)\\\)",
+        lambda m: f"${m.group(1).strip()}$",
+        text
+    )
+
+    # ======================================================
+    # 5. XỬ LÝ DISPLAY MATH $$ ... $$
+    # ======================================================
+    def handle_display(match):
+        formula = match.group(1).strip()
+
+        # Các block phức tạp – giữ nguyên
+        complex_envs = ["\\begin{cases}", "\\begin{align}", "\\begin{matrix}"]
+        if any(env in formula for env in complex_envs):
+            return f"\n\n$$\n{formula}\n$$\n\n"
+
+        # Không động vào toán tử, chỉ trim thôi
+        return f"\n\n$$\n{formula}\n$$\n\n"
+
+    text = re.sub(
+        r"\$\$(.*?)\$\$",
+        handle_display,
+        text,
+        flags=re.DOTALL
+    )
+
+    # ======================================================
+    # 6. INLINE MATH – chỉ xử lý vùng text ngoài display
+    # ======================================================
+    def clean_inline(m):
+        return f"${m.group(1).strip()}$"
+
+    parts = text.split("$$")
+    for i in range(0, len(parts), 2):  # chỉ xử lý phần ngoài display math
+        parts[i] = re.sub(
+            r"\$(?!\$)([^$]+?)\$(?!\$)",  # tránh $$ và tránh ký tự đơn
+            clean_inline,
+            parts[i]
+        )
+
+    text = "$$".join(parts)
+
+    # ======================================================
+    # 7. CLEAN CUỐI
+    # ======================================================
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip() + "\n"
+
+
+# ==================== EXAM ANALYSIS ====================
+
 def analyze_exam_results(exam_data):
     """
-     HÀM MỚI: Phân tích kết quả bài thi bằng AI Gemini
+    Phân tích kết quả bài thi bằng AI
     
     Args:
         exam_data (dict): {
-            'subject': 'toan',
-            'subject_name': 'Toán',
-            'exam_title': 'Đề thi học kỳ 1',
-            'score': 8.5,
-            'correct_count': 17,
-            'total_questions': 20,
-            'wrong_answers': [
-                {
-                    'question_number': 5,
-                    'question_text': 'Tính đạo hàm của x^2?',
-                    'user_answer': 'A. x',
-                    'correct_answer': 'B. 2x',
-                    'explanation': '...'
-                }
-            ],
-            'time_spent_seconds': 720
+            'subject_name': str,
+            'exam_title': str,
+            'score': float,
+            'correct_count': int,
+            'total_questions': int,
+            'wrong_answers': list,
+            'time_spent_seconds': int
         }
     
     Returns:
         dict: {
-            'success': True/False,
-            'overall_assessment': 'Đánh giá tổng quan...',
-            'strengths': 'Điểm mạnh...',
-            'weaknesses': 'Điểm yếu...',
-            'study_plan': 'Kế hoạch học tập...',
-            'encouragement': 'Lời động viên...',
-            'error': 'Lỗi nếu có'
+            'success': bool,
+            'overall_assessment': str,
+            'strengths': str,
+            'weaknesses': str,
+            'study_plan': str,
+            'encouragement': str,
+            'error': str (nếu có)
         }
     """
     try:
-        print(" [AI Analysis] Bắt đầu phân tích bài thi...")
-        
-        # Lấy thông tin từ exam_data
         subject_name = exam_data.get('subject_name', 'Môn học')
         exam_title = exam_data.get('exam_title', 'Bài kiểm tra')
         score = exam_data.get('score', 0)
@@ -276,10 +284,9 @@ def analyze_exam_results(exam_data):
         wrong_answers = exam_data.get('wrong_answers', [])
         time_spent = exam_data.get('time_spent_seconds', 0)
         
-        # Tính phần trăm
         percentage = round((correct_count / total_questions * 100), 1) if total_questions > 0 else 0
         
-        # Tạo danh sách câu sai (chỉ lấy 5 câu đầu để prompt không quá dài)
+        # Tạo danh sách câu sai (tối đa 5 câu)
         wrong_list = ""
         if wrong_answers:
             for idx, wrong in enumerate(wrong_answers[:5], 1):
@@ -287,199 +294,119 @@ def analyze_exam_results(exam_data):
 {idx}. Câu {wrong['question_number']}: {wrong['question_text']}
     Học sinh chọn: {wrong['user_answer']}
     Đáp án đúng: {wrong['correct_answer']}
-    Giải thích: {wrong.get('explanation', 'Không có giải thích')}
 """
-            
             if len(wrong_answers) > 5:
                 wrong_list += f"\n... và {len(wrong_answers) - 5} câu sai khác\n"
         else:
-            wrong_list = " Học sinh làm đúng tất cả các câu! Xuất sắc!"
+            wrong_list = "✓ Học sinh làm đúng tất cả!"
         
-        # Xác định mức độ
+        # Xác định xếp loại
         if score >= 9:
-            level = "Xuất sắc"
-            emoji = "🏆"
+            level = "Xuất sắc 🏆"
         elif score >= 8:
-            level = "Giỏi"
-            emoji = "⭐"
+            level = "Giỏi ⭐"
         elif score >= 6.5:
-            level = "Khá"
-            emoji = "👍"
+            level = "Khá 👍"
         elif score >= 5:
-            level = "Trung bình"
-            emoji = "📚"
+            level = "Trung bình 📚"
         else:
-            level = "Yếu"
-            emoji = "💪"
+            level = "Cần cố gắng 💪"
         
-        print(f" [AI Analysis] Điểm: {score}/10 - Xếp loại: {level}")
-        
-        # Tạo prompt cho AI
         prompt = f"""
-Bạn là một giáo viên {subject_name} giàu kinh nghiệm, tận tâm và am hiểu tâm lý học sinh THCS (12-15 tuổi).
+Bạn là giáo viên {subject_name} giàu kinh nghiệm, tận tâm với học sinh THCS.
 
- THÔNG TIN BÀI THI:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Môn học: {subject_name}
-• Đề thi: {exam_title}
-• Điểm số: {score}/10 ({percentage}%)
-• Số câu đúng: {correct_count}/{total_questions}
-• Xếp loại: {level} {emoji}
-• Thời gian làm bài: {time_spent // 60} phút {time_spent % 60} giây
+📊 THÔNG TIN BÀI THI:
+• Môn: {subject_name} - {exam_title}
+• Điểm: {score}/10 ({percentage}%)
+• Đúng: {correct_count}/{total_questions}
+• Xếp loại: {level}
+• Thời gian: {time_spent // 60}p {time_spent % 60}s
 
- CÁC CÂU SAI:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 CÁC CÂU SAI:
 {wrong_list}
-
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-NHIỆM VỤ CỦA BẠN:
-Hãy phân tích kết quả bài thi một cách CHI TIẾT, CỤ THỂ và ĐỘNG VIÊN học sinh. 
+NHIỆM VỤ: Phân tích chi tiết, cụ thể, động viên học sinh.
 
-YÊU CẦU PHÂN TÍCH:
+YÊU CẦU:
+1. ĐÁNH GIÁ TỔNG QUAN (3-4 câu): Nhận xét điểm số, thời gian, ấn tượng chung
+2. ĐIỂM MẠNH (3-4 điểm): Kiến thức đã nắm vững, kỹ năng thành thạo
+3. ĐIỂM YẾU (3-4 điểm): Phân tích lỗi cụ thể, nguyên nhân
+4. KẾ HOẠCH HỌC TẬP (4-5 bước): Lộ trình cải thiện rõ ràng
+5. LỜI ĐỘNG VIÊN (2-3 câu): Khích lệ tinh thần
 
-1. **ĐÁNH GIÁ TỔNG QUAN** (3-4 câu):
-   - Nhận xét về điểm số và mức độ hoàn thành
-   - Đánh giá thời gian làm bài (nhanh/chậm/vừa phải)
-   - Ấn tượng tổng thể về bài làm
+QUY TẮC:
+✓ Thân thiện, gần gũi, phù hợp THCS (12-15 tuổi)
+✓ Cụ thể, dễ hiểu, ít thuật ngữ chuyên môn
+✓ Sử dụng emoji phù hợp
+✓ Động viên và tôn trọng học sinh
 
-2. **ĐIỂM MẠNH** (3-4 điểm cụ thể):
-   - Những phần kiến thức học sinh đã nắm vững
-   - Kỹ năng đã thành thạo
-   - Điểm đáng khen ngợi trong cách làm bài
-
-
-3. **ĐIỂM YẾU** (3-4 điểm cụ thể):
-   - Phân tích CỤ THỂ từng loại lỗi dựa trên các câu sai
-   - Xác định kiến thức còn thiếu
-   - Nguyên nhân có thể dẫn đến sai (hiểu nhầm khái niệm, tính nhẩm sai, đọc đề không kỹ...)
-
-
-4. **KẾ HOẠCH HỌC TẬP** (4-5 bước CỤ THỂ):
-   - Bước 1: Ôn lại kiến thức cơ bản về... (cụ thể chủ đề)
-   - Bước 2: Làm bài tập về... (gợi ý loại bài tập)
-   - Bước 3: Xem video/đọc tài liệu về... (nếu cần)
-   - Bước 4: Luyện thêm đề thi tương tự
-   - Bước 5: Nhờ thầy/cô giải đáp thắc mắc về...
-
-
-5. **LỜI ĐỘNG VIÊN** (2-3 câu):
-   - Khích lệ tinh thần học sinh
-   - Tin tưởng vào khả năng tiến bộ
-   - Động viên không ngừng cố gắng
-   
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-QUY TẮC QUAN TRỌNG:
- Viết bằng tiếng Việt có dấu
- Giọng văn thân thiện, gần gũi, như đang nói chuyện trực tiếp với học sinh
- Cụ thể, dễ hiểu, tránh dùng thuật ngữ quá chuyên môn
- Luôn ĐỘNG VIÊN và TÔN TRỌNG học sinh
- Phù hợp với độ tuổi THCS (12-15 tuổi)
- Sử dụng emoji phù hợp để tạo cảm giác thân thiện
- Nếu học sinh làm rất tốt (>9 điểm), hãy khen ngợi nhiệt tình!
- Nếu học sinh làm chưa tốt (<5 điểm), hãy động viên và đưa ra lộ trình cải thiện rõ ràng
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-ĐỊNH DẠNG TRẢ LỜI:
-Trả lời CHÍNH XÁC theo định dạng JSON sau (KHÔNG thêm markdown ```json, KHÔNG thêm giải thích):
-
+TRẢ LỜI ĐÚNG ĐỊNH DẠNG JSON (KHÔNG thêm ```json):
 {{
-  "overall_assessment": "Nội dung đánh giá tổng quan ở đây (3-4 câu)",
-  "strengths": "Nội dung điểm mạnh ở đây (3-4 điểm, mỗi điểm 1 dòng, bắt đầu bằng emoji)",
-  "weaknesses": "Nội dung điểm yếu ở đây (3-4 điểm, mỗi điểm 1 dòng, bắt đầu bằng emoji)",
-  "study_plan": "Nội dung kế hoạch học tập ở đây (4-5 bước, mỗi bước 1 dòng, bắt đầu bằng emoji)",
-  "encouragement": "Nội dung động viên ở đây (2-3 câu)"
+  "overall_assessment": "...",
+  "strengths": "...",
+  "weaknesses": "...",
+  "study_plan": "...",
+  "encouragement": "..."
 }}
 """
         
-        print(" [AI Analysis] Đang gửi request đến Gemini API...")
-        
-        # Gọi Gemini API
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel(MODEL_NAME)
         response = model.generate_content(prompt)
         result_text = response.text.strip()
         
-        print(" [AI Analysis] Nhận được response từ Gemini")
-        print(f" [AI Analysis] Response length: {len(result_text)} ký tự")
-        
-        # Parse JSON từ response
-        # Loại bỏ markdown code block nếu có
+        # Parse JSON
         if '```json' in result_text:
             result_text = result_text.split('```json')[1].split('```')[0].strip()
-            print(" [AI Analysis] Đã loại bỏ ```json markers")
         elif '```' in result_text:
-            # Tìm JSON trong code block
-            json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', result_text, re.DOTALL)
-            if json_match:
-                result_text = json_match.group(1).strip()
-                print(" [AI Analysis] Đã extract JSON từ code block")
-            else:
-                result_text = result_text.split('```')[1].split('```')[0].strip()
-                print(" [AI Analysis] Đã loại bỏ ``` markers")
+            result_text = result_text.split('```')[1].split('```')[0].strip()
         
-        # Parse JSON
         analysis = json.loads(result_text)
         
-        print(" [AI Analysis] Parse JSON thành công")
-        
-        # Validate các trường bắt buộc
+        # Validate
         required_fields = ['overall_assessment', 'strengths', 'weaknesses', 'study_plan', 'encouragement']
         for field in required_fields:
-            if field not in analysis or not analysis[field]:
-                print(f" [AI Analysis] Thiếu trường: {field}")
-                analysis[field] = f"(Đang cập nhật {field}...)"
-        
-        print(" [AI Analysis] Phân tích thành công!")
+            if field not in analysis:
+                analysis[field] = f"(Đang cập nhật...)"
         
         return {
             'success': True,
-            'overall_assessment': analysis.get('overall_assessment', ''),
-            'strengths': analysis.get('strengths', ''),
-            'weaknesses': analysis.get('weaknesses', ''),
-            'study_plan': analysis.get('study_plan', ''),
-            'encouragement': analysis.get('encouragement', '')
+            **analysis
         }
         
     except json.JSONDecodeError as e:
-        print(f" [AI Analysis] Lỗi parse JSON: {e}")
-        if 'result_text' in locals():
-            print(f" [AI Analysis] Response text (500 ký tự đầu):")
-            print(result_text[:500])
-        
         return {
             'success': False,
-            'error': 'AI trả về định dạng không hợp lệ',
-            'raw_response': result_text[:500] if 'result_text' in locals() else ''
+            'error': 'AI trả về định dạng không hợp lệ'
         }
-    
     except Exception as e:
-        print(f" [AI Analysis] Lỗi không mong muốn: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        
         return {
             'success': False,
             'error': str(e)
         }
-#########
+
+
+# ==================== ESSAY GRADING ====================
+
 def grade_essay_with_ai(user_essay, question, subject):
     """
-    Chấm bài tự luận bằng Gemini AI
+    Chấm bài tự luận bằng AI
     
     Args:
         user_essay (str): Bài làm của học sinh
-        question (dict): Thông tin câu hỏi
+        question (dict): {'question': str, 'grading_rubric': dict, 'keywords': list}
         subject (str): Môn học
     
     Returns:
-        dict: Kết quả chấm điểm {criterion: {score, feedback}, ...}
+        dict: {
+            'content': {'score': 0-10, 'feedback': '...'},
+            'language': {'score': 0-10, 'feedback': '...'},
+            'structure': {'score': 0-10, 'feedback': '...'},
+            'overall_feedback': '...'
+        }
     """
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        
         rubric = question.get('grading_rubric', {})
         keywords = question.get('keywords', [])
         
@@ -493,17 +420,16 @@ Bạn là giáo viên môn {subject}. Chấm bài tự luận sau:
 
 **TIÊU CHÍ CHẤM:**
 """
-        
         for criterion, config in rubric.items():
-            prompt += f"\n{criterion.upper()} ({config.get('weight_percent')}%):"
+            prompt += f"\n{criterion.upper()} ({config.get('weight_percent', 0)}%):"
             for c in config.get('criteria', []):
                 prompt += f"\n  - {c}"
         
         prompt += f"""
 
-**TỪ KHÓA:** {', '.join(keywords)}
+**TỪ KHÓA QUAN TRỌNG:** {', '.join(keywords)}
 
-Trả về JSON:
+TRẢ LỜI JSON (KHÔNG thêm ```json):
 {{
   "content": {{"score": 0-10, "feedback": "..."}},
   "language": {{"score": 0-10, "feedback": "..."}},
@@ -512,21 +438,19 @@ Trả về JSON:
 }}
 """
         
+        model = genai.GenerativeModel(MODEL_NAME)
         response = model.generate_content(prompt)
         result_text = response.text.strip()
         
-        # Parse JSON
         if '```json' in result_text:
             result_text = result_text.split('```json')[1].split('```')[0].strip()
         elif '```' in result_text:
             result_text = result_text.split('```')[1].split('```')[0].strip()
         
-        result = json.loads(result_text)
-        return result
+        return json.loads(result_text)
     
     except Exception as e:
         print(f"❌ Lỗi AI: {e}")
-        # Trả về điểm mặc định
         return {
             'content': {'score': 5, 'feedback': 'Lỗi hệ thống'},
             'language': {'score': 5, 'feedback': 'Lỗi hệ thống'},
@@ -534,15 +458,23 @@ Trả về JSON:
             'overall_feedback': 'Không thể chấm bài. Vui lòng liên hệ giáo viên.'
         }
 
-# Test
+
+# ==================== TEST ====================
+
 if __name__ == "__main__":
-    print("=== Test ve hinh hoc ===")
-    response = chat_with_gemini("Vẽ tam giác vuông có cạnh góc vuông 3cm và 4cm")
+    print("=== Test chat cơ bản ===")
+    response = chat_with_gemini("Công thức tính diện tích hình tròn?")
     print(response)
     print("\n" + "="*50 + "\n")
     
+    print("=== Test giải hệ phương trình ===")
+    response = chat_with_gemini("Giải hệ phương trình: 2x + y = 7 và x - y = 2")
+    print(response)
+    print("\n" + "="*50 + "\n")
+    
+    print("=== Test vẽ hình ===")
+    response = chat_with_gemini("Vẽ tam giác vuông có cạnh 3cm và 4cm")
     processed = process_response(response)
-    print("Text:", processed['text'][:200])
-    print("SVGs:", len(processed['svgs']))
-    print("Mermaids:", len(processed['mermaids']))
-    print("Has diagrams:", processed['has_diagrams'])
+    print("Text:", processed['text'][:150])
+    print("Số SVG:", len(processed['svgs']))
+    print("Có diagram:", processed['has_diagrams'])
