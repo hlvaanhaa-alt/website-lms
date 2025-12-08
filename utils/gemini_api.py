@@ -5,7 +5,7 @@ from PIL import Image
 import io
 
 # Cấu hình API key
-GEMINI_API_KEY = "AIzaSyCJFuhVNjk_yV4HIP-mLlvLQHF3Nwz_jPg"
+GEMINI_API_KEY = "AIzaSyASXDJMPUb86SOKuu1N-UKQz_R5Mro1jcs"
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ==================== CONSTANTS ====================
