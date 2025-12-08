@@ -5,11 +5,12 @@ from PIL import Image
 import io
 
 # Cấu hình API key
-GEMINI_API_KEY = "AIzaSyASXDJMPUb86SOKuu1N-UKQz_R5Mro1jcs"
+GEMINI_API_KEY = "AIzaSyDwmiM9F9O4FuayW0r-BTbCsF6LjfsCPyU"
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ==================== CONSTANTS ====================
 MODEL_NAME = 'gemini-2.5-flash'
+model = "gemini-3.0-flash"
 
 SYSTEM_PROMPT_BASE = """
 Bạn là trợ lý AI cho học sinh THCS Việt Nam.
