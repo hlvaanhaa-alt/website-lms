@@ -1208,5 +1208,128 @@
       "encouragement": "Thầy/cô biết con đang gặp một chút khó khăn, nhưng đừng vì thế mà nản lòng nhé! 💪 Mỗi lỗi sai đều là một cơ hội để chúng ta học hỏi và tiến bộ. Thầy/cô tin rằng với sự kiên trì và nỗ lực, cùng với một kế hoạch học tập cụ thể, con chắc chắn sẽ vượt qua được những thử thách này và đạt được kết quả tốt hơn rất nhiều trong tương lai! Con hãy tin vào bản thân mình!"
     },
     "submitted_at": "08/12/2025 14:25:38"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "toan",
+    "subject_name": "Toán",
+    "subject_icon": "🔢",
+    "subject_color": "#3498db",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 7,
+        "total_questions": 20,
+        "percentage": 35.0,
+        "raw_score": 3.5,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 3.5,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Điều kiện xác định của căn thức √(x-3) là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Nghiệm của phương trình 2x - 6 = 0 là",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Phương trình nào sau đây không phải là phương trình bậc nhất hai ẩn của x và y?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Đồ thị hàm số y = 2x + 1 đi qua điểm nào trong các điểm dưới đây?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Tại thời điểm tia nắng chiếu xuống mặt đất tạo với mặt đất một góc 45° thì chiều dài bóng cây đo được là 8 mét. Hỏi cây cao bao nhiêu mét?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Cho đường tròn (O; 5cm) và đường tròn (O'; 3cm) tiếp xúc ngoài với nhau. Độ dài đoạn thẳng OO' bằng",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 13,
+          "question_text": "Rút gọn biểu thức √48 - √12 ta được",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 15,
+          "question_text": "Trong tam giác vuông ABC, vuông tại A, sin B bằng",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 16,
+          "question_text": "Cho hàm số y = ax² (a ≠ 0). Đồ thị hàm số đi qua điểm A(2; 8). Giá trị của a là",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 17,
+          "question_text": "Diện tích hình tròn có bán kính 5 cm là",
+          "user_answer": "D",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 18,
+          "question_text": "Giá trị của biểu thức √9 + √16 bằng",
+          "user_answer": "D",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 19,
+          "question_text": "Cho tam giác ABC có AB = AC = 5cm, BC = 6cm. Độ dài đường cao AH là",
+          "user_answer": "D",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 20,
+          "question_text": "Phương trình nào sau đây vô nghiệm?",
+          "user_answer": "D",
+          "correct_answer": "A",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": {
+      "success": true,
+      "overall_assessment": "Chào em! Cô đã xem qua kết quả bài kiểm tra Toán 9 của em rồi. Với số điểm 7/20, đạt 35%, cho thấy em vẫn còn một số kiến thức cơ bản cần ôn lại để đạt được kết quả tốt hơn. Về thời gian làm bài là 0 phút 0 giây, có thể là một lỗi kỹ thuật hoặc em chưa hoàn thành bài thi một cách chính thức, nhưng điều đó không sao cả, chúng ta sẽ tập trung vào những gì em đã làm được và những điểm cần cải thiện nhé! Ấn tượng của cô là em đã rất cố gắng làm bài và hoàn thành được 7 câu hỏi đúng.",
+      "strengths": "👍 Em đã nắm được một số kiến thức nền tảng trong chương trình Toán 9, thể hiện qua 7 câu trả lời đúng của mình.\n🎯 Có vẻ em vẫn giữ được sự tập trung và cố gắng suy nghĩ, không bỏ trống quá nhiều câu hỏi.\n🌟 Em có khả năng giải quyết được các bài toán cơ bản về số học hoặc hình học mà không gặp quá nhiều khó khăn.\n💡 Em đã có tinh thần làm bài, đó là điều rất đáng khen ngợi để tiếp tục học hỏi và tiến bộ.",
+      "weaknesses": "🧐 Em còn nhầm lẫn về điều kiện xác định của căn thức (như câu 1), đây là kiến thức nền tảng rất quan trọng khi học về biểu thức chứa căn.\n❓ Kỹ năng giải phương trình bậc nhất một ẩn của em chưa vững chắc (như câu 2), có thể do tính toán nhầm lẫn hoặc chưa nắm rõ các bước chuyển vế đổi dấu.\n📝 Định nghĩa về các loại phương trình (như phương trình bậc nhất hai ẩn ở câu 4) chưa thực sự rõ ràng trong đầu em, dẫn đến việc chọn sai khái niệm.\n📉 Em gặp khó khăn trong việc áp dụng kiến thức hàm số vào đồ thị (như câu 7) và giải các bài toán hình học thực tế có yếu tố lượng giác (như câu 9), cho thấy em cần thực hành nhiều hơn về cả hai phần này.",
+      "study_plan": "📚 Bước 1: Ôn tập lại thật kỹ các kiến thức cơ bản về Điều kiện xác định của căn thức và Phương trình bậc nhất một ẩn, đặc biệt là các quy tắc giải và biến đổi phương trình.\n✍️ Bước 2: Làm thêm nhiều bài tập về nhận dạng phương trình, giải phương trình bậc nhất và bài tập về điểm thuộc đồ thị hàm số. Em hãy thử thế tọa độ điểm vào phương trình hàm số để kiểm tra nhé!\n🎬 Bước 3: Xem lại các bài giảng hoặc video hướng dẫn về định nghĩa các loại phương trình, cách vẽ và đọc đồ thị hàm số y = ax + b, và các bài toán thực tế áp dụng tỉ số lượng giác của góc nhọn.\n💡 Bước 4: Luyện tập giải các bài tập tổng hợp và thử sức với các đề kiểm tra tương tự, chú ý đọc kỹ đề và kiểm tra lại kết quả sau khi làm xong.\n🤝 Bước 5: Đừng ngần ngại hỏi thầy cô hoặc bạn bè nếu có bất kỳ chỗ nào chưa hiểu rõ, đặc biệt là các phần kiến thức căn bản như điều kiện xác định hay giải phương trình.",
+      "encouragement": "Cô biết điểm số lần này chưa được như mong đợi, nhưng đây chỉ là một bài kiểm tra để chúng ta biết mình cần cố gắng ở đâu thôi! Em đừng nản chí nhé. Cô tin rằng với sự chăm chỉ và quyết tâm, em hoàn toàn có thể cải thiện kết quả học tập của mình. Hãy biến những lỗi sai thành cơ hội để học hỏi và tiến bộ hơn nữa nha! Cố lên!"
+    },
+    "submitted_at": "08/12/2025 15:09:30"
   }
 ]
