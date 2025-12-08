@@ -1,6 +1,8 @@
 import google.generativeai as genai
 import re
 import json
+from PIL import Image
+import io
 
 # Cấu hình API key
 GEMINI_API_KEY = "AIzaSyCJFuhVNjk_yV4HIP-mLlvLQHF3Nwz_jPg"
@@ -71,6 +73,69 @@ QUY TẮC LATEX - BẮT BUỘC:
    - KHÔNG dùng markdown **, __, # trong văn bản thường
    - KHÔNG dùng icon, emoji không cần thiết
    - Viết rõ ràng, dễ hiểu, phù hợp học sinh THCS
+6. VẼ HÌNH VÀ SƠ ĐỒ:
+   
+   A. HÌNH HỌC/MẠCH ĐIỆN/ĐỒ THỊ → SVG:
+```svg
+   <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+     <circle cx="100" cy="100" r="50" fill="lightblue" stroke="black"/>
+   </svg>
+```
+
+   B. SƠ ĐỒ TƯ DUY → MERMAID MINDMAP:
+   
+   **CÚ PHÁP CHUẨN:**
+```mermaid
+   mindmap
+     root((Chủ đề chính))
+       Nhánh 1
+         Chi tiết 1.1
+         Chi tiết 1.2
+       Nhánh 2
+         Chi tiết 2.1
+```
+
+   **QUY TẮC BẮT BUỘC:**
+   - Dòng đầu PHẢI là `mindmap`
+   - Node gốc: `root((text))` - dùng 2 ngoặc tròn
+   - Thụt đầu dòng: 2 SPACES mỗi cấp (KHÔNG dùng tab)
+   - KHÔNG dùng dấu `:` trong tên node
+   - KHÔNG dùng `()` `[]` `{}` trong text (trừ root)
+   - Text tiếng Việt viết bình thường, không cần escape
+   - Mỗi node trên 1 dòng riêng
+   - **LỖI THƯỜNG GẶP CẦN TRÁNH:**
+     ❌ `root(Chủ đề)` → thiếu ngoặc kép
+     ❌ Thụt bằng tab → dùng spaces
+     ❌ `Tác giả: Tô Hữu` → có dấu `:`
+     ❌ `Năm (1954)` → có dấu ngoặc
+
+   **VÍ DỤ HOÀN CHỈNH:**
+```mermaid
+   mindmap
+     root((Bài thơ Việt Bắc))
+       Tác giả Tô Hữu
+         Nhà thơ cách mạng
+         Sinh năm 1920
+       Hoàn cảnh sáng tác
+         Kháng chiến chống Pháp
+         Năm 1954
+       Nội dung
+         Cảnh đẹp thiên nhiên
+         Con người Việt Bắc
+         Tinh thần kháng chiến
+       Nghệ thuật
+         Ngôn ngữ giản dị
+         Hình ảnh sinh động
+```
+
+   C. LUÔN GIẢI THÍCH:
+   - Viết text giới thiệu TRƯỚC khi vẽ
+   - Giải thích ý nghĩa SAU khi vẽ
+   
+   D. KHI NÀO VẼ SƠ ĐỒ TƯ DUY:
+   - Học sinh hỏi "vẽ sơ đồ tư duy về..."
+   - Cần tổng hợp kiến thức có cấu trúc
+   - Phân tích tác phẩm văn học, sự kiện lịch sử
 """
 
 
@@ -457,7 +522,50 @@ TRẢ LỜI JSON (KHÔNG thêm ```json):
             'structure': {'score': 5, 'feedback': 'Lỗi hệ thống'},
             'overall_feedback': 'Không thể chấm bài. Vui lòng liên hệ giáo viên.'
         }
-
+###############
+# THÊM hàm mới này vào gemini_api.py
+def chat_with_gemini_image(user_message, image_data=None):
+    """
+    Chat với Gemini - hỗ trợ cả text và ảnh
+    
+    Args:
+        user_message (str): Tin nhắn của user
+        image_data (bytes): Dữ liệu ảnh dạng bytes
+    
+    Returns:
+        str: Phản hồi từ AI
+    """
+    try:
+        model = genai.GenerativeModel(
+            MODEL_NAME,
+            system_instruction=SYSTEM_PROMPT_BASE
+        )
+        
+        if image_data:
+            # Xử lý ảnh
+            image = Image.open(io.BytesIO(image_data))
+            
+            # Resize nếu quá lớn
+            max_dimension = 1024
+            if max(image.size) > max_dimension:
+                ratio = max_dimension / max(image.size)
+                new_size = tuple(int(dim * ratio) for dim in image.size)
+                image = image.resize(new_size, Image.Resampling.LANCZOS)
+            
+            # Gửi cả text và ảnh
+            if user_message and user_message.strip():
+                response = model.generate_content([user_message, image])
+            else:
+                response = model.generate_content(["Hãy mô tả và phân tích ảnh này chi tiết", image])
+        else:
+            # Chỉ text
+            response = model.generate_content(user_message)
+        
+        return format_latex(response.text)
+    
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return f"❌ Lỗi khi xử lý: {str(e)}"
 
 # ==================== TEST ====================
 

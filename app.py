@@ -1895,32 +1895,73 @@ def chatbot():
 @login_required
 def chat():
     """
-    API chat chinh - xu ly ca text va ve hinh
+    API chat - xử lý cả text và ảnh
     """
     try:
-        data = request.get_json()
-        user_message = data.get('message', '').strip()
+        # Kiểm tra Content-Type
+        is_json = request.content_type and 'application/json' in request.content_type
         
-        if not user_message:
+        # Kiểm tra có file ảnh không
+        has_image = 'image' in request.files
+        image_data = None
+        
+        if has_image:
+            file = request.files['image']
+            
+            if file and file.filename:
+                # Validate định dạng
+                allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+                file_ext = file.filename.rsplit('.', 1)[1].lower() if '.' in file.filename else ''
+                
+                if file_ext not in allowed_extensions:
+                    return jsonify({
+                        'success': False,
+                        'error': 'Chỉ chấp nhận ảnh: PNG, JPG, JPEG, GIF, WEBP'
+                    }), 400
+                
+                # Đọc ảnh
+                image_data = file.read()
+                
+                # Kiểm tra kích thước (max 10MB)
+                if len(image_data) > 10 * 1024 * 1024:
+                    return jsonify({
+                        'success': False,
+                        'error': 'Ảnh quá lớn. Tối đa 10MB'
+                    }), 400
+        
+        # Lấy message - ưu tiên form, fallback về JSON
+        if is_json:
+            user_message = request.get_json().get('message', '').strip()
+        else:
+            user_message = request.form.get('message', '').strip()
+        
+        if not user_message and not image_data:
             return jsonify({
                 'success': False,
-                'error': 'Tin nhan trong'
+                'error': 'Vui lòng nhập tin nhắn hoặc gửi ảnh'
             }), 400
         
-        # Goi Gemini
-        response = chat_with_gemini(user_message)
+        # Import hàm mới
+        from utils.gemini_api import chat_with_gemini_image
         
-        # Xu ly response de tach text va diagrams
+        # Gọi Gemini với ảnh (nếu có)
+        if image_data:
+            response = chat_with_gemini_image(user_message, image_data=image_data)
+        else:
+            response = chat_with_gemini(user_message)
+        
+        # Xử lý response
         processed = process_response(response)
         
-        # Luu vao database
+        # Lưu vào database
         db.add_chat_message({
-            'content': user_message,
+            'content': user_message if user_message else "[Đã gửi ảnh]",
             'author_id': session['user_id'],
             'author_name': session['username'],
             'author_role': session.get('role', 'student'),
             'response': response,
-            'has_diagrams': processed['has_diagrams']
+            'has_diagrams': processed['has_diagrams'],
+            'has_image': bool(image_data)
         })
         
         return jsonify({
@@ -1930,10 +1971,12 @@ def chat():
         })
         
     except Exception as e:
-        print(f"Loi chat API: {str(e)}")
+        print(f"Lỗi chat API: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'success': False,
-            'error': 'Co loi xay ra khi xu ly tin nhan',
+            'error': 'Có lỗi xảy ra khi xử lý tin nhắn',
             'details': str(e)
         }), 500
 
