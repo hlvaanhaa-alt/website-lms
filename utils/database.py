@@ -149,7 +149,7 @@ class Database:
             'link_type': doc_data.get('link_type', 'other'),
             'url': url,
             'description': doc_data.get('description', ''),
-            'teacher_id': doc_data.get('teacher_id'),  # ✅ THÊM DÒNG NÀY
+            'teacher_id': doc_data.get('teacher_id'),  # THÊM DÒNG NÀY
             'created_at': datetime.now().isoformat()
         }
         
@@ -357,3 +357,5 @@ class Database:
             return []
         
         return messages[last_index + 1:]
+
+###########

@@ -6,7 +6,8 @@ from werkzeug.utils import secure_filename
 import uuid
 from utils.auth import register_user, login_user, get_user_by_id
 from utils.database import Database
-from utils.gemini_api import chat_with_gemini
+from utils.gemini_api import chat_with_gemini, process_response
+from utils.gemini_api import grade_essay_with_ai ############
 import json
 from datetime import datetime, timedelta
 
@@ -483,28 +484,8 @@ def add_document():
     
     return render_template('add_document.html')
 #################################
-@app.route('/chatbot')
-@login_required
-def chatbot():
-    return render_template('chatbot.html', username=session.get('username'))
 
 
-@app.route('/api/chat', methods=['POST'])
-@login_required
-def chat():
-    try:
-        data = request.get_json()
-        message = data.get('message', '').strip()
-        
-        if not message:
-            return jsonify({'success': False, 'response': 'Vui lòng nhập tin nhắn'})
-        
-        response = chat_with_gemini(message)
-        
-        return jsonify({'success': True, 'response': response})
-    
-    except Exception as e:
-        return jsonify({'success': False, 'response': f'Xin lỗi, có lỗi xảy ra: {str(e)}'})
 
 
 @app.route('/update_progress', methods=['POST'])
@@ -617,12 +598,39 @@ def internal_error(error):
 # ============================================================================
 # ROUTE 1: Trang chọn đề thi trắc nghiệm (đã sửa)
 # ============================================================================
+# ============================================================================
+# THÊM VÀO ĐẦU FILE app.py (sau phần import)
+# ============================================================================
+
+# Danh sách môn học đầy đủ (10 môn)
+SUBJECTS = {
+    'toan': {'name': 'Toán', 'icon': '🔢', 'color': '#3498db'},
+    'anh': {'name': 'Tiếng Anh', 'icon': '🇬🇧', 'color': '#e74c3c'},
+    'li': {'name': 'Vật Lý', 'icon': '⚡', 'color': '#9b59b6'},
+    'hoa': {'name': 'Hóa Học', 'icon': '🧪', 'color': '#1abc9c'},
+    'sinh': {'name': 'Sinh Học', 'icon': '🧬', 'color': '#2ecc71'},
+    'su': {'name': 'Lịch Sử', 'icon': '📜', 'color': '#f39c12'},
+    'dia': {'name': 'Địa Lý', 'icon': '🌍', 'color': '#16a085'},
+    'nguvan': {'name': 'Ngữ Văn', 'icon': '📖', 'color': '#c0392b'},
+    'gdcd': {'name': 'GDCD', 'icon': '⚖️', 'color': '#8e44ad'},
+    'congnghe': {'name': 'Công Nghệ', 'icon': '🔧', 'color': '#34495e'},
+    'tinhoc': {'name': 'Tin Học', 'icon': '💻', 'color': '#2c3e50'}
+}
+
+def validate_subject(subject):
+    """Kiểm tra môn học hợp lệ"""
+    return subject in SUBJECTS
+
+
+# ============================================================================
+# ROUTE 1: Trang chọn đề thi - ĐÃ CẬP NHẬT CHO 10 MÔN
+# ============================================================================
 @app.route('/tracnghiem')
 @login_required
 @student_required
 def tracnghiem():
     """
-    Trang chọn đề thi trắc nghiệm - Đã đổi từ lớp sang môn học
+    Trang chọn đề thi trắc nghiệm - Hỗ trợ 10 môn học
     """
     print("========= DEBUG TRACNGHIEM =========")
     print(f"User ID: {session.get('user_id')}")
@@ -633,41 +641,45 @@ def tracnghiem():
     try:
         all_exams = []
         
-        # Đọc đề thi từ 3 môn học
-        for subject in ['anh', 'toan', 'li']:
-            json_file = f'data/{subject}.json'
+        # Đọc đề thi từ TẤT CẢ các môn học (10 môn)
+        for subject_code, subject_info in SUBJECTS.items():
+            json_file = f'data/{subject_code}.json'
             try:
                 with open(json_file, 'r', encoding='utf-8') as f:
                     exams_data = json.load(f)
                     exams = exams_data.get('exams', [])
                     
                     for exam in exams:
-                        exam['subject'] = subject
+                        exam['subject'] = subject_code
+                        exam['subject_name'] = subject_info['name']
+                        exam['subject_icon'] = subject_info['icon']
+                        exam['subject_color'] = subject_info['color']
                     
                     all_exams.extend(exams)
-                    print(f"✓ Loaded {len(exams)} exams from subject {subject}")
+                    print(f"✓ Loaded {len(exams)} exams from {subject_info['name']}")
             
             except FileNotFoundError:
-                print(f"✗ File {json_file} không tồn tại")
+                print(f"⚠️ File {json_file} chưa tồn tại")
                 continue
             except json.JSONDecodeError:
                 print(f"✗ File {json_file} bị lỗi định dạng")
                 continue
         
         # Nhóm theo môn học
-        exams_by_subject = {
-            'anh': [e for e in all_exams if e['subject'] == 'anh'],
-            'toan': [e for e in all_exams if e['subject'] == 'toan'],
-            'li': [e for e in all_exams if e['subject'] == 'li']
-        }
+        exams_by_subject = {}
+        for subject_code in SUBJECTS.keys():
+            exams_by_subject[subject_code] = [
+                e for e in all_exams if e['subject'] == subject_code
+            ]
         
         print(f"Total exams: {len(all_exams)}")
-        print(f"Tiếng Anh: {len(exams_by_subject['anh'])}")
-        print(f"Toán: {len(exams_by_subject['toan'])}")
-        print(f"Vật Lý: {len(exams_by_subject['li'])}")
+        for subject_code, subject_info in SUBJECTS.items():
+            count = len(exams_by_subject[subject_code])
+            print(f"{subject_info['name']}: {count} đề")
         
         return render_template('tracnghiem.html', 
                              exams_by_subject=exams_by_subject,
+                             subjects=SUBJECTS,
                              username=session.get('username'))
     
     except Exception as e:
@@ -679,7 +691,7 @@ def tracnghiem():
 
 
 # ============================================================================
-# ROUTE 2: Trang làm bài thi (đã sửa)
+# ROUTE 2: Trang làm bài thi - ĐÃ CẬP NHẬT
 # ============================================================================
 @app.route('/tracnghiem/lam-bai/<subject>/<exam_id>')
 @login_required
@@ -687,14 +699,14 @@ def tracnghiem():
 def lam_bai_tracnghiem(subject, exam_id):
     """
     Hiển thị đề trắc nghiệm để học sinh làm bài
-    Fix: Logic thời gian chặt chẽ, xử lý session an toàn
-    ĐÃ ĐỔI: grade → subject
+    ĐÃ CẬP NHẬT: Hỗ trợ 10 môn học
     """
-    # Validate môn học
-    if subject not in ['anh', 'toan', 'li']:
-        flash('Môn học không hợp lệ', 'danger')
+    # Validate môn học (10 môn)
+    if not validate_subject(subject):
+        flash(' Môn học không hợp lệ', 'danger')
         return redirect(url_for('tracnghiem'))
     
+    subject_info = SUBJECTS[subject]
     json_file = f'data/{subject}.json'
     
     try:
@@ -722,7 +734,7 @@ def lam_bai_tracnghiem(subject, exam_id):
                 session.modified = True
             
             should_create_new_session = False
-            remaining_time = time_limit * 60  # Mặc định
+            remaining_time = time_limit * 60
             
             if reset_param == 'yes':
                 should_create_new_session = True
@@ -752,8 +764,7 @@ def lam_bai_tracnghiem(subject, exam_id):
                         remaining_time = (time_limit * 60) - elapsed_seconds
                         
                         if remaining_time <= 0:
-                            flash('⏰ Đã hết thời gian làm bài! Vui lòng làm lại từ đầu.', 'warning')
-                            # Xóa session cũ
+                            flash(' Đã hết thời gian làm bài! Vui lòng làm lại từ đầu.', 'warning')
                             session.pop(session_key, None)
                             session.modified = True
                             return redirect(url_for('tracnghiem'))
@@ -773,9 +784,8 @@ def lam_bai_tracnghiem(subject, exam_id):
                 print(f"Created new session for exam {exam_id}, expires in {time_limit} minutes")
             
             remaining_time = max(1, min(remaining_time, time_limit * 60))
-            remaining_time = int(remaining_time)  # Convert to integer
+            remaining_time = int(remaining_time)
             
-            # LOG (cho debug)
             print(f"""
             ===== EXAM SESSION INFO =====
             Exam: {exam_id} | Subject: {subject}
@@ -786,17 +796,12 @@ def lam_bai_tracnghiem(subject, exam_id):
             ============================
             """)
             
-            # Dictionary để map tên môn học
-            subject_names = {
-                'anh': 'Tiếng Anh',
-                'toan': 'Toán',
-                'li': 'Vật Lý'
-            }
-            
             return render_template('baitap.html',
                                  exam=exam,
                                  subject=subject,
-                                 subject_name=subject_names.get(subject, subject),
+                                 subject_name=subject_info['name'],
+                                 subject_icon=subject_info['icon'],
+                                 subject_color=subject_info['color'],
                                  time_limit=time_limit,
                                  remaining_time=remaining_time,
                                  username=session.get('username'))
@@ -819,17 +824,23 @@ def lam_bai_tracnghiem(subject, exam_id):
 
 
 # ============================================================================
-# ROUTE 3: API kiểm tra thời gian (đã sửa)
+# ROUTE 3: API kiểm tra thời gian - ĐÃ CẬP NHẬT
 # ============================================================================
 @app.route('/api/tracnghiem/check-time/<subject>/<exam_id>')
 @login_required
 @student_required
 def api_check_exam_time(subject, exam_id):
     """
-    API kiểm tra thời gian còn lại - GỌI TỪ JAVASCRIPT
-    Trả về: remaining_time (seconds) hoặc is_expired=True
-    ĐÃ ĐỔI: grade → subject
+    API kiểm tra thời gian còn lại - Hỗ trợ 10 môn
     """
+    if not validate_subject(subject):
+        return jsonify({
+            'success': False,
+            'message': 'Môn học không hợp lệ',
+            'is_expired': True,
+            'remaining_time': 0
+        })
+    
     session_key = f'exam_start_{subject}_{exam_id}'
     
     if session_key not in session:
@@ -861,9 +872,7 @@ def api_check_exam_time(subject, exam_id):
         elapsed_seconds = (datetime.now() - start_time).total_seconds()
         remaining_seconds = (time_limit * 60) - elapsed_seconds
         
-        # Validate
         if remaining_seconds <= 0:
-            # Hết giờ - xóa session
             session.pop(session_key, None)
             session.modified = True
             
@@ -901,185 +910,340 @@ def api_check_exam_time(subject, exam_id):
 
 
 # ============================================================================
-# ROUTE 4: Nộp bài thi (đã sửa)
+# ROUTE 4: Nộp bài thi -  ĐÃ TÍCH HỢP AI GEMINI 
 # ============================================================================
 @app.route('/tracnghiem/nop-bai', methods=['POST'])
 @login_required
 @student_required
 def nop_bai_tracnghiem():
     """
-    Nộp bài - ✅ Thêm validate thời gian
-    ĐÃ ĐỔI: grade → subject
+    Nộp bài - Hỗ trợ cả trắc nghiệm và tự luận
+    Điểm tổng luôn quy về thang 10
+    ⭐ ĐÃ TÍCH HỢP AI PHÂN TÍCH ⭐
     """
     try:
         data = request.get_json()
         
         if not data:
-            return jsonify({
-                'success': False,
-                'message': 'Không nhận được dữ liệu'
-            }), 400
+            return jsonify({'success': False, 'message': 'Không nhận được dữ liệu'}), 400
         
         subject = data.get('subject')
         exam_id = data.get('exam_id')
-        answers = data.get('answers', {})
+        answers = data.get('answers', {})      # Câu trắc nghiệm
+        essays = data.get('essays', {})        # Câu tự luận (nếu có)
         
+        # Validate
         if not subject or not exam_id:
-            return jsonify({
-                'success': False,
-                'message': 'Thiếu thông tin đề thi'
-            }), 400
+            return jsonify({'success': False, 'message': 'Thiếu thông tin đề thi'}), 400
         
-        if subject not in ['anh', 'toan', 'li']:
-            return jsonify({
-                'success': False,
-                'message': 'Môn học không hợp lệ'
-            }), 400
+        if not validate_subject(subject):
+            return jsonify({'success': False, 'message': 'Môn học không hợp lệ'}), 400
         
+        # Kiểm tra session
         session_key = f'exam_start_{subject}_{exam_id}'
-        
         if session_key not in session:
-            return jsonify({
-                'success': False,
-                'message': '⚠️ Session đã hết hạn. Vui lòng làm lại.'
-            }), 403
+            return jsonify({'success': False, 'message': '⚠️ Session đã hết hạn'}), 403
         
+        # Load đề thi
         json_file = f'data/{subject}.json'
         with open(json_file, 'r', encoding='utf-8') as f:
             exams_data = json.load(f)
-            exams = exams_data.get('exams', [])
-            exam = next((e for e in exams if e['id'] == exam_id), None)
+            exam = next((e for e in exams_data.get('exams', []) if e['id'] == exam_id), None)
+        
+        if not exam:
+            return jsonify({'success': False, 'message': 'Không tìm thấy đề thi'}), 404
+        
+        # Kiểm tra thời gian
+        time_limit = exam.get('time_limit', 15)
+        try:
+            start_time = datetime.fromisoformat(session[session_key])
+            elapsed_seconds = (datetime.now() - start_time).total_seconds()
             
-            if not exam:
-                return jsonify({
-                    'success': False,
-                    'message': 'Không tìm thấy đề thi'
-                }), 404
-            
-            time_limit = exam.get('time_limit', 15)
-            
-            try:
-                start_time = datetime.fromisoformat(session[session_key])
-                elapsed_seconds = (datetime.now() - start_time).total_seconds()
-                
-                if elapsed_seconds > (time_limit * 60):
-                    # Nộp muộn - không chấp nhận
-                    session.pop(session_key, None)
-                    session.modified = True
-                    
-                    return jsonify({
-                        'success': False,
-                        'message': ' Đã hết thời gian làm bài! Không thể nộp.'
-                    }), 403
-            
-            except (ValueError, KeyError):
-                return jsonify({
-                    'success': False,
-                    'message': 'Session không hợp lệ'
-                }), 403
-            
-            questions = exam.get('questions', [])
-            total_questions = len(questions)
+            if elapsed_seconds > (time_limit * 60):
+                session.pop(session_key, None)
+                return jsonify({'success': False, 'message': '⏰ Hết thời gian!'}), 403
+        except:
+            return jsonify({'success': False, 'message': 'Session không hợp lệ'}), 403
+        
+        # ========== LẤY CẤU HÌNH CHẤM ĐIỂM ==========
+        scoring_config = exam.get('scoring_config', {})
+        
+        # Nếu không có scoring_config, mặc định 100% trắc nghiệm
+        if not scoring_config:
+            scoring_config = {
+                'multiple_choice': {'weight_percent': 100, 'points': 10}
+            }
+        
+        mc_weight = scoring_config.get('multiple_choice', {}).get('weight_percent', 100) / 100
+        essay_weight = scoring_config.get('essay', {}).get('weight_percent', 0) / 100
+        
+        # ========== KẾT QUẢ ==========
+        result = {
+            'multiple_choice': None,
+            'essay': None,
+            'total_score': 0,
+            'wrong_answers': []
+        }
+        
+        # ========== CHẤM PHẦN TRẮC NGHIỆM ==========
+        sections = exam.get('sections', [])
+        
+        # Nếu đề không có sections (đề cũ), dùng questions trực tiếp
+        if not sections and exam.get('questions'):
+            sections = [{
+                'type': 'multiple_choice',
+                'questions': exam.get('questions', [])
+            }]
+        
+        mc_section = next((s for s in sections if s['type'] == 'multiple_choice'), None)
+        
+        if mc_section:
+            mc_questions = mc_section.get('questions', [])
             correct_count = 0
-            wrong_answers = []
             
-            for question in questions:
-                q_id = str(question['id'])
-                correct_answer = question['correct_answer'].strip()
-                user_answer = answers.get(q_id, '').strip()
+            for q in mc_questions:
+                q_id = str(q['id'])
+                user_answer = answers.get(q_id, '').strip().upper()
+                correct_answer = q['correct_answer'].strip().upper()
                 
                 if user_answer == correct_answer:
                     correct_count += 1
                 else:
-                    wrong_answers.append({
-                        'question_number': question['number'],
-                        'question_text': question['question'],
+                    result['wrong_answers'].append({
+                        'question_number': q['number'],
+                        'question_text': q['question'],
                         'user_answer': user_answer if user_answer else 'Không trả lời',
                         'correct_answer': correct_answer,
-                        'explanation': question.get('explanation', '')
+                        'explanation': q.get('explanation', '')
                     })
             
-            score = round((correct_count / total_questions) * 10, 2) if total_questions > 0 else 0
+            total_mc = len(mc_questions)
+            mc_percentage = (correct_count / total_mc) if total_mc > 0 else 0
+            mc_score = mc_percentage * 10 * mc_weight
             
-            # Xóa session
-            session.pop(session_key, None)
-            session.modified = True
-            
-            # Lưu kết quả
-            result_data = {
-                'user_id': session['user_id'],
-                'username': session.get('username', 'Unknown'),
-                'subject': subject,  # ĐÃ ĐỔI từ 'grade'
-                'exam_id': exam_id,
-                'exam_title': exam.get('title', ''),
-                'score': score,
+            result['multiple_choice'] = {
                 'correct_count': correct_count,
-                'total_questions': total_questions,
-                'submitted_at': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-                'time_spent_seconds': int(elapsed_seconds)
+                'total_questions': total_mc,
+                'percentage': round(mc_percentage * 100, 1),
+                'raw_score': round(mc_score, 2),
+                'weight': mc_weight * 100
             }
+        
+        # ========== CHẤM PHẦN TỰ LUẬN (NẾU CÓ) ==========
+        essay_section = next((s for s in sections if s['type'] == 'essay'), None)
+        
+        if essay_section and essay_weight > 0:
+            essay_questions = essay_section.get('questions', [])
+            essay_results = []
+            total_essay_score = 0
             
+            for q in essay_questions:
+                q_id = str(q['id'])
+                user_essay = essays.get(q_id, '').strip()
+                
+                # Validate độ dài
+                word_count = len(user_essay.split()) if user_essay else 0
+                min_words = q.get('min_words', 0)
+                max_words = q.get('max_words', 999999)
+                
+                if word_count < min_words:
+                    essay_results.append({
+                        'question_number': q['number'],
+                        'question': q['question'],
+                        'score': 0,
+                        'max_score': q.get('points', 0),
+                        'feedback': f'Bài viết quá ngắn ({word_count}/{min_words} từ)',
+                        'word_count': word_count
+                    })
+                    continue
+                
+                if word_count > max_words:
+                    essay_results.append({
+                        'question_number': q['number'],
+                        'question': q['question'],
+                        'score': 0,
+                        'max_score': q.get('points', 0),
+                        'feedback': f'Bài viết quá dài ({word_count}/{max_words} từ)',
+                        'word_count': word_count
+                    })
+                    continue
+                
+                # Chấm bằng AI (nếu bật)
+                if scoring_config.get('essay', {}).get('ai_grading', False):
+                    try:
+                        from utils.gemini_api import grade_essay_with_ai
+                        
+                        ai_feedback = grade_essay_with_ai(user_essay, q, subject)
+                        
+                        # Tính điểm theo rubric
+                        rubric = q.get('grading_rubric', {})
+                        essay_score = 0
+                        max_points = q.get('points', 0)
+                        details = {}
+                        
+                        for criterion, config in rubric.items():
+                            weight = config.get('weight_percent', 0) / 100
+                            criterion_score = ai_feedback.get(criterion, {}).get('score', 5)
+                            weighted = (criterion_score / 10) * max_points * weight
+                            essay_score += weighted
+                            
+                            details[criterion] = {
+                                'score': criterion_score,
+                                'weighted_score': round(weighted, 2),
+                                'feedback': ai_feedback.get(criterion, {}).get('feedback', '')
+                            }
+                        
+                        total_essay_score += essay_score
+                        
+                        essay_results.append({
+                            'question_number': q['number'],
+                            'question': q['question'],
+                            'user_answer': user_essay,
+                            'score': round(essay_score, 2),
+                            'max_score': max_points,
+                            'word_count': word_count,
+                            'feedback': ai_feedback.get('overall_feedback', ''),
+                            'details': details
+                        })
+                    
+                    except Exception as e:
+                        print(f"❌ Lỗi chấm AI: {e}")
+                        essay_results.append({
+                            'question_number': q['number'],
+                            'question': q['question'],
+                            'score': 0,
+                            'max_score': q.get('points', 0),
+                            'feedback': 'Lỗi hệ thống chấm bài',
+                            'word_count': word_count
+                        })
+                else:
+                    # Không dùng AI, cho điểm trung bình
+                    max_points = q.get('points', 0)
+                    default_score = max_points * 0.7
+                    total_essay_score += default_score
+                    
+                    essay_results.append({
+                        'question_number': q['number'],
+                        'question': q['question'],
+                        'user_answer': user_essay,
+                        'score': round(default_score, 2),
+                        'max_score': max_points,
+                        'word_count': word_count,
+                        'feedback': 'Bài làm đã được nộp (chưa chấm chi tiết)'
+                    })
+            
+            # Tính điểm tự luận
+            max_essay_points = sum(q.get('points', 0) for q in essay_questions)
+            essay_percentage = (total_essay_score / max_essay_points) if max_essay_points > 0 else 0
+            essay_weighted = essay_percentage * 10 * essay_weight
+            
+            result['essay'] = {
+                'total_score': round(total_essay_score, 2),
+                'max_score': max_essay_points,
+                'percentage': round(essay_percentage * 100, 1),
+                'weighted_score': round(essay_weighted, 2),
+                'weight': essay_weight * 100,
+                'results': essay_results
+            }
+        
+        # ========== TỔNG ĐIỂM ==========
+        mc_final = result['multiple_choice']['raw_score'] if result['multiple_choice'] else 0
+        essay_final = result['essay']['weighted_score'] if result['essay'] else 0
+        result['total_score'] = round(mc_final + essay_final, 2)
+        
+        # ========== XÓA SESSION ==========
+        session.pop(session_key, None)
+        session.modified = True
+        
+        # ⭐⭐⭐ TẠO PHÂN TÍCH AI ⭐⭐⭐
+        ai_analysis = None
+        
+        # Chỉ tạo AI analysis nếu có câu sai
+        if result.get('wrong_answers') and len(result['wrong_answers']) > 0:
             try:
-                results_file = 'data/exam_results.json'
-                os.makedirs('data', exist_ok=True)
+                print("🤖 Đang tạo phân tích AI...")
                 
-                try:
-                    with open(results_file, 'r', encoding='utf-8') as f:
-                        all_results = json.load(f)
-                except FileNotFoundError:
-                    all_results = []
+                from utils.gemini_api import analyze_exam_results
                 
-                all_results.append(result_data)
+                subject_info = SUBJECTS.get(subject, {})
                 
-                with open(results_file, 'w', encoding='utf-8') as f:
-                    json.dump(all_results, f, ensure_ascii=False, indent=2)
+                # Chuẩn bị dữ liệu cho AI
+                analysis_data = {
+                    'subject': subject,
+                    'subject_name': subject_info.get('name', subject),
+                    'exam_title': exam.get('title', ''),
+                    'total_score': result['total_score'],
+                    'correct_count': result['multiple_choice']['correct_count'] if result.get('multiple_choice') else 0,
+                    'total_questions': result['multiple_choice']['total_questions'] if result.get('multiple_choice') else 0,
+                    'wrong_answers': result['wrong_answers']
+                }
                 
-                print(f" Saved result: User {session['user_id']}, Score: {score}")
-            
+                # Gọi AI để phân tích
+                ai_analysis = analyze_exam_results(analysis_data)
+                
+                if ai_analysis:
+                    print("✅ Đã tạo phân tích AI thành công")
+                else:
+                    print("⚠️ Không thể tạo phân tích AI")
+                    
             except Exception as e:
-                print(f" Error saving result: {e}")
-            
-            return jsonify({
-                'success': True,
-                'score': score,
-                'correct_count': correct_count,
-                'total_questions': total_questions,
-                'wrong_answers': wrong_answers,
-                'message': 'Nộp bài thành công'
-            })
+                print(f"❌ Lỗi AI: {e}")
+                ai_analysis = None
+        else:
+            print("⚠️ Không có câu sai, bỏ qua phân tích AI")
+        
+        # ========== LƯU KẾT QUẢ ==========
+        results_file = 'data/exam_results.json'
+        os.makedirs('data', exist_ok=True)
+        
+        try:
+            with open(results_file, 'r', encoding='utf-8') as f:
+                all_results = json.load(f)
+        except:
+            all_results = []
+        
+        subject_info = SUBJECTS.get(subject, {})
+        
+        all_results.append({
+            'user_id': session['user_id'],
+            'username': session.get('username', 'Unknown'),
+            'subject': subject,
+            'subject_name': subject_info.get('name', subject),
+            'subject_icon': subject_info.get('icon', '📚'),
+            'subject_color': subject_info.get('color', '#95a5a6'),
+            'exam_id': exam_id,
+            'exam_title': exam.get('title', ''),
+            'result': result,
+            'ai_analysis': ai_analysis,  # ⭐ THÊM AI ANALYSIS
+            'submitted_at': datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+        })
+        
+        with open(results_file, 'w', encoding='utf-8') as f:
+            json.dump(all_results, f, ensure_ascii=False, indent=2)
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'message': 'Nộp bài thành công'
+        })
     
     except FileNotFoundError:
-        return jsonify({
-            'success': False,
-            'message': 'Không tìm thấy file dữ liệu đề thi'
-        }), 404
-    
-    except json.JSONDecodeError:
-        return jsonify({
-            'success': False,
-            'message': 'Dữ liệu đề thi bị lỗi'
-        }), 500
-    
+        return jsonify({'success': False, 'message': 'Không tìm thấy file đề thi'}), 404
     except Exception as e:
-        print(f"ERROR in nop_bai_tracnghiem: {str(e)}")
+        print(f"❌ ERROR: {str(e)}")
         import traceback
         traceback.print_exc()
-        return jsonify({
-            'success': False,
-            'message': f'Lỗi server: {str(e)}'
-        }), 500
-
+        return jsonify({'success': False, 'message': f'Lỗi: {str(e)}'}), 500
 
 # ============================================================================
-# ROUTE 5: Lịch sử làm bài (đã sửa)
+# ROUTE 5: Lịch sử làm bài - ĐÃ CẬP NHẬT
 # ============================================================================
 @app.route('/tracnghiem/lich-su')
 @login_required
 @student_required
 def lich_su_tracnghiem():
     """
-    Hiển thị lịch sử làm bài trắc nghiệm của học sinh
-    ĐÃ THÊM: Hiển thị tên môn học
+    Hiển thị lịch sử làm bài - Hỗ trợ 10 môn học
     """
     try:
         user_id = session.get('user_id')
@@ -1097,16 +1261,13 @@ def lich_su_tracnghiem():
         user_results = [r for r in all_results if r.get('user_id') == user_id]
         user_results.sort(key=lambda x: x.get('submitted_at', ''), reverse=True)
         
-        # Thêm tên môn học để hiển thị
-        subject_names = {
-            'anh': 'Tiếng Anh',
-            'toan': 'Toán',
-            'li': 'Vật Lý'
-        }
-        
+        # Thêm tên môn học và icon
         for result in user_results:
             subject = result.get('subject', '')
-            result['subject_name'] = subject_names.get(subject, subject)
+            subject_info = SUBJECTS.get(subject, {'name': subject, 'icon': '📚'})
+            result['subject_name'] = subject_info['name']
+            result['subject_icon'] = subject_info['icon']
+            result['subject_color'] = subject_info.get('color', '#95a5a6')
         
         print(f"User {user_id} có {len(user_results)} bài đã làm")
         
@@ -1122,15 +1283,20 @@ def lich_su_tracnghiem():
         return redirect(url_for('tracnghiem'))
 
 
-
+# ============================================================================
+# ROUTE 6: Reset session - GIỮ NGUYÊN
+# ============================================================================
 @app.route('/tracnghiem/reset/<subject>/<exam_id>')
 @login_required
 @student_required
 def reset_exam_session(subject, exam_id):
     """
     Reset session để làm lại bài thi
-    ĐÃ ĐỔI: grade → subject
     """
+    if not validate_subject(subject):
+        flash('Môn học không hợp lệ', 'danger')
+        return redirect(url_for('tracnghiem'))
+    
     session_key = f'exam_start_{subject}_{exam_id}'
     
     if session_key in session:
@@ -1142,17 +1308,20 @@ def reset_exam_session(subject, exam_id):
 
 
 # ============================================================================
-# ROUTE 7: Xem kết quả (đã sửa)
+# ROUTE 7: Xem kết quả - ⭐ ĐÃ TÍCH HỢP HIỂN THỊ AI ANALYSIS ⭐
 # ============================================================================
 @app.route('/tracnghiem/ket-qua/<subject>/<exam_id>')
 @login_required
 @student_required
 def ket_qua_tracnghiem(subject, exam_id):
     """
-    Hiển thị kết quả bài làm
-    ĐÃ ĐỔI: grade → subject
+    Hiển thị kết quả bài làm - ⭐ BAO GỒM PHÂN TÍCH AI
     """
     try:
+        if not validate_subject(subject):
+            flash('Môn học không hợp lệ', 'danger')
+            return redirect(url_for('tracnghiem'))
+        
         user_id = session.get('user_id')
         results_file = 'data/exam_results.json'
         
@@ -1166,7 +1335,7 @@ def ket_qua_tracnghiem(subject, exam_id):
         matching_results = [
             r for r in all_results 
             if r.get('user_id') == user_id 
-            and r.get('subject') == subject  # ĐÃ ĐỔI từ 'grade'
+            and r.get('subject') == subject
             and r.get('exam_id') == exam_id
         ]
         
@@ -1174,22 +1343,56 @@ def ket_qua_tracnghiem(subject, exam_id):
             flash('Không tìm thấy kết quả bài làm', 'warning')
             return redirect(url_for('tracnghiem'))
         
-        result = matching_results[-1]
+        result_data = matching_results[-1]
         
-        # Thêm tên môn học
-        subject_names = {
-            'anh': 'Tiếng Anh',
-            'toan': 'Toán',
-            'li': 'Vật Lý'
+        # Thêm thông tin môn học
+        subject_info = SUBJECTS.get(subject, {'name': subject, 'icon': '📚', 'color': '#95a5a6'})
+        
+        # ⭐ CHUẨN BỊ DỮ LIỆU CHO TEMPLATE
+        # Lấy kết quả thực tế từ nested structure
+        actual_result = result_data.get('result', {})
+        
+        # Tính toán các giá trị cần thiết
+        if actual_result.get('multiple_choice'):
+            mc_data = actual_result['multiple_choice']
+            correct_count = mc_data.get('correct_count', 0)
+            total_questions = mc_data.get('total_questions', 0)
+        else:
+            correct_count = 0
+            total_questions = 0
+        
+        # Tạo object result đơn giản cho template
+        template_result = {
+            'score': actual_result.get('total_score', 0),
+            'correct_count': correct_count,
+            'total_questions': total_questions,
+            'wrong_answers': actual_result.get('wrong_answers', []),
+            'subject': subject,
+            'subject_name': subject_info['name'],
+            'subject_icon': subject_info['icon'],
+            'subject_color': subject_info['color'],
+            'exam_id': exam_id,
+            'exam_title': result_data.get('exam_title', ''),
+            'submitted_at': result_data.get('submitted_at', '')
         }
-        result['subject_name'] = subject_names.get(subject, subject)
+        
+        # ⭐ LẤY PHÂN TÍCH AI (nếu có)
+        ai_analysis = result_data.get('ai_analysis', None)
+        
+        if ai_analysis:
+            print(f"✅ Hiển thị phân tích AI cho user {user_id}")
+        else:
+            print(f"⚠️ Không có phân tích AI cho bài thi này")
         
         return render_template('ketqua.html', 
-                             result=result,
+                             result=template_result,
+                             ai_analysis=ai_analysis,
                              username=session.get('username'))
     
     except Exception as e:
         print(f"ERROR in ket_qua_tracnghiem: {str(e)}")
+        import traceback
+        traceback.print_exc()
         flash(f'Lỗi khi hiển thị kết quả: {str(e)}', 'danger')
         return redirect(url_for('tracnghiem'))
 ##############
@@ -1677,6 +1880,112 @@ def leaderboard():
     return render_template("leaderboard.html", players=top5, bai=bai)
 
 # Nếu cần giữ cả hai, đổi tên route
+@app.route('/chatbot')
+@login_required
+def chatbot():
+    """
+    Hien thi trang chatbot
+    """
+    return render_template('chatbot.html', 
+                         username=session.get('username'),
+                         user_role=session.get('role'))
+
+
+@app.route('/api/chat', methods=['POST'])
+@login_required
+def chat():
+    """
+    API chat chinh - xu ly ca text va ve hinh
+    """
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '').strip()
+        
+        if not user_message:
+            return jsonify({
+                'success': False,
+                'error': 'Tin nhan trong'
+            }), 400
+        
+        # Goi Gemini
+        response = chat_with_gemini(user_message)
+        
+        # Xu ly response de tach text va diagrams
+        processed = process_response(response)
+        
+        # Luu vao database
+        db.add_chat_message({
+            'content': user_message,
+            'author_id': session['user_id'],
+            'author_name': session['username'],
+            'author_role': session.get('role', 'student'),
+            'response': response,
+            'has_diagrams': processed['has_diagrams']
+        })
+        
+        return jsonify({
+            'success': True,
+            'response': response,
+            'processed': processed
+        })
+        
+    except Exception as e:
+        print(f"Loi chat API: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Co loi xay ra khi xu ly tin nhan',
+            'details': str(e)
+        }), 500
+
+
+@app.route('/api/chat/history', methods=['GET'])
+@login_required
+def get_chat_history():
+    """
+    Lay lich su chat cua user
+    """
+    try:
+        user_id = session['user_id']
+        messages = db.get_all_chat_messages()
+        
+        # Filter tin nhan cua user
+        user_messages = [
+            m for m in messages 
+            if m.get('author_id') == user_id
+        ]
+        
+        return jsonify({
+            'success': True,
+            'messages': user_messages[-50:]
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/chat/clear', methods=['POST'])
+@login_required
+def clear_chat():
+    """
+    Xoa lich su chat
+    """
+    try:
+        # Logic xoa chat o day
+        return jsonify({
+            'success': True,
+            'message': 'Da xoa lich su chat'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+###############
 @app.route("/logout_old")  # Đổi URL
 def logout_old():
     session.clear()

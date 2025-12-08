@@ -11,9 +11,21 @@
                 <i class="fas fa-pencil-alt"></i> {{ exam.title }}
             </h3>
             <p class="exam-info">
-                <span class="subject-badge">{{ subject_name }}</span> | 
-                Số câu hỏi: {{ exam.questions|length }} | 
-                Thời gian: {{ time_limit }} phút
+                <span class="subject-badge">{{ subject_name }}</span>
+                
+                {% if exam.scoring_config %}
+                    {% if exam.scoring_config.multiple_choice %}
+                    | Trắc nghiệm: {{ exam.scoring_config.multiple_choice.weight_percent }}%
+                    {% endif %}
+                    
+                    {% if exam.scoring_config.essay %}
+                    | Tự luận: {{ exam.scoring_config.essay.weight_percent }}%
+                    {% endif %}
+                {% else %}
+                    | Số câu hỏi: {{ exam.questions|length }}
+                {% endif %}
+                
+                | Thời gian: {{ time_limit }} phút
             </p>
         </div>
         <div class="col-md-4 text-end">
@@ -27,32 +39,113 @@
         </div>
     </div>
 
-    <!-- Form câu hỏi -->
+    <!-- Form -->
     <form id="examForm">
-        {% for question in exam.questions %}
-        <div class="question-card mb-4">
-            <div class="card-body">
-                <h5 class="question-title">
-                    <span class="question-badge">Câu {{ question.number }}</span>
-                    {{ question.question }}
-                </h5>
-                
-                <div class="mt-3">
-                    {% for key, value in question.options.items() %}
-                    <div class="answer-option mb-2">
-                        <input class="form-check-input" type="radio" 
-                               name="question_{{ question.id }}" 
-                               id="q{{ question.id }}_{{ key }}" 
-                               value="{{ key }}">
-                        <label class="form-check-label" for="q{{ question.id }}_{{ key }}">
-                            <strong>{{ key }}.</strong> {{ value }}
-                        </label>
+        {% if exam.sections %}
+            <!-- ĐỀ MỚI: CÓ SECTIONS -->
+            {% for section in exam.sections %}
+            
+            <!-- PHẦN TRẮC NGHIỆM -->
+            {% if section.type == 'multiple_choice' %}
+            <div class="section-header mb-4">
+                <h4><i class="fas fa-list-ul"></i> {{ section.title }}</h4>
+            </div>
+            
+            {% for question in section.questions %}
+            <div class="question-card mb-4">
+                <div class="card-body">
+                    <h5 class="question-title">
+                        <span class="question-badge">Câu {{ question.number }}</span>
+                        {{ question.question }}
+                    </h5>
+                    
+                    <div class="mt-3">
+                        {% for key, value in question.options.items() %}
+                        <div class="answer-option mb-2">
+                            <input class="form-check-input" type="radio" 
+                                   name="question_{{ question.id }}" 
+                                   id="q{{ question.id }}_{{ key }}" 
+                                   value="{{ key }}">
+                            <label class="form-check-label" for="q{{ question.id }}_{{ key }}">
+                                <strong>{{ key }}.</strong> {{ value }}
+                            </label>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+            {% endif %}
+            
+            <!-- PHẦN TỰ LUẬN -->
+            {% if section.type == 'essay' %}
+            <div class="section-header mb-4 mt-5">
+                <h4><i class="fas fa-pen"></i> {{ section.title }}</h4>
+            </div>
+            
+            {% for question in section.questions %}
+            <div class="essay-card mb-4">
+                <div class="card-body">
+                    <h5 class="essay-title">
+                        <span class="essay-badge">Câu {{ question.number }}</span>
+                        {{ question.question }}
+                        <span class="essay-points">({{ question.points }} điểm)</span>
+                    </h5>
+                    
+                    <p class="essay-hint">
+                        <i class="fas fa-info-circle"></i> 
+                        Viết từ <strong>{{ question.min_words }}</strong> đến 
+                        <strong>{{ question.max_words }}</strong> từ
+                    </p>
+                    
+                    <textarea 
+                        class="essay-textarea" 
+                        name="essay_{{ question.id }}" 
+                        id="essay_{{ question.id }}"
+                        rows="10" 
+                        placeholder="Nhập bài làm của bạn tại đây..."
+                        data-min="{{ question.min_words }}"
+                        data-max="{{ question.max_words }}"></textarea>
+                    
+                    <div class="essay-footer">
+                        <small class="word-count" id="count_{{ question.id }}">
+                            0 / {{ question.max_words }} từ
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            {% endfor %}
+        
+        {% else %}
+            <!-- ĐỀ CŨ: KHÔNG CÓ SECTIONS (CHỈ TRẮC NGHIỆM) -->
+            {% for question in exam.questions %}
+            <div class="question-card mb-4">
+                <div class="card-body">
+                    <h5 class="question-title">
+                        <span class="question-badge">Câu {{ question.number }}</span>
+                        {{ question.question }}
+                    </h5>
+                    
+                    <div class="mt-3">
+                        {% for key, value in question.options.items() %}
+                        <div class="answer-option mb-2">
+                            <input class="form-check-input" type="radio" 
+                                   name="question_{{ question.id }}" 
+                                   id="q{{ question.id }}_{{ key }}" 
+                                   value="{{ key }}">
+                            <label class="form-check-label" for="q{{ question.id }}_{{ key }}">
+                                <strong>{{ key }}.</strong> {{ value }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
 
         <!-- Nút nộp bài -->
         <div class="row mb-5">
@@ -69,33 +162,44 @@
 </div>
 
 <script>
-// ============ BIẾN TOÀN CỤC ============
+// ========== BIẾN TOÀN CỤC ==========
 let remainingTime = {{ remaining_time }};
 let timerInterval;
-const subject = "{{ subject }}";  // ĐÃ ĐỔI: grade → subject
+const subject = "{{ subject }}";
 const examId = "{{ exam.id }}";
-const totalQuestions = {{ exam.questions|length }};
 
 console.log("=== EXAM INFO ===");
-console.log("Subject:", subject);  // ĐÃ ĐỔI
+console.log("Subject:", subject);
 console.log("Exam ID:", examId);
 console.log("Remaining Time:", remainingTime, "seconds");
-console.log("Total Questions:", totalQuestions);
 console.log("=================");
 
-// ============ COUNTDOWN TIMER ============
+// ========== ĐÊM TỪ TỰ LUẬN ==========
+document.querySelectorAll('.essay-textarea').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+        const words = this.value.trim().split(/\s+/).filter(w => w.length > 0);
+        const count = words.length;
+        const max = parseInt(this.getAttribute('data-max'));
+        const countElement = document.getElementById('count_' + this.id.replace('essay_', ''));
+        
+        if (countElement) {
+            countElement.textContent = `${count} / ${max} từ`;
+            countElement.style.color = (count > max) ? 'red' : '#6b7280';
+        }
+    });
+});
+
+// ========== COUNTDOWN TIMER ==========
 function startTimer() {
     timerInterval = setInterval(() => {
         remainingTime--;
         updateTimerDisplay();
         
-        // Cảnh báo khi còn 5 phút
         if (remainingTime === 300) {
             document.getElementById('timerAlert').classList.add('timer-warning');
             showNotification('⚠️ Chỉ còn 5 phút!', 'warning');
         }
         
-        // Hết giờ - tự động nộp bài
         if (remainingTime <= 0) {
             clearInterval(timerInterval);
             showNotification('⏰ Hết giờ! Đang tự động nộp bài...', 'danger');
@@ -113,7 +217,7 @@ function updateTimerDisplay() {
         `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-// ============ HIỂN THỊ THÔNG BÁO ============
+// ========== HIỂN THỊ THÔNG BÁO ==========
 function showNotification(message, type = 'info') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
@@ -126,56 +230,45 @@ function showNotification(message, type = 'info') {
     setTimeout(() => alertDiv.remove(), 3000);
 }
 
-// ============ THU THẬP ĐÁP ÁN ============
+// ========== THU THẬP ĐÁP ÁN ==========
 function collectAnswers() {
     const answers = {};
+    const essays = {};
     
-    // Lấy tất cả radio inputs
-    const allRadios = document.querySelectorAll('input[type="radio"]');
-    
-    // Tạo Set chứa tên các câu hỏi
-    const questionNames = new Set();
-    allRadios.forEach(radio => {
-        if (radio.name.startsWith('question_')) {
-            questionNames.add(radio.name);
-        }
+    // Trắc nghiệm
+    document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+        const questionId = radio.name.replace('question_', '');
+        answers[questionId] = radio.value;
     });
     
-    console.log(`📋 Found ${questionNames.size} questions`);
-    
-    // Thu thập đáp án
-    questionNames.forEach(name => {
-        const questionId = name.replace('question_', '');
-        const selected = document.querySelector(`input[name="${name}"]:checked`);
-        answers[questionId] = selected ? selected.value : '';
-        
-        if (selected) {
-            console.log(`✓ Q${questionId}: ${selected.value}`);
-        } else {
-            console.log(`✗ Q${questionId}: (chưa chọn)`);
-        }
+    // Tự luận
+    document.querySelectorAll('.essay-textarea').forEach(textarea => {
+        const questionId = textarea.id.replace('essay_', '');
+        essays[questionId] = textarea.value.trim();
     });
     
-    console.log('📦 Answers collected:', answers);
-    return answers;
+    console.log('📦 Answers (trắc nghiệm):', answers);
+    console.log('📝 Essays (tự luận):', essays);
+    
+    return { answers, essays };
 }
 
-// ============ ĐẾM SỐ CÂU CHƯA LÀM ============
+// ========== ĐẾM SỐ CÂU CHƯA LÀM ==========
 function countUnanswered() {
-    const answers = collectAnswers();
+    const { answers } = collectAnswers();
     return Object.values(answers).filter(a => a === '').length;
 }
 
-// ============ NỘP BÀI ============
+// ========== NỘP BÀI ==========
 async function submitExam() {
-    const answers = collectAnswers();
+    const { answers, essays } = collectAnswers();
     
     console.log('📤 SUBMITTING EXAM');
-    console.log('Subject:', subject);  // ĐÃ ĐỔI
+    console.log('Subject:', subject);
     console.log('Exam ID:', examId);
     console.log('Answers:', answers);
+    console.log('Essays:', essays);
     
-    // Disable nút nộp
     const submitBtn = document.getElementById('submitBtn');
     const originalText = submitBtn.innerHTML;
     submitBtn.disabled = true;
@@ -188,9 +281,10 @@ async function submitExam() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                subject: subject,  // ĐÃ ĐỔI: grade → subject
+                subject: subject,
                 exam_id: examId,
-                answers: answers
+                answers: answers,
+                essays: essays
             })
         });
         
@@ -206,21 +300,18 @@ async function submitExam() {
             return;
         }
         
-        const result = await response.json();
-        console.log('✅ Result:', result);
+        const data = await response.json();
+        console.log('✅ Result:', data);
         
-        if (result.success) {
-            // Lưu kết quả vào sessionStorage
-            sessionStorage.setItem('examResult', JSON.stringify(result));
-            
+        if (data.success) {
+            sessionStorage.setItem('examResult', JSON.stringify(data.result));
             showNotification('✅ Nộp bài thành công!', 'success');
             
-            // Chuyển trang sau 1 giây
             setTimeout(() => {
-                window.location.href = `/tracnghiem/ket-qua/${subject}/${examId}`;  // ĐÃ ĐỔI
+                window.location.href = `/tracnghiem/ket-qua/${subject}/${examId}`;
             }, 1000);
         } else {
-            showNotification(result.message || 'Có lỗi xảy ra', 'danger');
+            showNotification(data.message || 'Có lỗi xảy ra', 'danger');
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
         }
@@ -233,7 +324,7 @@ async function submitExam() {
     }
 }
 
-// ============ TỰ ĐỘNG NỘP BÀI KHI HẾT GIỜ ============
+// ========== TỰ ĐỘNG NỘP BÀI KHI HẾT GIỜ ==========
 function autoSubmit() {
     clearInterval(timerInterval);
     document.getElementById('submitBtn').disabled = true;
@@ -241,25 +332,27 @@ function autoSubmit() {
     submitExam();
 }
 
-// ============ XỬ LÝ NÚT NỘP BÀI - NỘP LUÔN ============
+// ========== XỬ LÝ NÚT NỘP BÀI ==========
 document.getElementById('submitBtn').addEventListener('click', function() {
-    console.log('🖱️ Submit button clicked - Nộp bài ngay');
+    console.log('🖱️ Submit button clicked');
     
     const unanswered = countUnanswered();
     
     if (unanswered > 0) {
-        // Chỉ cảnh báo nhanh, vẫn nộp
-        showNotification(`⚠️ Bạn còn ${unanswered} câu chưa làm`, 'warning');
+        if (!confirm(`Bạn còn ${unanswered} câu chưa làm. Bạn có chắc muốn nộp bài?`)) {
+            return;
+        }
+    } else {
+        if (!confirm('Bạn có chắc muốn nộp bài?')) {
+            return;
+        }
     }
     
-    // Dừng timer
     clearInterval(timerInterval);
-    
-    // Nộp bài ngay lập tức
     submitExam();
 });
 
-// ============ CẢNH BÁO KHI RỜI TRANG ============
+// ========== CẢNH BÁO KHI RỜI TRANG ==========
 window.addEventListener('beforeunload', function(e) {
     if (remainingTime > 0) {
         e.preventDefault();
@@ -267,10 +360,10 @@ window.addEventListener('beforeunload', function(e) {
     }
 });
 
-// ============ KHỞI ĐỘNG KHI LOAD TRANG ============
+// ========== KHỞI ĐỘNG KHI LOAD TRANG ==========
 document.addEventListener('DOMContentLoaded', function() {
     console.log("✅ Page loaded, starting timer...");
-    updateTimerDisplay(); // Hiển thị thời gian ban đầu trước
+    updateTimerDisplay();
     startTimer();
 });
 </script>
@@ -354,6 +447,15 @@ document.addEventListener('DOMContentLoaded', function() {
     font-size: 0.85rem;
 }
 
+/* ========== SECTION HEADER ========== */
+.section-header h4 {
+    color: #2563eb;
+    font-weight: 600;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid #2563eb;
+    margin-bottom: 1.5rem;
+}
+
 /* ========== QUESTION CARD ========== */
 .question-card {
     background: var(--bg-white);
@@ -435,6 +537,79 @@ document.addEventListener('DOMContentLoaded', function() {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+/* ========== ESSAY CARD ========== */
+.essay-card {
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.essay-card:hover {
+    border-color: #8b5cf6;
+    box-shadow: 0 4px 16px rgba(139,92,246,0.15);
+}
+
+.essay-title {
+    color: #1f2937;
+    font-weight: 600;
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+
+.essay-badge {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-right: 0.5rem;
+}
+
+.essay-points {
+    color: #059669;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.essay-hint {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    color: #92400e;
+    margin-bottom: 1rem;
+}
+
+.essay-textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.essay-textarea:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+}
+
+.essay-footer {
+    margin-top: 0.75rem;
+    text-align: right;
+}
+
+.word-count {
+    color: #6b7280;
+    font-weight: 600;
+}
+
 /* ========== BUTTONS ========== */
 .btn-submit {
     background: linear-gradient(135deg, var(--success-color) 0%, var(--success-hover) 100%);
@@ -492,7 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
         top: 0;
     }
     
-    .question-badge {
+    .question-badge, .essay-badge {
         font-size: 0.85rem;
         padding: 0.3rem 0.7rem;
     }
@@ -500,6 +675,10 @@ document.addEventListener('DOMContentLoaded', function() {
     .btn-submit, .btn-secondary-custom {
         width: 100%;
         margin: 0.5rem 0 !important;
+    }
+    
+    .essay-textarea {
+        font-size: 0.95rem;
     }
 }
 </style>

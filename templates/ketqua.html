@@ -73,6 +73,115 @@
         </div>
     </div>
 
+    <!-- ⭐⭐⭐ PHẦN PHÂN TÍCH AI - ĐÃ CẢI TIẾN ⭐⭐⭐ -->
+    {% if ai_analysis %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="ai-analysis-section">
+                <div class="ai-header">
+                    <h3 class="ai-title">
+                        <i class="fas fa-robot"></i> Phân Tích Chi Tiết Từ AI
+                    </h3>
+                    <p class="ai-subtitle">Trợ lý AI đã phân tích bài làm của bạn và đưa ra những lời khuyên sau:</p>
+                </div>
+
+                <div class="ai-content">
+                    <!-- Đánh giá tổng quan -->
+                    <div class="ai-card assessment-card">
+                        <div class="ai-card-header">
+                            <i class="fas fa-clipboard-check"></i> Đánh Giá Tổng Quan
+                        </div>
+                        <div class="ai-card-body">
+                            <p class="ai-text">{{ ai_analysis.overall_assessment }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Điểm mạnh & Điểm yếu -->
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="ai-card strengths-card">
+                                <div class="ai-card-header">
+                                    <i class="fas fa-trophy"></i> Điểm Mạnh
+                                </div>
+                                <div class="ai-card-body">
+                                    <div class="ai-list-content" id="strengthsList"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="ai-card weaknesses-card">
+                                <div class="ai-card-header">
+                                    <i class="fas fa-exclamation-triangle"></i> Điểm Yếu
+                                </div>
+                                <div class="ai-card-body">
+                                    <div class="ai-list-content" id="weaknessesList"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kế hoạch học tập -->
+                    <div class="ai-card study-plan-card">
+                        <div class="ai-card-header">
+                            <i class="fas fa-graduation-cap"></i> Kế Hoạch Học Tập
+                        </div>
+                        <div class="ai-card-body">
+                            <div class="ai-list-content" id="studyPlanList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Lời động viên -->
+                    <div class="ai-card encouragement-card">
+                        <div class="ai-card-header">
+                            <i class="fas fa-heart"></i> Lời Động Viên
+                        </div>
+                        <div class="ai-card-body">
+                            <p class="ai-text encouragement-text">{{ ai_analysis.encouragement }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ SCRIPT XỬ LÝ AI ANALYSIS ⭐ -->
+    <script>
+        // Dữ liệu AI analysis
+        const aiAnalysis = {
+            strengths: {{ ai_analysis.strengths | tojson | safe }},
+            weaknesses: {{ ai_analysis.weaknesses | tojson | safe }},
+            study_plan: {{ ai_analysis.study_plan | tojson | safe }}
+        };
+
+        // Hàm format bullet points
+        function formatBulletPoints(text) {
+            if (!text) return '<p class="text-muted">Không có dữ liệu</p>';
+            
+            // Tách theo \n hoặc <br>
+            const lines = text.split(/\n|<br>/g).filter(line => line.trim());
+            
+            let html = '<ul class="ai-bullet-list">';
+            lines.forEach(line => {
+                line = line.trim();
+                if (line) {
+                    // Loại bỏ emoji/số ở đầu nếu có (để thêm lại sau)
+                    const cleanLine = line.replace(/^[•\-\*✅⚠️❌🔥💡📚🎯\d️⃣\.\)]+\s*/, '');
+                    html += `<li>${cleanLine}</li>`;
+                }
+            });
+            html += '</ul>';
+            
+            return html;
+        }
+
+        // Render vào DOM
+        document.getElementById('strengthsList').innerHTML = formatBulletPoints(aiAnalysis.strengths);
+        document.getElementById('weaknessesList').innerHTML = formatBulletPoints(aiAnalysis.weaknesses);
+        document.getElementById('studyPlanList').innerHTML = formatBulletPoints(aiAnalysis.study_plan);
+    </script>
+    {% endif %}
+    <!-- ⭐⭐⭐ KẾT THÚC PHẦN PHÂN TÍCH AI ⭐⭐⭐ -->
+
     <!-- Chi tiết câu sai -->
     <div class="row mb-4" id="wrongAnswersSection">
         <div class="col-12">
@@ -195,23 +304,19 @@ document.addEventListener('DOMContentLoaded', function() {
         wrongCountBadge.textContent = "0";
     }
 
-    // 👉 Toggle mở/đóng danh sách chi tiết câu sai
     toggleHeader.addEventListener('click', function() {
         wrongAnswersList.classList.toggle('show');
     });
 });
 
-// 🗑️ Xóa sessionStorage khi rời trang
 document.querySelectorAll('.nav-link-btn').forEach(link => {
     link.addEventListener('click', () => {
         sessionStorage.removeItem('examResult');
-        console.log('🗑️ Cleared sessionStorage khi rời trang');
     });
 });
 </script>
 
 <style>
-/* ========== COLORS ========== */
 :root {
     --primary-color: #2563eb;
     --success-color: #10b981;
@@ -226,7 +331,6 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* ========== PAGE HEADER ========== */
 .result-title {
     color: var(--primary-color);
     font-weight: 700;
@@ -241,10 +345,6 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     margin-bottom: 0.5rem;
 }
 
-.subject-info {
-    margin-top: 0.5rem;
-}
-
 .subject-badge {
     background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
@@ -252,10 +352,8 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     border-radius: 8px;
     font-size: 0.95rem;
     font-weight: 600;
-    display: inline-block;
 }
 
-/* ========== RESULT CARDS ========== */
 .result-card {
     background: var(--bg-white);
     border: 1px solid var(--border-color);
@@ -270,10 +368,6 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     box-shadow: var(--shadow-md);
 }
 
-.result-card .card-body {
-    padding: 2rem 1.5rem;
-}
-
 .score-display {
     font-weight: 700;
     font-size: 3.5rem;
@@ -284,32 +378,13 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     color: var(--text-primary);
     font-weight: 600;
     font-size: 1.2rem;
-    margin-bottom: 0.5rem;
 }
 
-.card-subtitle-text {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    margin-bottom: 0;
-}
-
-/* ========== PROGRESS CARD ========== */
 .progress-card {
     background: var(--bg-white);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     box-shadow: var(--shadow-sm);
-}
-
-.progress-card .card-body {
-    padding: 1.75rem;
-}
-
-.progress-title {
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 1.25rem;
 }
 
 .progress-bar-container {
@@ -326,23 +401,163 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     align-items: center;
     justify-content: center;
     transition: width 1s ease;
-    font-size: 1rem;
     color: white;
 }
 
-.progress-bar-fill.bg-success {
-    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+/* ========== AI ANALYSIS STYLES - ĐÃ CẢI TIẾN ========== */
+.ai-analysis-section {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #0ea5e9;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 16px rgba(14, 165, 233, 0.15);
 }
 
-.progress-bar-fill.bg-warning {
-    background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+.ai-header {
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
-.progress-bar-fill.bg-danger {
-    background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+.ai-title {
+    color: #0284c7;
+    font-weight: 700;
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
 }
 
-/* ========== WRONG ANSWERS CARD ========== */
+.ai-subtitle {
+    color: #475569;
+    font-size: 1.05rem;
+}
+
+.ai-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.ai-card {
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.ai-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.ai-card-header {
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.assessment-card .ai-card-header {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+.strengths-card .ai-card-header {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.weaknesses-card .ai-card-header {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.study-plan-card .ai-card-header {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.encouragement-card .ai-card-header {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+}
+
+.ai-card-body {
+    padding: 1.5rem;
+}
+
+.ai-text {
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+/* ⭐ BULLET LIST STYLE - MỚI ⭐ */
+.ai-list-content {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.ai-bullet-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.ai-bullet-list li {
+    padding: 0.75rem 0;
+    padding-left: 2rem;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ai-bullet-list li:last-child {
+    border-bottom: none;
+}
+
+.ai-bullet-list li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.weaknesses-card .ai-bullet-list li:before {
+    content: "!";
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.study-plan-card .ai-bullet-list li {
+    counter-increment: step-counter;
+}
+
+.study-plan-card .ai-bullet-list li:before {
+    content: counter(step-counter);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.study-plan-card .ai-bullet-list {
+    counter-reset: step-counter;
+}
+
+.encouragement-text {
+    font-size: 1.15rem;
+    font-weight: 500;
+    text-align: center;
+    color: #be185d;
+}
+
+/* ========== WRONG ANSWERS ========== */
 .wrong-answers-card {
     background: var(--bg-white);
     border: 1px solid var(--border-color);
@@ -356,20 +571,14 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     padding: 1.25rem 1.5rem;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.wrong-header:hover {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
 .wrong-title {
     color: white;
     font-weight: 600;
     font-size: 1.15rem;
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .wrong-badge {
@@ -378,13 +587,12 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     padding: 0.4rem 0.85rem;
     border-radius: 8px;
     font-weight: 700;
-    font-size: 1rem;
 }
 
 #wrongAnswersList {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease, padding 0.3s ease;
+    transition: max-height 0.5s ease;
     padding: 0;
 }
 
@@ -393,7 +601,6 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     padding: 1.5rem;
 }
 
-/* ========== WRONG ITEM ========== */
 .wrong-item {
     background: var(--bg-light);
     border: 1px solid var(--border-color);
@@ -402,106 +609,23 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     margin-bottom: 1rem;
 }
 
-.wrong-item:last-child {
-    margin-bottom: 0;
-}
-
-.wrong-question {
-    color: var(--text-primary);
-    font-size: 1.05rem;
-    margin-bottom: 0.75rem;
-}
-
-.divider {
-    margin: 0.75rem 0;
-    border-color: var(--border-color);
-}
-
-.answer-line {
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-}
-
 .answer-badge {
     padding: 0.35rem 0.75rem;
     border-radius: 6px;
     font-weight: 600;
-    font-size: 0.95rem;
 }
 
 .wrong-answer {
-    background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+    background: var(--danger-color);
     color: white;
 }
 
 .correct-answer {
-    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+    background: var(--success-color);
     color: white;
 }
 
-.explanation-text {
-    color: var(--text-secondary);
-    font-style: italic;
-    margin-bottom: 0;
-}
-
-/* ========== ALERT CUSTOM ========== */
-.alert-success-custom {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    border: 2px solid var(--success-color);
-    border-radius: 10px;
-    padding: 2rem;
-    text-align: center;
-    color: #065f46;
-}
-
-.success-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    display: block;
-}
-
-.alert-info-custom {
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    border: 2px solid var(--primary-color);
-    border-radius: 10px;
-    padding: 1.5rem;
-    text-align: center;
-    color: var(--primary-color);
-    font-weight: 600;
-}
-
-/* ========== FEEDBACK CARD ========== */
-.feedback-card {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    box-shadow: var(--shadow-sm);
-}
-
-.feedback-card .card-body {
-    padding: 2rem;
-}
-
-.feedback-title {
-    font-weight: 700;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.feedback-text {
-    color: var(--text-primary);
-    font-size: 1.05rem;
-    margin-bottom: 1.5rem;
-}
-
-.feedback-time {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    margin-bottom: 0;
-}
-
-/* ========== ACTION BUTTONS ========== */
+/* ========== BUTTONS ========== */
 .btn-action {
     border: none;
     border-radius: 10px;
@@ -519,20 +643,8 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     color: white;
 }
 
-.btn-warning-custom:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    color: white;
-}
-
 .btn-primary-custom {
     background: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 100%);
-    color: white;
-}
-
-.btn-primary-custom:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
     color: white;
 }
 
@@ -542,26 +654,25 @@ document.querySelectorAll('.nav-link-btn').forEach(link => {
     border: 2px solid var(--border-color);
 }
 
-.btn-secondary-custom:hover {
-    background: var(--bg-light);
-    color: var(--text-primary);
-    border-color: var(--text-secondary);
+.btn-action:hover {
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: white;
 }
 
-/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-    .result-title {
-        font-size: 1.6rem;
-    }
-    
-    .score-display {
-        font-size: 2.5rem;
+    .ai-title {
+        font-size: 1.5rem;
     }
     
     .btn-action {
         width: 100%;
         margin: 0.5rem 0;
+    }
+    
+    .ai-bullet-list li {
+        padding-left: 2.5rem;
+        font-size: 0.95rem;
     }
 }
 </style>

@@ -1,0 +1,248 @@
+{
+  "exams": [
+    {
+      "id": "exam_nguvan_9_02",
+      "title": "Đề Ngữ Văn 9 - Văn học hiện đại",
+      "subject": "nguvan",
+      "grade": 9,
+      "time_limit": 45,
+      "scoring_config": {
+        "multiple_choice": {
+          "weight_percent": 70,
+          "points": 7
+        },
+        "essay": {
+          "weight_percent": 30,
+          "points": 3,
+          "ai_grading": true
+        }
+      },
+      "sections": [
+        {
+          "type": "multiple_choice",
+          "title": "Phần I: Trắc nghiệm (7 điểm)",
+          "questions": [
+            {
+              "id": 1,
+              "number": 1,
+              "question": "Tác giả của 'Số đỏ' là ai?",
+              "options": {
+                "A": "Nguyễn Công Hoan",
+                "B": "Vũ Trọng Phụng",
+                "C": "Nam Cao",
+                "D": "Ngô Tất Tố"
+              },
+              "correct_answer": "B"
+            },
+            {
+              "id": 2,
+              "number": 2,
+              "question": "Tác phẩm 'Chí Phèo' thuộc thể loại văn học nào?",
+              "options": {
+                "A": "Tiểu thuyết",
+                "B": "Truyện ngắn",
+                "C": "Kịch",
+                "D": "Ký"
+              },
+              "correct_answer": "B"
+            },
+            {
+              "id": 3,
+              "number": 3,
+              "question": "Bài thơ 'Đất nước' của Nguyễn Khoa Điềm được sáng tác vào thời kỳ nào?",
+              "options": {
+                "A": "Kháng chiến chống Pháp",
+                "B": "Kháng chiến chống Mỹ",
+                "C": "Sau năm 1975",
+                "D": "Trước Cách mạng tháng Tám"
+              },
+              "correct_answer": "C"
+            },
+            {
+              "id": 4,
+              "number": 4,
+              "question": "Nhân vật chính trong truyện ngắn 'Làng' của Kim Lân là ai?",
+              "options": {
+                "A": "Ông Hai",
+                "B": "Bà Cả",
+                "C": "Cậu Vàng",
+                "D": "Cả làng"
+              },
+              "correct_answer": "D"
+            },
+            {
+              "id": 5,
+              "number": 5,
+              "question": "Tác phẩm nào sau đây KHÔNG phải của Tô Hoài?",
+              "options": {
+                "A": "Dế Mèn phiêu lưu ký",
+                "B": "Vợ nhặt",
+                "C": "Việt Bắc",
+                "D": "Nỗi buồn chiến tranh"
+              },
+              "correct_answer": "B"
+            },
+            {
+              "id": 6,
+              "number": 6,
+              "question": "Biện pháp nghệ thuật chủ yếu trong đoạn thơ 'Khi tôi ngã xuống bùn lầy / Xin đừng giẫm thêm tay này để chôn' là gì?",
+              "options": {
+                "A": "So sánh",
+                "B": "Nhân hóa",
+                "C": "Ẩn dụ",
+                "D": "Hoán dụ"
+              },
+              "correct_answer": "C"
+            },
+            {
+              "id": 7,
+              "number": 7,
+              "question": "Tác phẩm 'Tắt đèn' của Ngô Tất Tố phản ánh hiện thực xã hội nào?",
+              "options": {
+                "A": "Nông dân phá sản trong xã hội thực dân",
+                "B": "Trí thức yêu nước",
+                "C": "Công nhân đấu tranh",
+                "D": "Cuộc sống thành thị"
+              },
+              "correct_answer": "A"
+            },
+            {
+              "id": 8,
+              "number": 8,
+              "question": "Câu thơ 'Sông Đà dáng một con rồng / Uốn mình qua núi mây trông bao la' sử dụng biện pháp tu từ nào?",
+              "options": {
+                "A": "Nhân hóa",
+                "B": "So sánh",
+                "C": "Điệp từ",
+                "D": "Liệt kê"
+              },
+              "correct_answer": "B"
+            },
+            {
+              "id": 9,
+              "number": 9,
+              "question": "Bài thơ 'Sóng' của Xuân Quỳnh viết theo thể thơ nào?",
+              "options": {
+                "A": "Thơ lục bát",
+                "B": "Thơ tự do",
+                "C": "Thơ bảy chữ",
+                "D": "Thơ năm chữ"
+              },
+              "correct_answer": "B"
+            },
+            {
+              "id": 10,
+              "number": 10,
+              "question": "Tác giả nào được gọi là 'nhà văn của những số phận bé nhỏ'?",
+              "options": {
+                "A": "Nguyễn Công Hoan",
+                "B": "Nam Cao",
+                "C": "Nguyễn Tuân",
+                "D": "Nguyễn Đình Thi"
+              },
+              "correct_answer": "B"
+            },
+            {
+              "id": 11,
+              "number": 11,
+              "question": "Truyện 'Hai đứa trẻ' của Thạch Lam thuộc trào lưu văn học nào?",
+              "options": {
+                "A": "Hiện thực",
+                "B": "Lãng mạn",
+                "C": "Hiện thực xã hội chủ nghĩa",
+                "D": "Tự nhiên chủ nghĩa"
+              },
+              "correct_answer": "A"
+            },
+            {
+              "id": 12,
+              "number": 12,
+              "question": "Đặc điểm nào KHÔNG phải của văn học hiện đại Việt Nam?",
+              "options": {
+                "A": "Viết bằng chữ quốc ngữ",
+                "B": "Chịu ảnh hưởng văn học phương Tây",
+                "C": "Viết bằng thơ lục bát, song thất lục bát",
+                "D": "Có nhiều thể loại mới như tiểu thuyết, truyện ngắn"
+              },
+              "correct_answer": "C"
+            },
+            {
+              "id": 13,
+              "number": 13,
+              "question": "Bài thơ 'Việt Bắc' của Tố Hữu viết về chủ đề gì?",
+              "options": {
+                "A": "Tình yêu quê hương đất nước",
+                "B": "Tình cảm của chiến sĩ",
+                "C": "Tình cảm với vùng đất kháng chiến",
+                "D": "Niềm vui chiến thắng"
+              },
+              "correct_answer": "C"
+            },
+            {
+              "id": 14,
+              "number": 14,
+              "question": "Trong truyện 'Vợ nhặt', nhân vật người vợ có tên là gì?",
+              "options": {
+                "A": "Thị Nở",
+                "B": "Thị Bình",
+                "C": "Thị Loan",
+                "D": "Không có tên cụ thể"
+              },
+              "correct_answer": "D"
+            }
+          ]
+        },
+        {
+          "type": "essay",
+          "title": "Phần II: Tự luận (3 điểm)",
+          "questions": [
+            {
+              "id": 15,
+              "number": 15,
+              "question": "Phân tích hình ảnh người lính trong bài thơ 'Tây Tiến' của Quang Dũng (khoảng 200 từ)",
+              "max_words": 250,
+              "min_words": 150,
+              "points": 3,
+              "grading_rubric": {
+                "content": {
+                  "weight_percent": 50,
+                  "criteria": [
+                    "Nêu được đặc điểm chung của người lính Tây Tiến",
+                    "Phân tích hình ảnh cụ thể từ bài thơ",
+                    "Nêu được ý nghĩa của hình ảnh"
+                  ]
+                },
+                "language": {
+                  "weight_percent": 30,
+                  "criteria": [
+                    "Ngữ pháp chính xác",
+                    "Từ vựng phong phú, phù hợp",
+                    "Câu văn mạch lạc"
+                  ]
+                },
+                "structure": {
+                  "weight_percent": 20,
+                  "criteria": [
+                    "Có mở bài, thân bài, kết bài",
+                    "Bố cục hợp lý",
+                    "Lập luận rõ ràng"
+                  ]
+                }
+              },
+              "keywords": [
+                "Tây Tiến",
+                "người lính",
+                "hy sinh",
+                "anh dũng",
+                "Quang Dũng",
+                "nghệ thuật",
+                "hình ảnh"
+              ],
+              "sample_answer": "Trong bài thơ Tây Tiến, Quang Dũng đã khắc họa chân dung người lính anh dũng, gan góc của bộ đội Tây Tiến trong những ngày tháng kháng chiến gian khổ. Hình ảnh người lính được thể hiện qua nhiều nét: dũng cảm, kiên cường trước thiên nhiên khắc nghiệt và chiến trận ác liệt, đồng thời cũng giàu tình cảm, nhớ quê hương, người thân. Tác giả sử dụng nhiều hình ảnh đẹp, lãng mạn như 'Trường ca ngất khói chiều Tây / Cao nguyên túp lều hoa mây đá vôi' để tôn vinh vẻ đẹp của người lính Tây Tiến, vừa hào hùng vừa thơ mộng trong lòng núi rừng Tây Bắc."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -155,6 +155,60 @@ body {
     margin: 0.5em 0;
 }
 
+.diagram-wrapper {
+    position: relative;
+    margin: 15px 0;
+}
+
+.diagram-container {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #ffc9e8;
+    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.15);
+}
+
+.diagram-container svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.mermaid {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid #ffc9e8;
+}
+
+.download-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #d946ef, #a855f7);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(217, 70, 239, 0.3);
+    z-index: 10;
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(217, 70, 239, 0.5);
+}
+
+.download-btn:active {
+    transform: translateY(0);
+}
+
 .user-message {
     margin-left: auto;
     text-align: right;
@@ -284,14 +338,6 @@ body {
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 3px solid #ffc9e8;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.suggestions-header::before {
-    content: '💡';
-    font-size: 1.5rem;
 }
 
 .suggestions-grid {
@@ -434,20 +480,41 @@ body {
                 <button onclick="quickQuestion('Giải thích công thức động năng')" class="suggestion-btn">
                     <span class="suggestion-text">Giải thích công thức động năng</span>
                 </button>
-                <button onclick="quickQuestion('Cách học từ vựng tiếng anh')" class="suggestion-btn">
-                    <span class="suggestion-text">Cách học từ vựng tiếng anh</span>
+                <button onclick="quickQuestion('Vẽ tam giác vuông có cạnh góc vuông 3cm và 4cm')" class="suggestion-btn">
+                    <span class="suggestion-text">Vẽ tam giác vuông</span>
                 </button>
-                <button onclick="quickQuestion('Giải phương trình bậc 2')" class="suggestion-btn">
-                    <span class="suggestion-text">Giải phương trình bậc 2</span>
+                <button onclick="quickQuestion('Vẽ mạch điện nối tiếp có 2 bóng đèn và pin 6V')" class="suggestion-btn">
+                    <span class="suggestion-text">Vẽ mạch điện</span>
+                </button>
+                <button onclick="quickQuestion('Vẽ sơ đồ tư duy về quang hợp')" class="suggestion-btn">
+                    <span class="suggestion-text">Vẽ sơ đồ tư duy</span>
                 </button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- KaTeX cho công thức toán học -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<!-- Mermaid cho sơ đồ -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize({ 
+        startOnLoad: false,
+        theme: 'default',
+        themeVariables: {
+            primaryColor: '#d946ef',
+            primaryTextColor: '#fff',
+            primaryBorderColor: '#a855f7',
+            lineColor: '#7c3aed',
+            secondaryColor: '#ffc9e8',
+            tertiaryColor: '#fef9ff'
+        }
+    });
+</script>
 
 <script>
 async function sendMessage(event) {
@@ -473,7 +540,13 @@ async function sendMessage(event) {
         const data = await response.json();
         
         removeMessage(loadingId);
-        addMessage(data.response, 'bot');
+        
+        // Xu ly response co processed data
+        if (data.processed) {
+            addMessageWithDiagrams(data.response, data.processed);
+        } else {
+            addMessage(data.response, 'bot');
+        }
         
     } catch (error) {
         removeMessage(loadingId);
@@ -483,6 +556,11 @@ async function sendMessage(event) {
 }
 
 function formatText(text) {
+    // Loai bo code blocks truoc khi format
+    text = text.replace(/```svg[\s\S]*?```/g, '');
+    text = text.replace(/```mermaid[\s\S]*?```/g, '');
+    
+    // Format markdown co ban
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
     text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
@@ -514,6 +592,7 @@ function addMessage(text, sender, isLoading = false) {
     chatBox.appendChild(messageDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
     
+    // Render LaTeX
     if (!isLoading && sender === 'bot') {
         setTimeout(() => {
             renderMathInElement(messageDiv, {
@@ -531,6 +610,77 @@ function addMessage(text, sender, isLoading = false) {
     return messageId;
 }
 
+function addMessageWithDiagrams(fullResponse, processed) {
+    const chatBox = document.getElementById('chatBox');
+    const messageDiv = document.createElement('div');
+    const messageId = 'msg-' + Date.now();
+    
+    messageDiv.id = messageId;
+    messageDiv.className = 'message bot-message';
+    
+    let contentHTML = '<div class="message-header">AI Assistant</div><div class="message-content"><div>';
+    
+    // Them text
+    if (processed.text) {
+        contentHTML += formatText(processed.text);
+    }
+    
+    // Them SVG diagrams
+    if (processed.svgs && processed.svgs.length > 0) {
+        processed.svgs.forEach((svg, index) => {
+            const svgId = `svg-${Date.now()}-${index}`;
+            contentHTML += `
+                <div class="diagram-wrapper">
+                    <button class="download-btn" onclick="downloadSVG('${svgId}', 'diagram-${index + 1}.png')">Tải về PNG</button>
+                    <div class="diagram-container" id="${svgId}">${svg}</div>
+                </div>
+            `;
+        });
+    }
+    
+    // Them Mermaid diagrams
+    if (processed.mermaids && processed.mermaids.length > 0) {
+        processed.mermaids.forEach((mermaid, index) => {
+            const mermaidId = `mermaid-${Date.now()}-${index}`;
+            contentHTML += `
+                <div class="diagram-wrapper">
+                    <button class="download-btn" onclick="downloadMermaid('${mermaidId}', 'sodo-${index + 1}.png')">Tải về PNG</button>
+                    <div class="mermaid" id="${mermaidId}">${mermaid}</div>
+                </div>
+            `;
+        });
+    }
+    
+    contentHTML += '</div></div>';
+    messageDiv.innerHTML = contentHTML;
+    
+    chatBox.appendChild(messageDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    
+    // Render LaTeX
+    setTimeout(() => {
+        renderMathInElement(messageDiv, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });
+        
+        // Render Mermaid
+        if (processed.mermaids && processed.mermaids.length > 0) {
+            const mermaidElements = messageDiv.querySelectorAll('.mermaid');
+            mermaidElements.forEach(element => {
+                mermaid.run({ nodes: [element] });
+            });
+        }
+    }, 100);
+    
+    return messageId;
+}
+
 function removeMessage(messageId) {
     const message = document.getElementById(messageId);
     if (message) {
@@ -541,6 +691,64 @@ function removeMessage(messageId) {
 function quickQuestion(question) {
     document.getElementById('messageInput').value = question;
     document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+}
+
+// Ham tai ve SVG thanh PNG
+function downloadSVG(elementId, filename) {
+    const svgElement = document.getElementById(elementId).querySelector('svg');
+    if (!svgElement) return;
+    
+    // Clone SVG
+    const clonedSvg = svgElement.cloneNode(true);
+    
+    // Tao canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Lay kich thuoc SVG
+    const svgWidth = svgElement.width.baseVal.value || 500;
+    const svgHeight = svgElement.height.baseVal.value || 500;
+    
+    canvas.width = svgWidth * 2; // Tang do phan giai
+    canvas.height = svgHeight * 2;
+    
+    // Convert SVG thanh data URL
+    const svgData = new XMLSerializer().serializeToString(clonedSvg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    
+    // Load vao image
+    const img = new Image();
+    img.onload = function() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // Download
+        canvas.toBlob(function(blob) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+    };
+    img.src = url;
+}
+
+// Ham tai ve Mermaid thanh PNG
+function downloadMermaid(elementId, filename) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const svgElement = element.querySelector('svg');
+    if (!svgElement) {
+        alert('Vui long doi so do render xong!');
+        return;
+    }
+    
+    // Su dung chung ham voi SVG
+    downloadSVG(elementId, filename);
 }
 </script>
 {% endblock %}
