@@ -1331,5 +1331,142 @@
       "encouragement": "Cô biết điểm số lần này chưa được như mong đợi, nhưng đây chỉ là một bài kiểm tra để chúng ta biết mình cần cố gắng ở đâu thôi! Em đừng nản chí nhé. Cô tin rằng với sự chăm chỉ và quyết tâm, em hoàn toàn có thể cải thiện kết quả học tập của mình. Hãy biến những lỗi sai thành cơ hội để học hỏi và tiến bộ hơn nữa nha! Cố lên!"
     },
     "submitted_at": "08/12/2025 15:09:30"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "toan",
+    "subject_name": "Toán",
+    "subject_icon": "🔢",
+    "subject_color": "#3498db",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 5,
+        "total_questions": 20,
+        "percentage": 25.0,
+        "raw_score": 2.5,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 2.5,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Điều kiện xác định của căn thức √(x-3) là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Nghiệm của phương trình 2x - 6 = 0 là",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Bất phương trình 3x - 9 < 0 có bao nhiêu nghiệm là số tự nhiên?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Phương trình nào sau đây không phải là phương trình bậc nhất hai ẩn của x và y?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 5,
+          "question_text": "Hệ phương trình {x + y = 5; x - y = 1} có nghiệm là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Đồ thị hàm số y = 2x + 1 đi qua điểm nào trong các điểm dưới đây?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 8,
+          "question_text": "Cho tam giác ABC vuông tại A có AB = 3, AC = 4. Khi đó BC bằng",
+          "user_answer": "Không trả lời",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Tại thời điểm tia nắng chiếu xuống mặt đất tạo với mặt đất một góc 45° thì chiều dài bóng cây đo được là 8 mét. Hỏi cây cao bao nhiêu mét?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Một hộp có 10 quả bóng trong đó có 4 quả bóng màu vàng và 6 quả bóng màu xanh. Lấy ngẫu nhiên một quả bóng. Xác suất lấy được quả bóng màu vàng bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Cho tam giác ABC nội tiếp đường tròn và góc BAC = 50°. Số đo góc BOC bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Cho đường tròn (O; 5cm) và đường tròn (O'; 3cm) tiếp xúc ngoài với nhau. Độ dài đoạn thẳng OO' bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Phương trình x² - 4 = 0 có bao nhiêu nghiệm?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 17,
+          "question_text": "Diện tích hình tròn có bán kính 5 cm là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 18,
+          "question_text": "Giá trị của biểu thức √9 + √16 bằng",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 19,
+          "question_text": "Cho tam giác ABC có AB = AC = 5cm, BC = 6cm. Độ dài đường cao AH là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": {
+      "success": true,
+      "overall_assessment": "Chào con! Cô đã xem kỹ bài kiểm tra Toán của con rồi. Mặc dù số điểm 5/20 đúng và xếp loại 'Cần cố gắng' có thể làm con hơi buồn, nhưng điều quan trọng là con đã cố gắng hoàn thành bài thi và bắt đầu hành trình học tập của mình. Về thời gian '0p 0s' chắc là có chút trục trặc kỹ thuật thôi, không sao cả con nhé! Cô tin rằng con có tiềm năng để làm tốt hơn rất nhiều!",
+      "strengths": "Cô thấy con đã làm đúng 5 câu trong đề bài! Điều đó cho thấy con đã nắm được một số kiến thức cơ bản nhất định trong chương trình Toán 9 rồi đấy. Đây là một nền tảng tốt để con tiếp tục phát triển và học hỏi thêm. Việc con không bỏ trống câu nào cũng là một điểm cộng rất lớn, thể hiện sự nỗ lực và tinh thần không ngại thử thách! ✨",
+      "weaknesses": "Qua các câu sai cụ thể, cô nhận thấy một số điểm mà con cần tập trung cải thiện hơn nhé: \n1.  **Chưa vững chắc các định nghĩa và điều kiện cơ bản:** Ví dụ như ở Câu 1 về điều kiện xác định của căn thức √(x-3), con cần nhớ biểu thức dưới dấu căn phải *lớn hơn hoặc bằng 0*. Tương tự, Câu 4 về phương trình bậc nhất hai ẩn cũng cho thấy con cần xem lại định nghĩa các loại phương trình. \n2.  **Sai sót trong kỹ năng giải phương trình và bất phương trình bậc nhất:** Ở Câu 2 (phương trình 2x - 6 = 0) và Câu 3 (bất phương trình 3x - 9 < 0), con đã giải chưa chính xác. Có thể con còn nhầm lẫn trong các phép tính chuyển vế, đổi dấu hoặc chia số. \n3.  **Bỏ sót yêu cầu hoặc nhầm lẫn tập hợp nghiệm:** Đặc biệt ở Câu 3, sau khi giải bất phương trình, con cần xác định đúng các số tự nhiên thỏa mãn điều kiện. Việc này đòi hỏi sự cẩn thận và hiểu rõ các tập hợp số. \n4.  **Chưa thành thạo giải hệ phương trình:** Ở Câu 5, việc giải hệ phương trình hai ẩn {x + y = 5; x - y = 1} vẫn còn lúng túng. Đây là dạng bài rất cơ bản và quan trọng, cần luyện tập nhiều hơn.",
+      "study_plan": "Để giúp con tiến bộ rõ rệt, cô có một vài gợi ý cho kế hoạch học tập sắp tới nhé: \n1.  **Ôn tập kỹ lưỡng lý thuyết:** Hãy dành thời gian đọc lại thật chậm các định nghĩa, quy tắc và công thức trong sách giáo khoa, đặc biệt là phần căn thức, hàm số bậc nhất và hệ phương trình. Hãy ghi chép lại những điểm quan trọng vào một cuốn sổ tay nhỏ nhé! 📝\n2.  **Luyện tập giải bài tập cơ bản theo từng dạng:** Sau khi nắm lý thuyết, hãy bắt đầu với các bài tập ví dụ đơn giản nhất. Chia nhỏ ra thành từng dạng: điều kiện xác định của căn, giải phương trình bậc nhất, giải bất phương trình, và giải hệ phương trình bằng cả phương pháp cộng đại số và phương pháp thế. \n3.  **Cẩn thận và kiểm tra lại bài:** Khi làm bài, hãy viết rõ từng bước giải, đừng vội vàng. Sau khi có kết quả, hãy thử thay nghiệm ngược lại vào đề bài để kiểm tra xem có đúng không. Điều này sẽ giúp con tránh được những lỗi sai đáng tiếc. \n4.  **Tập trung vào các lỗi sai đã mắc:** Xem lại các câu con đã làm sai trong bài kiểm tra này, cố gắng tự giải lại và so sánh với đáp án đúng để hiểu rõ mình đã nhầm ở đâu. \n5.  **Đừng ngại hỏi và tìm kiếm sự giúp đỡ:** Khi gặp bất kỳ câu hỏi hay kiến thức nào chưa hiểu, con đừng ngần ngại hỏi cô giáo, bạn bè, hoặc bố mẹ. Cùng nhau trao đổi sẽ giúp con hiểu bài nhanh và sâu hơn rất nhiều!",
+      "encouragement": "Con trai/gái à, học Toán là cả một quá trình và không ai có thể giỏi ngay lập tức cả. Quan trọng nhất là con có tinh thần học hỏi và sự quyết tâm. Cô tin rằng với sự kiên trì và kế hoạch học tập hợp lý, con chắc chắn sẽ tiến bộ vượt bậc và đạt được những kết quả tốt trong môn Toán. Cố lên nhé, cô luôn ở đây và ủng hộ con! 💪✨"
+    },
+    "submitted_at": "09/12/2025 09:54:14"
   }
 ]

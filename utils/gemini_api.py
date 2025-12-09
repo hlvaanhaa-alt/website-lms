@@ -1,15 +1,23 @@
 import google.generativeai as genai
+from dotenv import load_dotenv
 import re
 import json
 from PIL import Image
 import io
+import os
 
 # Cấu hình API key
-GEMINI_API_KEY = "AIzaSyBkLdxy3pn3gHmXcm9Z2aW0cxr9XXKpVsg"
-genai.configure(api_key=GEMINI_API_KEY)
+load_dotenv()
 
-# ==================== CONSTANTS ====================
+# Lấy API key từ biến môi trường
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+if not GEMINI_API_KEY:
+    raise ValueError(" Không tìm thấy GEMINI_API_KEY trong file .env")
+
+genai.configure(api_key=GEMINI_API_KEY)
 MODEL_NAME = 'gemini-2.5-flash'
+
 model = "gemini-3.0-flash"
 
 SYSTEM_PROMPT_BASE = """
