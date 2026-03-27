@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}Quản Lý Câu Hỏi Game - Học Vui THCS{% endblock %}
+
+{% block content %}
+<style>
+body {
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+    min-height: 100vh;
+}
+
+.page-header {
+    background: linear-gradient(135deg, #00796b, #00acc1);
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0, 121, 107, 0.3);
+}
+
+.page-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.tab-nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 24px;
+    border: 2px solid #00796b;
+    border-radius: 25px;
+    background: white;
+    color: #00796b;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tab-btn.active, .tab-btn:hover {
+    background: #00796b;
+    color: white;
+}
+
+.add-form-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(0, 121, 107, 0.15);
+}
+
+.add-form-card h4 {
+    color: #00796b;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #37474f;
+    margin-bottom: 6px;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0f2f1;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #00796b;
+    box-shadow: 0 0 0 4px rgba(0, 121, 107, 0.1);
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.answer-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0f2f1;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.answer-select:focus {
+    outline: none;
+    border-color: #00796b;
+}
+
+.btn-add {
+    background: linear-gradient(135deg, #00796b, #00acc1);
+    color: white;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 121, 107, 0.4);
+}
+
+.questions-list {
+    display: none;
+}
+
+.questions-list.active {
+    display: block;
+}
+
+.question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #00796b;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.question-info {
+    flex: 1;
+}
+
+.question-text {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.options-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.option-pill {
+    background: #e0f7fa;
+    color: #00796b;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.option-pill.correct {
+    background: #00796b;
+    color: white;
+    font-weight: 700;
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ef5350, #e53935);
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 83, 80, 0.5);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #78909c;
+    font-size: 1.1rem;
+}
+
+.count-badge {
+    background: #00796b;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.bai-select-form {
+    display: inline-block;
+}
+</style>
+
+<div class="container mt-4">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-header">
+        <h2>🎮 Quản Lý Câu Hỏi Game</h2>
+        <p style="margin: 8px 0 0 0; opacity: 0.9;">Thêm, chỉnh sửa câu hỏi cho từng bài game — không cần sửa file thủ công</p>
+    </div>
+
+    <!-- Form thêm câu hỏi -->
+    <div class="add-form-card">
+        <h4>➕ Thêm Câu Hỏi Mới</h4>
+        <form method="POST" action="{{ url_for('teacher_add_game_question') }}">
+            <div class="form-group">
+                <label class="form-label">Bài game</label>
+                <select name="bai" class="answer-select" id="baiFocus">
+                    <option value="bai_1">Bài 1 - Toán học</option>
+                    <option value="bai_2">Bài 2 - Kỹ năng sống</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Câu hỏi</label>
+                <input type="text" name="question" class="form-control" placeholder="Nhập nội dung câu hỏi..." required>
+            </div>
+
+            <div class="options-grid">
+                <div>
+                    <label class="form-label">Đáp án A</label>
+                    <input type="text" name="option_a" id="opt_a" class="form-control" placeholder="Đáp án A" oninput="updateAnswerSelect()" required>
+                </div>
+                <div>
+                    <label class="form-label">Đáp án B</label>
+                    <input type="text" name="option_b" id="opt_b" class="form-control" placeholder="Đáp án B" oninput="updateAnswerSelect()" required>
+                </div>
+                <div>
+                    <label class="form-label">Đáp án C</label>
+                    <input type="text" name="option_c" id="opt_c" class="form-control" placeholder="Đáp án C" oninput="updateAnswerSelect()" required>
+                </div>
+                <div>
+                    <label class="form-label">Đáp án D</label>
+                    <input type="text" name="option_d" id="opt_d" class="form-control" placeholder="Đáp án D" oninput="updateAnswerSelect()" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Đáp án đúng</label>
+                <select name="answer" id="answerSelect" class="answer-select" required>
+                    <option value="">-- Hãy nhập 4 đáp án trước --</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-add">✅ Thêm câu hỏi</button>
+        </form>
+    </div>
+
+    <!-- Danh sách câu hỏi -->
+    <div>
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="showTab('bai_1', this)">
+                Bài 1 - Toán học
+                <span class="count-badge">{{ questions.get('bai_1', [])|length }}</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('bai_2', this)">
+                Bài 2 - Kỹ năng sống
+                <span class="count-badge">{{ questions.get('bai_2', [])|length }}</span>
+            </button>
+        </div>
+
+        {% for bai_key, bai_questions in questions.items() %}
+        <div id="tab-{{ bai_key }}" class="questions-list {% if loop.first %}active{% endif %}">
+            {% if bai_questions %}
+                {% for q in bai_questions %}
+                <div class="question-card">
+                    <div class="question-info">
+                        <div class="question-text">{{ loop.index }}. {{ q.question }}</div>
+                        <div class="options-row">
+                            {% for opt in q.options %}
+                            <span class="option-pill {% if opt == q.answer %}correct{% endif %}">
+                                {% if opt == q.answer %}✓ {% endif %}{{ opt }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ url_for('teacher_delete_game_question') }}" 
+                          onsubmit="return confirm('Xóa câu hỏi này?')">
+                        <input type="hidden" name="bai" value="{{ bai_key }}">
+                        <input type="hidden" name="index" value="{{ loop.index0 }}">
+                        <button type="submit" class="btn-delete">🗑 Xóa</button>
+                    </form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
+                    Chưa có câu hỏi nào. Hãy thêm câu hỏi đầu tiên!
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function showTab(baiKey, btn) {
+    document.querySelectorAll('.questions-list').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + baiKey).classList.add('active');
+    btn.classList.add('active');
+    // Sync bai select trong form
+    document.getElementById('baiFocus').value = baiKey;
+}
+
+function updateAnswerSelect() {
+    const opts = [
+        document.getElementById('opt_a').value.trim(),
+        document.getElementById('opt_b').value.trim(),
+        document.getElementById('opt_c').value.trim(),
+        document.getElementById('opt_d').value.trim()
+    ];
+    const select = document.getElementById('answerSelect');
+    const current = select.value;
+    select.innerHTML = '<option value="">-- Chọn đáp án đúng --</option>';
+    opts.forEach(opt => {
+        if (opt) {
+            const option = document.createElement('option');
+            option.value = opt;
+            option.textContent = opt;
+            if (opt === current) option.selected = true;
+            select.appendChild(option);
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -5,8 +5,8 @@
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h1>➕ Thêm tài liệu mới</h1>
-        <p class="subtitle">Thêm video YouTube hoặc tài liệu Google Drive cho học sinh THCS</p>
+        <h1>{% if edit_mode %}🖊️ Chỉnh sửa tài liệu{% else %}➕ Thêm tài liệu mới{% endif %}</h1>
+        <p class="subtitle">{% if edit_mode %}Cập nhật thông tin tài liệu: {{ doc.title }}{% else %}Thêm video YouTube hoặc tài liệu Google Drive cho học sinh THCS{% endif %}</p>
     </div>
 
     <form id="addDocumentForm">
@@ -16,7 +16,7 @@
                 📝 Tiêu đề tài liệu: 
                 <span class="required">*</span>
             </label>
-            <input type="text" id="docTitle" placeholder="VD: Hệ phương trình bậc nhất hai ẩn - Lớp 9" required>
+            <input type="text" id="docTitle" placeholder="VD: Hệ phương trình bậc nhất hai ẩn - Lớp 9" value="{{ doc.title if edit_mode else '' }}" required>
         </div>
 
         <!-- LỚP HỌC - CẬP NHẬT CHO THCS -->
@@ -27,10 +27,10 @@
             </label>
             <select id="docGrade" required>
                 <option value="">Chọn lớp học</option>
-                <option value="6">📘 Lớp 6</option>
-                <option value="7">📗 Lớp 7</option>
-                <option value="8">📙 Lớp 8</option>
-                <option value="9">📕 Lớp 9</option>
+                <option value="6" {% if edit_mode and doc.grade == '6' %}selected{% endif %}>📘 Lớp 6</option>
+                <option value="7" {% if edit_mode and doc.grade == '7' %}selected{% endif %}>📗 Lớp 7</option>
+                <option value="8" {% if edit_mode and doc.grade == '8' %}selected{% endif %}>🧡 Lớp 8</option>
+                <option value="9" {% if edit_mode and doc.grade == '9' %}selected{% endif %}>📕 Lớp 9</option>
             </select>
         </div>
 
@@ -42,9 +42,9 @@
             </label>
             <select id="docTypeCategory" required>
                 <option value="">Chọn loại tài liệu</option>
-                <option value="document">📄 Tài liệu</option>
-                <option value="lecture">🎓 Bài giảng</option>
-                <option value="exam">📝 Đề thi</option>
+                <option value="document" {% if edit_mode and doc.doc_type == 'document' %}selected{% endif %}>📄 Tài liệu</option>
+                <option value="lecture" {% if edit_mode and doc.doc_type == 'lecture' %}selected{% endif %}>🎓 Bài giảng</option>
+                <option value="exam" {% if edit_mode and doc.doc_type == 'exam' %}selected{% endif %}>📝 Đề thi</option>
             </select>
         </div>
 
@@ -54,7 +54,7 @@
                 🔗 Link tài liệu: 
                 <span class="required">*</span>
             </label>
-            <input type="url" id="docUrl" placeholder="https://youtube.com/... hoặc https://drive.google.com/..." required>
+            <input type="url" id="docUrl" placeholder="https://youtube.com/... hoặc https://drive.google.com/..." value="{{ doc.url if edit_mode else '' }}" required>
             <small class="form-hint">💡 Hỗ trợ: YouTube, Google Drive, hoặc link trực tiếp</small>
         </div>
 
@@ -63,23 +63,23 @@
             <label for="docType">🎯 Loại link:</label>
             <select id="docType">
                 <option value="auto">Tự động nhận diện</option>
-                <option value="youtube">🎥 Video YouTube</option>
-                <option value="drive">☁️ Google Drive</option>
-                <option value="pdf">📄 File PDF</option>
-                <option value="other">🔗 Khác</option>
+                <option value="youtube" {% if edit_mode and doc.link_type == 'youtube' %}selected{% endif %}>🎥 Video YouTube</option>
+                <option value="drive" {% if edit_mode and doc.link_type == 'drive' %}selected{% endif %}>☁️ Google Drive</option>
+                <option value="pdf" {% if edit_mode and doc.link_type == 'pdf' %}selected{% endif %}>📄 File PDF</option>
+                <option value="other" {% if edit_mode and doc.link_type == 'other' %}selected{% endif %}>🔗 Khác</option>
             </select>
         </div>
 
         <!-- MÔ TẢ -->
         <div class="form-group">
             <label for="docDescription">✍️ Mô tả:</label>
-            <textarea id="docDescription" rows="5" placeholder="Mô tả ngắn gọn về nội dung tài liệu, phù hợp với học sinh THCS..."></textarea>
+            <textarea id="docDescription" rows="5" placeholder="Mô tả ngắn gọn về nội dung tài liệu, phù hợp với học sinh THCS...">{{ doc.description if edit_mode else '' }}</textarea>
         </div>
 
         <!-- NÚT BẤM -->
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-                ✅ Thêm tài liệu
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                {% if edit_mode %}💾 Cập nhật tài liệu{% else %}✅ Thêm tài liệu{% endif %}
             </button>
             <a href="{{ url_for('documents') }}" class="btn btn-secondary">
                 ❌ Hủy
@@ -191,7 +191,13 @@ document.getElementById('addDocumentForm').addEventListener('submit', async func
     };
     
     try {
-        const response = await fetch('/teacher/add_document', {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '⌛ Đang xử lý...';
+
+        const url_endpoint = '{% if edit_mode %}{{ url_for("edit_document", doc_id=doc.id) }}{% else %}{{ url_for("add_document") }}{% endif %}';
+        
+        const response = await fetch(url_endpoint, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
@@ -200,14 +206,28 @@ document.getElementById('addDocumentForm').addEventListener('submit', async func
         const result = await response.json();
         
         if (result.success) {
-            alert('✅ Thêm tài liệu thành công!');
+            alert('✅ ' + result.message);
             window.location.href = '/documents';
         } else {
             alert('❌ Lỗi: ' + result.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '{% if edit_mode %}💾 Cập nhật tài liệu{% else %}✅ Thêm tài liệu{% endif %}';
         }
     } catch (error) {
         alert('❌ Có lỗi xảy ra: ' + error.message);
         console.error(error);
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '{% if edit_mode %}💾 Cập nhật tài liệu{% else %}✅ Thêm tài liệu{% endif %}';
+    }
+});
+
+// Gọi preview nếu đang ở chế độ sửa
+window.addEventListener('DOMContentLoaded', () => {
+    const url = urlInput.value.trim();
+    const type = typeSelect.value;
+    if (url && type !== 'auto') {
+        showPreview(url, type);
     }
 });
 

@@ -3,6 +3,105 @@
 {% block title %}Diễn đàn Học Vui THCS{% endblock %}
 
 {% block content %}
+<style>
+.forum-filter-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    border: 1px solid #e9ecef;
+}
+
+.filter-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.filter-select {
+    padding: 8px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    color: #495057;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #0d6efd;
+    background: white;
+}
+
+.filter-select.active-filter {
+    border-color: #0d6efd;
+    background: #e7f1ff;
+    color: #0d6efd;
+}
+
+.btn-filter-apply {
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-filter-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+}
+
+.btn-filter-clear {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 25px;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s;
+}
+
+.btn-filter-clear:hover {
+    background: #f8f9fa;
+    color: #343a40;
+    text-decoration: none;
+}
+
+.active-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.filter-tag {
+    background: #e7f1ff;
+    color: #0d6efd;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid #b6d4fe;
+}
+</style>
+
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col-md-8">
@@ -16,29 +115,52 @@
         </div>
     </div>
 
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <form method="GET" action="{{ url_for('forum') }}" class="d-flex">
-                <input type="text" name="search" class="form-control me-2" 
-                       placeholder="Tìm kiếm bài viết..." 
+    <!-- Thanh tìm kiếm và lọc -->
+    <div class="forum-filter-bar">
+        <form method="GET" action="{{ url_for('forum') }}">
+            <!-- Dòng 1: Tìm kiếm + lọc loại bài -->
+            <div class="filter-row mb-3">
+                <input type="text" name="search" class="form-control" style="max-width:300px; border-radius:25px;"
+                       placeholder="🔍 Tìm kiếm bài viết..." 
                        value="{{ search_query }}">
-                <button type="submit" class="btn btn-outline-primary">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-        </div>
-        <div class="col-md-6">
-            <div class="btn-group w-100" role="group">
-                <a href="{{ url_for('forum') }}" 
-                   class="btn btn-outline-secondary {% if filter_type == 'all' %}active{% endif %}">
-                    Tất cả
-                </a>
-                <a href="{{ url_for('forum', filter='my_posts') }}" 
-                   class="btn btn-outline-secondary {% if filter_type == 'my_posts' %}active{% endif %}">
-                    Bài viết của tôi
-                </a>
+                <select name="filter" class="filter-select {% if filter_type != 'all' %}active-filter{% endif %}">
+                    <option value="all" {% if filter_type == 'all' %}selected{% endif %}>📋 Tất cả bài</option>
+                    <option value="my_posts" {% if filter_type == 'my_posts' %}selected{% endif %}>👤 Bài của tôi</option>
+                </select>
             </div>
-        </div>
+            <!-- Dòng 2: Lọc môn học + lớp -->
+            <div class="filter-row">
+                <span class="filter-label">Lọc theo:</span>
+                <select name="subject" class="filter-select {% if filter_subject != 'all' %}active-filter{% endif %}">
+                    <option value="all" {% if filter_subject == 'all' %}selected{% endif %}>📚 Tất cả môn</option>
+                    {% for subj in forum_subjects %}
+                    <option value="{{ subj }}" {% if filter_subject == subj %}selected{% endif %}>{{ subj }}</option>
+                    {% endfor %}
+                </select>
+                <select name="grade" class="filter-select {% if filter_grade != 'all' %}active-filter{% endif %}">
+                    <option value="all" {% if filter_grade == 'all' %}selected{% endif %}>🎓 Tất cả lớp</option>
+                    {% for grade in forum_grades %}
+                    <option value="{{ grade }}" {% if filter_grade == grade %}selected{% endif %}>{{ grade }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn-filter-apply">Lọc</button>
+                {% if filter_subject != 'all' or filter_grade != 'all' or search_query or filter_type != 'all' %}
+                <a href="{{ url_for('forum') }}" class="btn-filter-clear">✕ Xóa lọc</a>
+                {% endif %}
+            </div>
+            <!-- Hiển thị bộ lọc đang áp dụng -->
+            {% if filter_subject != 'all' or filter_grade != 'all' %}
+            <div class="active-filters mt-2">
+                <span style="color:#6c757d; font-size:0.85rem;">Đang lọc:</span>
+                {% if filter_subject != 'all' %}
+                <span class="filter-tag">📚 {{ filter_subject }}</span>
+                {% endif %}
+                {% if filter_grade != 'all' %}
+                <span class="filter-tag">🎓 {{ filter_grade }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+        </form>
     </div>
 
     {% if posts %}
@@ -79,7 +201,13 @@
                                 {% if post.tags %}
                                 <div class="mt-2">
                                     {% for tag in post.tags %}
-                                        <span class="badge bg-info text-dark me-1">{{ tag }}</span>
+                                        {% if tag in forum_grades %}
+                                            <span class="badge bg-warning text-dark me-1">🎓 {{ tag }}</span>
+                                        {% elif tag in forum_subjects %}
+                                            <span class="badge bg-primary me-1">📚 {{ tag }}</span>
+                                        {% else %}
+                                            <span class="badge bg-info text-dark me-1">{{ tag }}</span>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
                                 {% endif %}
@@ -100,6 +228,8 @@
             <i class="fas fa-info-circle"></i>
             {% if search_query %}
                 Không tìm thấy bài viết nào với từ khóa "{{ search_query }}"
+            {% elif filter_subject != 'all' or filter_grade != 'all' %}
+                Không có bài viết nào phù hợp với bộ lọc đã chọn
             {% elif filter_type == 'my_posts' %}
                 Bạn chưa có bài viết nào
             {% else %}

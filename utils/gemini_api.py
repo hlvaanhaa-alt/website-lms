@@ -18,12 +18,17 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 MODEL_NAME = 'gemini-2.5-flash'
 
-model = "gemini-3.0-flash"
-
 SYSTEM_PROMPT_BASE = """
 Bạn là trợ lý AI cho học sinh THCS Việt Nam.
 
-QUY TẮC LATEX - BẮT BUỘC:
+QUY TẮC PHẢN HỒI - BẮT BUỘC:
+
+0. NGẮN GỌN, ĐẦY ĐỦ:
+   - Trả lời thẳng vào vấn đề, KHÔNG dài dòng mở đầu
+   - Giải bài toán: trình bày các bước cần thiết, KHÔNG giải thích thừa
+   - KHÔNG lặp lại câu hỏi của học sinh
+   - KHÔNG kết thúc bằng "Nếu bạn cần thêm thông tin..." hay câu tương tự
+   - Mỗi câu trả lời nên ngắn nhất có thể mà vẫn đúng và đủ ý
 
 1. MỌI công thức toán phải nằm RIÊNG BIỆT trên dòng mới:
 
@@ -164,10 +169,16 @@ def chat_with_gemini(user_message, chat_history=None):
     try:
         if not user_message or not user_message.strip():
             return "Vui lòng nhập câu hỏi."
-        
+            
         model = genai.GenerativeModel(
             MODEL_NAME,
-            system_instruction=SYSTEM_PROMPT_BASE
+            system_instruction=SYSTEM_PROMPT_BASE,
+            generation_config={
+                "temperature": 0.3,
+                "top_p": 1,
+                "top_k": 1,
+                "max_output_tokens": 1024,
+            }
         )
         
         if chat_history:
@@ -232,92 +243,76 @@ def process_response(response_text):
 def format_latex(text):
     """
     Format LaTeX ổn định cho KaTeX.
-    Bảo toàn mọi môi trường LaTeX quan trọng.
+    Bảo toàn mọi môi trường LaTeX quan trọng và tránh trùng lặp $$.
     """
-
     import re
 
     # 1. Chuẩn hoá xuống dòng
     text = text.replace("\r\n", "\n").replace("\r", "\n")
 
     # ======================================================
-    # 2. XỬ LÝ HỆ PHƯƠNG TRÌNH (CASES)
+    # 2. CHUẨN HÓA NỘI DUNG CASES (Hệ phương trình)
     # ======================================================
-    def fix_cases(match):
-        content = match.group(1)
-
+    def clean_cases_internal(match):
+        content = match.group(1).strip()
+        # Thay thế \\, \\\\, \n, và \ bằng newline duy nhất để split
+        content = re.sub(r"\\\\+|\\(?!\w)|\n+", "\n", content)
         lines = [l.strip() for l in content.split("\n") if l.strip()]
-        cleaned = " \\\\\n".join(lines)
+        return " \\\\\n".join(lines)
 
-        return f"\n\n$$\n\\begin{{cases}}\n{cleaned}\n\\end{{cases}}\n$$\n\n"
-
+    # Làm sạch nội dung bên trong cases nhưng CHƯA bọc $$ tại đây
     text = re.sub(
         r"\\begin\{cases\}(.*?)\\end\{cases\}",
-        fix_cases,
+        lambda m: f"\\begin{{cases}}\n{clean_cases_internal(m)}\n\\end{{cases}}",
         text,
         flags=re.DOTALL
     )
 
     # ======================================================
-    # 3. CHUYỂN \[ ... \] → $$ ... $$
+    # 3. CHUYỂN \[ ... \] thành dạng chuẩn của display math
     # ======================================================
-    text = re.sub(
-        r"\\\[(.*?)\\\]",
-        lambda m: f"\n\n$$\n{m.group(1).strip()}\n$$\n\n",
-        text,
-        flags=re.DOTALL
-    )
+    text = re.sub(r"\\\[(.*?)\\\]", r"$$\n\1\n$$", text, flags=re.DOTALL)
 
     # ======================================================
-    # 4. CHUYỂN \( ... \) → $ ... $
+    # 4. CHUYỂN \( ... \) thành inline math chuẩn
     # ======================================================
-    text = re.sub(
-        r"\\\((.*?)\\\)",
-        lambda m: f"${m.group(1).strip()}$",
-        text
-    )
+    text = re.sub(r"\\\((.*?)\\\)", r"$\1$", text)
 
     # ======================================================
-    # 5. XỬ LÝ DISPLAY MATH $$ ... $$
+    # 5. GIẢI QUYẾT TRÙNG LẶP VÀ ĐẢM BẢO $$ BAO QUANH
     # ======================================================
-    def handle_display(match):
-        formula = match.group(1).strip()
+    
+    # Chuẩn hóa khoảng trắng quanh các block quan trọng
+    text = re.sub(r"\s*(\\begin\{(cases|align|matrix|array)\}.*?\\end\{\2\})\s*", r"\n\n\1\n\n", text, flags=re.DOTALL)
+    
+    # Xử lý trường hợp đã có $$ bao quanh: $$ \begin... $$ -> Chuẩn hóa về 1 giao diện duy nhất
+    text = re.sub(r"\$\$\s*(\\begin\{(cases|align|matrix|array)\}.*?\\end\{\2\})\s*\$\$", r"TEMP_DISPLAY_START\1TEMP_DISPLAY_END", text, flags=re.DOTALL)
 
-        # Các block phức tạp – giữ nguyên
-        complex_envs = ["\\begin{cases}", "\\begin{align}", "\\begin{matrix}"]
-        if any(env in formula for env in complex_envs):
-            return f"\n\n$$\n{formula}\n$$\n\n"
+    # Bao quanh các block môi trường CHƯA có $$ bằng $$
+    text = re.sub(r"(?<!TEMP_DISPLAY_START)(\\begin\{(cases|align|matrix|array)\}.*?\\end\{\2\})(?!TEMP_DISPLAY_END)", r"$$\n\1\n$$", text, flags=re.DOTALL)
+    
+    # Trả lại $$ từ TEMP
+    text = text.replace("TEMP_DISPLAY_START", "\n\n$$\n").replace("TEMP_DISPLAY_END", "\n$$\n\n")
 
-        # Không động vào toán tử, chỉ trim thôi
-        return f"\n\n$$\n{formula}\n$$\n\n"
-
-    text = re.sub(
-        r"\$\$(.*?)\$\$",
-        handle_display,
-        text,
-        flags=re.DOTALL
-    )
+    # Đảm bảo display math ($$ ... $$) chuẩn
+    text = re.sub(r"\$\$(.*?)\$\$", lambda m: f"\n\n$$\n{m.group(1).strip()}\n$$\n\n", text, flags=re.DOTALL)
 
     # ======================================================
-    # 6. INLINE MATH – chỉ xử lý vùng text ngoài display
+    # 6. INLINE MATH ($ ... $)
     # ======================================================
-    def clean_inline(m):
-        return f"${m.group(1).strip()}$"
-
+    # Tương tự như cũ, chỉ xử lý phần text ngoài $$
     parts = text.split("$$")
-    for i in range(0, len(parts), 2):  # chỉ xử lý phần ngoài display math
-        parts[i] = re.sub(
-            r"\$(?!\$)([^$]+?)\$(?!\$)",  # tránh $$ và tránh ký tự đơn
-            clean_inline,
-            parts[i]
-        )
-
+    for i in range(0, len(parts), 2):
+        parts[i] = re.sub(r"\$(?!\$)([^$]+?)\$(?!\$)", lambda m: f"${m.group(1).strip()}$", parts[i])
     text = "$$".join(parts)
 
     # ======================================================
-    # 7. CLEAN CUỐI
+    # 7. DỌN DẸP CUỐI
     # ======================================================
     text = re.sub(r"\n{3,}", "\n\n", text)
+    # Xử lý trường hợp bot trả về \\ \\ (lỗi user nêu) còn sót lại
+    text = text.replace("\\ \\", "\\\\")
+    
     return text.strip() + "\n"
 
 
@@ -512,7 +507,13 @@ TRẢ LỜI JSON (KHÔNG thêm ```json):
 }}
 """
         
-        model = genai.GenerativeModel(MODEL_NAME)
+        model = genai.GenerativeModel(
+            MODEL_NAME,
+            generation_config={
+                "temperature": 0.1,
+                "max_output_tokens": 1024,
+            }
+        )
         response = model.generate_content(prompt)
         result_text = response.text.strip()
         
@@ -547,7 +548,13 @@ def chat_with_gemini_image(user_message, image_data=None):
     try:
         model = genai.GenerativeModel(
             MODEL_NAME,
-            system_instruction=SYSTEM_PROMPT_BASE
+            system_instruction=SYSTEM_PROMPT_BASE,
+            generation_config={
+                "temperature": 0.4,
+                "top_p": 1,
+                "top_k": 32,
+                "max_output_tokens": 2048,
+            }
         )
         
         if image_data:

@@ -483,6 +483,46 @@ def add_document():
             return jsonify({'success': False, 'message': f'Lỗi: {str(e)}'})
     
     return render_template('add_document.html')
+
+@app.route('/teacher/edit_document/<doc_id>', methods=['GET', 'POST'])
+@teacher_required
+def edit_document(doc_id):
+    """Chỉnh sửa tài liệu"""
+    doc = db.get_document_by_id(doc_id)
+    
+    if not doc:
+        flash('Tài liệu không tồn tại', 'danger')
+        return redirect(url_for('documents'))
+    
+    if doc.get('teacher_id') != session['user_id']:
+        flash('Bạn không có quyền chỉnh sửa tài liệu này', 'danger')
+        return redirect(url_for('documents'))
+    
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            
+            # Tự động nhận diện link_type nếu để auto
+            if data.get('link_type') == 'auto' or not data.get('link_type'):
+                url = data.get('url', '')
+                if 'youtube.com' in url or 'youtu.be' in url:
+                    data['link_type'] = 'youtube'
+                elif 'drive.google.com' in url:
+                    data['link_type'] = 'drive'
+                else:
+                    data['link_type'] = 'other'
+
+            success = db.update_document(doc_id, data)
+            
+            if success:
+                return jsonify({'success': True, 'message': 'Cập nhật tài liệu thành công'})
+            else:
+                return jsonify({'success': False, 'message': 'Cập nhật thất bại'})
+        
+        except Exception as e:
+            return jsonify({'success': False, 'message': f'Lỗi: {str(e)}'})
+    
+    return render_template('add_document.html', doc=doc, edit_mode=True)
 #################################
 
 
@@ -627,7 +667,6 @@ def validate_subject(subject):
 # ============================================================================
 @app.route('/tracnghiem')
 @login_required
-@student_required
 def tracnghiem():
     """
     Trang chọn đề thi trắc nghiệm - Hỗ trợ 10 môn học
@@ -695,7 +734,6 @@ def tracnghiem():
 # ============================================================================
 @app.route('/tracnghiem/lam-bai/<subject>/<exam_id>')
 @login_required
-@student_required
 def lam_bai_tracnghiem(subject, exam_id):
     """
     Hiển thị đề trắc nghiệm để học sinh làm bài
@@ -828,7 +866,6 @@ def lam_bai_tracnghiem(subject, exam_id):
 # ============================================================================
 @app.route('/api/tracnghiem/check-time/<subject>/<exam_id>')
 @login_required
-@student_required
 def api_check_exam_time(subject, exam_id):
     """
     API kiểm tra thời gian còn lại - Hỗ trợ 10 môn
@@ -914,7 +951,6 @@ def api_check_exam_time(subject, exam_id):
 # ============================================================================
 @app.route('/tracnghiem/nop-bai', methods=['POST'])
 @login_required
-@student_required
 def nop_bai_tracnghiem():
     """
     Nộp bài - Hỗ trợ cả trắc nghiệm và tự luận
@@ -1240,7 +1276,6 @@ def nop_bai_tracnghiem():
 # ============================================================================
 @app.route('/tracnghiem/lich-su')
 @login_required
-@student_required
 def lich_su_tracnghiem():
     """
     Hiển thị lịch sử làm bài - Hỗ trợ 10 môn học
@@ -1288,7 +1323,6 @@ def lich_su_tracnghiem():
 # ============================================================================
 @app.route('/tracnghiem/reset/<subject>/<exam_id>')
 @login_required
-@student_required
 def reset_exam_session(subject, exam_id):
     """
     Reset session để làm lại bài thi
@@ -1312,7 +1346,6 @@ def reset_exam_session(subject, exam_id):
 # ============================================================================
 @app.route('/tracnghiem/ket-qua/<subject>/<exam_id>')
 @login_required
-@student_required
 def ket_qua_tracnghiem(subject, exam_id):
     """
     Hiển thị kết quả bài làm - ⭐ BAO GỒM PHÂN TÍCH AI
@@ -1410,23 +1443,41 @@ def allowed_file(filename):
 def forum():
     search_query = request.args.get('search', '').strip()
     filter_type = request.args.get('filter', 'all')
-    
+    filter_subject = request.args.get('subject', 'all').strip()
+    filter_grade = request.args.get('grade', 'all').strip()
+
     if search_query:
         posts = db.search_forum_posts(search_query)
     elif filter_type == 'my_posts':
         posts = db.get_forum_posts_by_user(session['user_id'])
     else:
         posts = db.get_all_forum_posts()
-    
+
+    # Lọc theo môn học
+    if filter_subject != 'all':
+        posts = [p for p in posts if filter_subject in p.get('tags', [])]
+
+    # Lọc theo lớp
+    if filter_grade != 'all':
+        posts = [p for p in posts if filter_grade in p.get('tags', [])]
+
     for post in posts:
         post['created_at_formatted'] = format_datetime(post['created_at'])
         if post.get('updated_at'):
             post['updated_at_formatted'] = format_datetime(post['updated_at'])
-    
-    return render_template('forum.html', 
+
+    FORUM_SUBJECTS = ['Toán', 'Ngữ Văn', 'Tiếng Anh', 'Vật Lý', 'Hóa Học',
+                      'Sinh Học', 'Lịch Sử', 'Địa Lý', 'GDCD', 'Công Nghệ', 'Tin Học']
+    FORUM_GRADES = ['Lớp 6', 'Lớp 7', 'Lớp 8', 'Lớp 9']
+
+    return render_template('forum.html',
                          posts=posts,
                          search_query=search_query,
                          filter_type=filter_type,
+                         filter_subject=filter_subject,
+                         filter_grade=filter_grade,
+                         forum_subjects=FORUM_SUBJECTS,
+                         forum_grades=FORUM_GRADES,
                          username=session.get('username'))
 
 
@@ -1786,6 +1837,99 @@ def delete_chat_message(message_id):
         return jsonify({'success': False, 'message': f'Lỗi: {str(e)}'})
 ################
 #game
+
+# ============ QUẢN LÝ CÂU HỎI GAME (GIÁO VIÊN) ============
+
+@app.route('/teacher/game_questions')
+@login_required
+@teacher_required
+def teacher_game_questions():
+    """Trang quản lý câu hỏi game cho giáo viên"""
+    try:
+        with open('questions.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except:
+        data = {'bai_1': [], 'bai_2': []}
+    return render_template('teacher_game_questions.html', questions=data)
+
+
+@app.route('/teacher/game_questions/add', methods=['POST'])
+@login_required
+@teacher_required
+def teacher_add_game_question():
+    """Thêm câu hỏi game mới"""
+    try:
+        question_text = request.form.get('question', '').strip()
+        option_a = request.form.get('option_a', '').strip()
+        option_b = request.form.get('option_b', '').strip()
+        option_c = request.form.get('option_c', '').strip()
+        option_d = request.form.get('option_d', '').strip()
+        answer = request.form.get('answer', '').strip()
+        bai = request.form.get('bai', 'bai_1').strip()
+
+        if not all([question_text, option_a, option_b, option_c, option_d, answer]):
+            flash('Vui lòng điền đầy đủ thông tin câu hỏi', 'danger')
+            return redirect(url_for('teacher_game_questions'))
+
+        if answer not in [option_a, option_b, option_c, option_d]:
+            flash('Đáp án đúng phải trùng với một trong 4 lựa chọn', 'danger')
+            return redirect(url_for('teacher_game_questions'))
+
+        try:
+            with open('questions.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except:
+            data = {}
+
+        if bai not in data:
+            data[bai] = []
+
+        new_question = {
+            'question': question_text,
+            'options': [option_a, option_b, option_c, option_d],
+            'answer': answer,
+            'difficulty': 1
+        }
+        data[bai].append(new_question)
+
+        with open('questions.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+        flash('Thêm câu hỏi thành công!', 'success')
+        return redirect(url_for('teacher_game_questions'))
+
+    except Exception as e:
+        flash(f'Lỗi: {str(e)}', 'danger')
+        return redirect(url_for('teacher_game_questions'))
+
+
+@app.route('/teacher/game_questions/delete', methods=['POST'])
+@login_required
+@teacher_required
+def teacher_delete_game_question():
+    """Xóa câu hỏi game"""
+    try:
+        bai = request.form.get('bai', 'bai_1')
+        index = int(request.form.get('index', -1))
+
+        with open('questions.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        if bai in data and 0 <= index < len(data[bai]):
+            data[bai].pop(index)
+            with open('questions.json', 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            flash('Đã xóa câu hỏi!', 'success')
+        else:
+            flash('Không tìm thấy câu hỏi cần xóa', 'danger')
+
+        return redirect(url_for('teacher_game_questions'))
+    except Exception as e:
+        flash(f'Lỗi: {str(e)}', 'danger')
+        return redirect(url_for('teacher_game_questions'))
+
+
+# ============ GAME (HỌC SINH) ============
 
 @app.route("/enter_nickname")
 def enter_nickname():

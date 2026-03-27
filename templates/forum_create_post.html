@@ -346,13 +346,31 @@ textarea.form-control-custom {
                     </div>
 
                     <div class="form-group-custom">
-                        <label for="tags" class="form-label-custom">
-                            Thẻ tag (phân cách bằng dấu phẩy)
-                        </label>
-                        <input type="text" class="form-control-custom" id="tags" name="tags" 
+                        <label class="form-label-custom">Phân loại bài viết</label>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                            <div>
+                                <label style="font-size:0.85rem; color:#8e24aa; font-weight:600;">📚 Môn học</label>
+                                <select id="subjectTag" onchange="updateTags()" style="width:100%; padding:10px 14px; border:2px solid #f3e5f5; border-radius:12px; font-size:0.95rem; background:#fdf4ff; color:#4a148c; margin-top:4px;">
+                                    <option value="">-- Chọn môn --</option>
+                                    <option>Toán</option><option>Ngữ Văn</option><option>Tiếng Anh</option>
+                                    <option>Vật Lý</option><option>Hóa Học</option><option>Sinh Học</option>
+                                    <option>Lịch Sử</option><option>Địa Lý</option><option>GDCD</option>
+                                    <option>Công Nghệ</option><option>Tin Học</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size:0.85rem; color:#8e24aa; font-weight:600;">🎓 Lớp học</label>
+                                <select id="gradeTag" onchange="updateTags()" style="width:100%; padding:10px 14px; border:2px solid #f3e5f5; border-radius:12px; font-size:0.95rem; background:#fdf4ff; color:#4a148c; margin-top:4px;">
+                                    <option value="">-- Chọn lớp --</option>
+                                    <option>Lớp 6</option><option>Lớp 7</option><option>Lớp 8</option><option>Lớp 9</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label for="tags" class="form-label-custom" style="font-size:0.9rem;">Tag thêm (tùy chọn, phân cách bằng dấu phẩy)</label>
+                        <input type="text" class="form-control-custom" id="tags" name="tags"
                                value="{% if edit_mode %}{{ post.tags|join(', ') }}{% endif %}"
-                               placeholder="VD: python, lập trình, thuật toán">
-                        <small class="text-helper">Giúp người khác dễ tìm kiếm bài viết của bạn</small>
+                               placeholder="VD: ôn tập, bài khó, hỏi đáp">
+                        <small class="text-helper">Môn học và lớp sẽ tự động thêm vào danh sách tag</small>
                     </div>
 
                     <div class="form-group-custom">
@@ -471,5 +489,25 @@ document.getElementById('files').addEventListener('change', function(e) {
         }
     }
 });
+
+function updateTags() {
+    const subject = document.getElementById('subjectTag').value;
+    const grade = document.getElementById('gradeTag').value;
+    const tagsInput = document.getElementById('tags');
+
+    // Lấy các tag hiện tại, loại bỏ môn và lớp cũ
+    const allSubjects = ['Toán','Ngữ Văn','Tiếng Anh','Vật Lý','Hóa Học','Sinh Học','Lịch Sử','Địa Lý','GDCD','Công Nghệ','Tin Học'];
+    const allGrades = ['Lớp 6','Lớp 7','Lớp 8','Lớp 9'];
+    
+    let existingTags = tagsInput.value.split(',')
+        .map(t => t.trim())
+        .filter(t => t && !allSubjects.includes(t) && !allGrades.includes(t));
+
+    if (subject) existingTags.unshift(subject);
+    if (grade) existingTags.unshift(grade);
+
+    tagsInput.value = existingTags.join(', ');
+}
+
 </script>
 {% endblock %}

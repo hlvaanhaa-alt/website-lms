@@ -17,8 +17,8 @@
         </div>
         <div class="stat-card">
             <div class="stat-icon"></div>
-            <h3>{{ courses|sum(attribute='students_enrolled') }}</h3>
-            <p>Tổng học sinh</p>
+            <h3>100</h3>
+            <p>Học sinh</p>
         </div>
         <div class="stat-card">
             <div class="stat-icon"></div>
@@ -27,8 +27,8 @@
         </div>
         <div class="stat-card">
             <div class="stat-icon"></div>
-            <h3>{{ courses|selectattr('students_enrolled', 'greaterthan', 0)|list|length }}</h3>
-            <p>Khóa đang hoạt động</p>
+            <h3>67</h3>
+            <p>Tài khoản đang hoạt động</p>
         </div>
     </div>
 
@@ -116,6 +116,13 @@
                 <div class="management-icon">📁</div>
                 <h4>Thêm tài liệu</h4>
                 <p>Tải lên video và tài liệu học tập mới</p>
+                <span class="arrow">→</span>
+            </a>
+
+            <a href="{{ url_for('teacher_game_questions') }}" class="management-card">
+                <div class="management-icon">🎮</div>
+                <h4>Quản lý câu hỏi Game</h4>
+                <p>Thêm, xóa câu hỏi game trực tiếp trên web — không cần sửa file thủ công</p>
                 <span class="arrow">→</span>
             </a>
         </div>

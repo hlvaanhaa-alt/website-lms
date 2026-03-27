@@ -1,0 +1,11 @@
+về chabot AI chỉnh lại phản  hồi của nó ngắn gọn ví dụ giải 1 bài toán đi nó làm đủ là được giao diện chat mở rộng tí nó còn lỗi hiện thị công
+thức toán học mong bạn cải thiện lại
+
+về game giáo viên ra câu hỏi trực tiếp trên web tạo 1 khung nhập cho giáo viên thôi không cần cập nhật đề trong file json nữa mà cập nhật
+trên web
+giáo viên tạo đề nhập câu hỏi và 4 phương án chọn 1 phương án đúng sau đó nộp đề lên là game cập nhật
+thêm thanh menu để học sinh chơi game xong có thể thoát ra trang chủ làm giao diện game đẹp tí
+
+chỗ <a href="{{ url_for('chat_room') }}">Chat</a> làm khung chat to tí
+ ở diễn đàn học vui, sẽ thêm 2 thanh công cụ nữa (1 là môn, 2 là lớp) này là tag phân loại bài viết để học sinh dễ tìm kiếm
+ 

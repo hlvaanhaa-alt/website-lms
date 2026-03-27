@@ -132,6 +132,10 @@ class Database:
     def get_all_documents(self):
         return self._load_json(self.documents_file)
     
+    def get_document_by_id(self, doc_id):
+        docs = self.get_all_documents()
+        return next((d for d in docs if d['id'] == doc_id), None)
+    
     def add_document(self, doc_data):
         """
          Thêm tài liệu cho THCS (lớp 6, 7, 8, 9)
@@ -158,6 +162,21 @@ class Database:
         documents.append(new_doc)
         self._save_json(self.documents_file, documents)
         return doc_id
+    
+    def update_document(self, doc_id, doc_data):
+        docs = self.get_all_documents()
+        for i, doc in enumerate(docs):
+            if doc['id'] == doc_id:
+                # Cập nhật các trường được phép
+                updatable_fields = ['title', 'grade', 'doc_type', 'link_type', 'url', 'description']
+                for field in updatable_fields:
+                    if field in doc_data:
+                        docs[i][field] = doc_data[field]
+                
+                docs[i]['updated_at'] = datetime.now().isoformat()
+                self._save_json(self.documents_file, docs)
+                return True
+        return False
     
     def get_all_submissions(self):
         return self._load_json(self.submissions_file)

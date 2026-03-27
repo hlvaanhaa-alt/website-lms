@@ -529,5 +529,41 @@
     "author_role": "teacher",
     "created_at": "2025-12-09T15:27:36.950392",
     "reply_to": null
+  },
+  {
+    "id": "msg_000060",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T22:00:11.127775",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000061",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T22:01:05.726833",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000062",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T22:04:09.660093",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000063",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T22:15:25.738034",
+    "reply_to": null
   }
 ]
