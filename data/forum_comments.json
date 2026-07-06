@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "id": "comment_0001",
+    "post_id": "post_0002",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "content": "Tổng số cách rút 2 thẻ từ 8 thẻ là $C_8^2=28$. Số cách rút 2 thẻ đỏ là $C_5^2=10$. Vậy $P=\\frac{10}{28}=\\frac{5}{14}$.",
+    "created_at": "2026-07-06T03:11:40.402672",
+    "attachments": [],
+    "points_awarded": 30,
+    "best_bonus_awarded": 30,
+    "is_best_answer": true,
+    "demo_seed": true
+  },
+  {
+    "id": "comment_0002",
+    "post_id": "post_0003",
+    "author_id": "5",
+    "author_name": "hocsinh",
+    "author_role": "student",
+    "content": "Present perfect nói về trải nghiệm/kết quả còn liên quan hiện tại: I have finished my homework. Past simple nói việc đã kết thúc ở quá khứ: I finished it yesterday.",
+    "created_at": "2026-07-05T03:11:40.402672",
+    "attachments": [],
+    "points_awarded": 20,
+    "best_bonus_awarded": 0,
+    "is_best_answer": false,
+    "demo_seed": true
+  },
+  {
+    "id": "comment_0003",
+    "post_id": "post_0003",
+    "author_id": "2",
+    "author_name": "thaydaytoan",
+    "author_role": "student",
+    "content": "Mẹo nhớ: nếu có yesterday/last week/ago thì thường dùng past simple. Nếu có ever/never/just/already/yet thì hay gặp present perfect.",
+    "created_at": "2026-07-05T03:11:40.402672",
+    "attachments": [],
+    "points_awarded": 20,
+    "best_bonus_awarded": 0,
+    "is_best_answer": false,
+    "demo_seed": true
+  },
+  {
+    "id": "comment_0004",
+    "post_id": "post_0005",
+    "author_id": "5",
+    "author_name": "hocsinh",
+    "author_role": "student",
+    "content": "$\\sqrt{12}=2\\sqrt3$, $\\sqrt{27}=3\\sqrt3$. Nên $A=2\\sqrt3+3\\sqrt3-\\sqrt3=4\\sqrt3$.",
+    "created_at": "2026-07-04T03:11:40.402672",
+    "attachments": [],
+    "points_awarded": 40,
+    "best_bonus_awarded": 40,
+    "is_best_answer": true,
+    "demo_seed": true
+  },
+  {
+    "id": "comment_0005",
+    "post_id": "post_0006",
+    "author_id": "2",
+    "author_name": "thaydaytoan",
+    "author_role": "student",
+    "content": "Đặt hệ số: $3Fe + 2O_2 \\rightarrow Fe_3O_4$. Kiểm tra: trái có 3 Fe, 4 O; phải cũng 3 Fe, 4 O.",
+    "created_at": "2026-07-03T03:11:40.402672",
+    "attachments": [],
+    "points_awarded": 25,
+    "best_bonus_awarded": 0,
+    "is_best_answer": false,
+    "demo_seed": true
+  },
+  {
+    "id": "comment_0006",
+    "post_id": "post_0006",
+    "author_id": "6",
+    "author_name": "giaovien",
+    "author_role": "teacher",
+    "content": "Khi cân bằng nên bắt đầu từ nguyên tố xuất hiện ít chất nhất, sau đó kiểm tra oxy cuối cùng.",
+    "created_at": "2026-07-03T03:11:40.402672",
+    "attachments": [],
+    "points_awarded": 0,
+    "best_bonus_awarded": 0,
+    "is_best_answer": false,
+    "demo_seed": true
+  }
+]

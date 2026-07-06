@@ -14,9 +14,15 @@ import os
 import random
 from werkzeug.utils import secure_filename
 import uuid
-from utils.auth import register_user, login_user, get_user_by_id
+from utils.auth import register_user, login_user, get_user_by_id, load_users
 from utils.database import Database
-from utils.gemini_api import chat_with_gemini, process_response
+from utils.gemini_api import (
+    chat_with_gemini,
+    generate_math_quiz,
+    generate_teacher_exam,
+    is_quiz_request,
+    process_response,
+)
 from utils.gemini_api import grade_essay_with_ai  ############
 from utils.storage import (
     FORUM_UPLOAD_DIR,
@@ -40,11 +46,58 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=2)
 app.config["SESSION_COOKIE_SECURE"] = False  # Đổi thành True nếu dùng HTTPS
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 
 db = Database()
 QUESTIONS_FILE = writable_state_file("questions.json", {"bai_1": [], "bai_2": []})
 SCORES_FILE = writable_state_file("scores.json", [])
+FORUM_POINTS_FILE = writable_data_file("forum_points.json", [])
+FORUM_REPORTS_FILE = writable_data_file("forum_reports.json", [])
+FORUM_BANS_FILE = writable_data_file("forum_bans.json", [])
+SHOP_ITEMS_FILE = writable_data_file("shop_items.json", [])
+SHOP_ORDERS_FILE = writable_data_file("shop_orders.json", [])
+USER_INVENTORY_FILE = writable_data_file("user_inventory.json", [])
+USER_PROFILES_FILE = writable_data_file("user_profiles.json", [])
+
+FORUM_SUBJECTS = [
+    "Toán",
+    "Ngữ Văn",
+    "Tiếng Anh",
+    "Vật Lý",
+    "Hóa Học",
+    "Sinh Học",
+    "Lịch Sử",
+    "Địa Lý",
+    "GDCD",
+    "Công Nghệ",
+    "Tin Học",
+]
+FORUM_GRADES = ["Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9", "Lớp 10", "Lớp 11", "Lớp 12"]
+FORUM_REPORT_REASONS = {
+    "spam": "Tài khoản spam",
+    "insult": "Lăng mạ/xúc phạm",
+    "wrong_content": "Nội dung không phù hợp",
+    "cheating": "Gian lận điểm thưởng",
+    "other": "Khác",
+}
+FORUM_REPORT_STATUSES = {
+    "pending": "Chờ xử lý",
+    "resolved": "Đã xử lý",
+    "rejected": "Bỏ qua",
+}
+ONLINE_USERS = {}
+ONLINE_WINDOW_SECONDS = 300
+
+
+@app.after_request
+def prevent_stale_html_cache(response):
+    if response.content_type.startswith("text/html"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 
 def login_required(f):
@@ -74,6 +127,56 @@ def teacher_required(f):
     return decorated_function
 
 
+def is_admin_account(user=None):
+    if user is None and "user_id" in session:
+        user = get_user_by_id(session["user_id"])
+    if not user:
+        return False
+    return user.get("role") == "admin"
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user_id" not in session:
+            flash("Vui lòng đăng nhập", "warning")
+            return redirect(url_for("login"))
+
+        user = get_user_by_id(session["user_id"])
+        if not is_admin_account(user):
+            flash("Chỉ quản trị viên mới có quyền truy cập trang này", "danger")
+            return redirect(url_for("index"))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+@app.context_processor
+def inject_admin_state():
+    return {"is_admin_session": is_admin_account()}
+
+
+@app.before_request
+def track_online_user():
+    user_id = session.get("user_id")
+    if not user_id:
+        return
+
+    now = datetime.now()
+    user = get_user_by_id(user_id)
+    ONLINE_USERS[user_id] = {
+        "user_id": user_id,
+        "username": session.get("username") or (user.get("username") if user else "Unknown"),
+        "role": session.get("role") or (user.get("role") if user else "student"),
+        "last_seen": now,
+    }
+
+    expired_at = now - timedelta(seconds=ONLINE_WINDOW_SECONDS)
+    for active_user_id, active_user in list(ONLINE_USERS.items()):
+        if active_user.get("last_seen", now) < expired_at:
+            ONLINE_USERS.pop(active_user_id, None)
+
+
 def student_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -93,7 +196,9 @@ def student_required(f):
 @app.route("/")
 def index():
     if "user_id" in session:
-        if session.get("role") == "teacher":
+        if session.get("role") == "admin":
+            return redirect(url_for("admin_home"))
+        elif session.get("role") == "teacher":
             return redirect(url_for("teacher_dashboard"))
         else:
             return redirect(url_for("student_dashboard"))
@@ -140,21 +245,28 @@ def login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
+        selected_role = request.form.get("role", "").strip()
 
-        if not username or not password:
-            flash("Vui lòng nhập tên đăng nhập và mật khẩu", "danger")
+        if not username or not password or selected_role not in {"student", "teacher", "admin"}:
+            flash("Vui lòng nhập đầy đủ tài khoản, mật khẩu và vai trò", "danger")
             return render_template("login.html")
 
         result = login_user(username, password)
 
         if result["success"]:
+            if result["role"] != selected_role:
+                flash("Tài khoản này không thuộc vai trò bạn đã chọn", "danger")
+                return render_template("login.html")
+
             session["user_id"] = result["user_id"]
             session["username"] = result["username"]
             session["role"] = result["role"]
 
             flash(f"Chào mừng {result['username']}!", "success")
 
-            if result["role"] == "teacher":
+            if result["role"] == "admin":
+                return redirect(url_for("admin_home"))
+            elif result["role"] == "teacher":
                 return redirect(url_for("teacher_dashboard"))
             else:
                 return redirect(url_for("student_dashboard"))
@@ -786,6 +898,93 @@ def validate_subject(subject):
     return subject in SUBJECTS
 
 
+def _load_subject_exam_data(subject):
+    json_file = readable_data_file(f"{subject}.json")
+    data = read_json(json_file, {"exams": []})
+    if not isinstance(data, dict):
+        data = {"exams": []}
+    if not isinstance(data.get("exams"), list):
+        data["exams"] = []
+    return data
+
+
+def _save_subject_exam_data(subject, data):
+    json_file = writable_data_file(f"{subject}.json")
+    write_json(json_file, data)
+
+
+def _generate_exam_id(subject, existing_exams):
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    base_id = f"exam_{subject}_{timestamp}"
+    existing_ids = {exam.get("id") for exam in existing_exams}
+    exam_id = base_id
+    suffix = 1
+    while exam_id in existing_ids:
+        suffix += 1
+        exam_id = f"{base_id}_{suffix}"
+    return exam_id
+
+
+def _normalize_teacher_exam_payload(payload):
+    subject = (payload.get("subject") or "").strip()
+    if not validate_subject(subject):
+        raise ValueError("Môn học không hợp lệ")
+
+    title = (payload.get("title") or "").strip()
+    if not title:
+        raise ValueError("Vui lòng nhập tên đề")
+
+    try:
+        time_limit = int(payload.get("time_limit") or 30)
+    except (TypeError, ValueError):
+        time_limit = 30
+    time_limit = max(5, min(time_limit, 180))
+
+    questions = payload.get("questions") or []
+    if not isinstance(questions, list) or not questions:
+        raise ValueError("Đề phải có ít nhất 1 câu hỏi")
+    if len(questions) > 60:
+        raise ValueError("Mỗi đề tối đa 60 câu hỏi")
+
+    normalized_questions = []
+    for index, question in enumerate(questions, 1):
+        question_text = (question.get("question") or "").strip()
+        options = question.get("options") or {}
+        correct_answer = (question.get("correct_answer") or "").strip().upper()
+
+        if not question_text:
+            raise ValueError(f"Câu {index} chưa có nội dung")
+
+        normalized_options = {
+            letter: str(options.get(letter, "")).strip()
+            for letter in ("A", "B", "C", "D")
+        }
+        if not all(normalized_options.values()):
+            raise ValueError(f"Câu {index} phải có đủ lựa chọn A, B, C, D")
+        if correct_answer not in normalized_options:
+            raise ValueError(f"Câu {index} phải chọn đáp án đúng A/B/C/D")
+
+        normalized_questions.append(
+            {
+                "id": index,
+                "number": index,
+                "question": question_text,
+                "options": normalized_options,
+                "correct_answer": correct_answer,
+                "explanation": (question.get("explanation") or "").strip(),
+            }
+        )
+
+    return subject, {
+        "title": title,
+        "time_limit": time_limit,
+        "description": (payload.get("description") or "").strip(),
+        "questions": normalized_questions,
+        "created_by": session.get("user_id"),
+        "created_at": datetime.now().isoformat(),
+    }
+
+
 # ============================================================================
 # ROUTE 1: Trang chọn đề thi - ĐÃ CẬP NHẬT CHO 10 MÔN
 # ============================================================================
@@ -854,6 +1053,112 @@ def tracnghiem():
         traceback.print_exc()
         flash(f"Lỗi khi tải danh sách đề thi: {str(e)}", "danger")
         return redirect(url_for("student_dashboard"))
+
+
+@app.route("/teacher/exams")
+@login_required
+@teacher_required
+def teacher_exams():
+    exams_by_subject = {}
+    for subject_code, subject_info in SUBJECTS.items():
+        data = _load_subject_exam_data(subject_code)
+        exams = data.get("exams", [])
+        for exam in exams:
+            exam["subject"] = subject_code
+            exam["subject_name"] = subject_info["name"]
+        exams_by_subject[subject_code] = exams
+
+    return render_template(
+        "teacher_exams.html",
+        subjects=SUBJECTS,
+        exams_by_subject=exams_by_subject,
+        username=session.get("username"),
+    )
+
+
+@app.route("/teacher/exams/create", methods=["POST"])
+@login_required
+@teacher_required
+def teacher_create_exam():
+    try:
+        payload = request.get_json() or {}
+        subject, exam_data = _normalize_teacher_exam_payload(payload)
+
+        data = _load_subject_exam_data(subject)
+        exam_data["id"] = _generate_exam_id(subject, data.get("exams", []))
+        data["exams"].append(exam_data)
+        _save_subject_exam_data(subject, data)
+
+        return jsonify(
+            {
+                "success": True,
+                "message": "Đã tạo đề trắc nghiệm",
+                "exam": exam_data,
+                "subject": subject,
+                "url": url_for(
+                    "lam_bai_tracnghiem", subject=subject, exam_id=exam_data["id"]
+                ),
+            }
+        )
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
+
+
+@app.route("/teacher/exams/ai-generate", methods=["POST"])
+@login_required
+@teacher_required
+def teacher_ai_generate_exam():
+    try:
+        payload = request.get_json() or {}
+        subject = (payload.get("subject") or "").strip()
+        if not validate_subject(subject):
+            return jsonify({"success": False, "message": "Môn học không hợp lệ"}), 400
+
+        topic = (payload.get("topic") or "").strip()
+        if not topic:
+            return jsonify({"success": False, "message": "Vui lòng nhập yêu cầu cho AI"}), 400
+
+        question_count = int(payload.get("question_count") or 10)
+        time_limit = int(payload.get("time_limit") or 30)
+        grade = (payload.get("grade") or "").strip()
+        subject_name = SUBJECTS[subject]["name"]
+
+        exam = generate_teacher_exam(
+            subject_name=subject_name,
+            topic=topic,
+            question_count=question_count,
+            grade=grade,
+            time_limit=time_limit,
+        )
+        exam["subject"] = subject
+
+        return jsonify({"success": True, "exam": exam})
+    except Exception as e:
+        print(f"Lỗi AI tạo đề: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@app.route("/teacher/exams/delete", methods=["POST"])
+@login_required
+@teacher_required
+def teacher_delete_exam():
+    try:
+        payload = request.get_json() or {}
+        subject = (payload.get("subject") or "").strip()
+        exam_id = (payload.get("exam_id") or "").strip()
+        if not validate_subject(subject) or not exam_id:
+            return jsonify({"success": False, "message": "Dữ liệu không hợp lệ"}), 400
+
+        data = _load_subject_exam_data(subject)
+        before_count = len(data.get("exams", []))
+        data["exams"] = [exam for exam in data.get("exams", []) if exam.get("id") != exam_id]
+        if len(data["exams"]) == before_count:
+            return jsonify({"success": False, "message": "Không tìm thấy đề cần xóa"}), 404
+
+        _save_subject_exam_data(subject, data)
+        return jsonify({"success": True, "message": "Đã xóa đề"})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 
 # ============================================================================
@@ -1638,58 +1943,757 @@ def uploaded_forum_file(filename):
     return send_from_directory(FORUM_UPLOAD_DIR, filename)
 
 
+def forum_month_key(dt=None):
+    dt = dt or datetime.now()
+    return dt.strftime("%Y-%m")
+
+
+def forum_time_ago(iso_string):
+    try:
+        created = datetime.fromisoformat(iso_string)
+        seconds = int((datetime.now() - created).total_seconds())
+        if seconds < 60:
+            return "vừa xong"
+        minutes = seconds // 60
+        if minutes < 60:
+            return f"{minutes} phút trước"
+        hours = minutes // 60
+        if hours < 24:
+            return f"{hours} giờ trước"
+        days = hours // 24
+        if days < 30:
+            return f"{days} ngày trước"
+        months = days // 30
+        return f"{months} tháng trước"
+    except Exception:
+        return ""
+
+
+def forum_role_label(role):
+    if role == "teacher":
+        return "Giáo viên"
+    if role == "admin":
+        return "Quản trị viên"
+    return "Học sinh"
+
+
+def forum_normalize_question(post):
+    tags = post.get("tags", [])
+    subject = post.get("subject") or next((tag for tag in tags if tag in FORUM_SUBJECTS), "Khác")
+    grade = post.get("grade") or next((tag for tag in tags if tag in FORUM_GRADES), "")
+    status = post.get("status")
+    if not status:
+        status = "resolved" if post.get("accepted_answer_id") else ("answered" if post.get("comments_count", 0) else "open")
+    post["subject"] = subject
+    post["grade"] = grade
+    post["status"] = status
+    post["reward_points"] = int(post.get("reward_points") or 0)
+    post["answers_count"] = int(post.get("comments_count") or 0)
+    post["time_ago"] = forum_time_ago(post.get("created_at", ""))
+    post["role_label"] = forum_role_label(post.get("author_role", "student"))
+    post["is_first_question"] = bool(post.get("is_first_question", False))
+    return post
+
+
+def forum_points_events():
+    return read_json(FORUM_POINTS_FILE, [])
+
+
+def add_forum_points(user_id, username, role, points, reason, post_id=None, answer_id=None):
+    points = int(points or 0)
+    if points == 0:
+        return None
+    events = forum_points_events()
+    event = {
+        "id": f"fp_{len(events) + 1:06d}",
+        "user_id": user_id,
+        "username": username,
+        "role": role,
+        "points": points,
+        "reason": reason,
+        "post_id": post_id,
+        "answer_id": answer_id,
+        "month": forum_month_key(),
+        "created_at": datetime.now().isoformat(),
+    }
+    events.append(event)
+    write_json(FORUM_POINTS_FILE, events)
+    return event
+
+
+def shop_items():
+    items = read_json(SHOP_ITEMS_FILE, [])
+    if not isinstance(items, list):
+        return []
+    return [normalize_shop_item(item) for item in items]
+
+
+def shop_item_by_id(item_id):
+    return next((item for item in shop_items() if item.get("id") == item_id), None)
+
+
+def normalize_shop_item(item):
+    type_labels = {
+        "badge": "Huy hiệu",
+        "frame": "Khung avatar",
+        "title": "Danh hiệu",
+        "avatar": "Avatar",
+        "sticker": "Sticker",
+    }
+    item = dict(item)
+    item["type_label"] = item.get("type_label") or type_labels.get(item.get("type"), "Vật phẩm")
+    item["price"] = int(item.get("price") or 0)
+    item["icon"] = item.get("icon") or "◆"
+    item["css_class"] = item.get("css_class") or ""
+    item["image_url"] = item.get("image_url") or ""
+    item["image_storage_path"] = item.get("image_storage_path") or ""
+    item["active"] = bool(item.get("active", True))
+    return item
+
+
+def shop_item_base_id(item_type, name):
+    base = secure_filename(f"{item_type}_{name}".lower().replace(" ", "_"))
+    return base or f"{item_type}_{uuid.uuid4().hex[:8]}"
+
+
+def create_shop_item_id(item_type, name, existing_items):
+    existing_ids = {item.get("id") for item in existing_items}
+    base = shop_item_base_id(item_type, name)
+    item_id = base
+    suffix = 1
+    while item_id in existing_ids:
+        suffix += 1
+        item_id = f"{base}_{suffix}"
+    return item_id
+
+
+def user_inventory_records(user_id=None):
+    inventory = read_json(USER_INVENTORY_FILE, [])
+    if not isinstance(inventory, list):
+        return []
+    if user_id is None:
+        return inventory
+    return [record for record in inventory if record.get("user_id") == user_id]
+
+
+def save_user_inventory(records):
+    write_json(USER_INVENTORY_FILE, records)
+
+
+def user_profile_records():
+    records = read_json(USER_PROFILES_FILE, [])
+    return records if isinstance(records, list) else []
+
+
+def save_user_profile_records(records):
+    write_json(USER_PROFILES_FILE, records)
+
+
+def user_profile_customization(user_id):
+    records = user_profile_records()
+    profile = next((record for record in records if record.get("user_id") == user_id), None)
+    if profile:
+        return profile
+    return {
+        "user_id": user_id,
+        "avatar_url": "",
+        "avatar_storage_path": "",
+        "equipped_avatar_item_id": "",
+        "equipped_frame_id": "",
+        "equipped_title_id": "",
+        "created_at": datetime.now().isoformat(),
+    }
+
+
+def save_user_profile_customization(user_id, updates):
+    records = user_profile_records()
+    now = datetime.now().isoformat()
+    for record in records:
+        if record.get("user_id") == user_id:
+            record.update(updates)
+            record["updated_at"] = now
+            save_user_profile_records(records)
+            return record
+
+    profile = {
+        "user_id": user_id,
+        "avatar_url": "",
+        "avatar_storage_path": "",
+        "equipped_avatar_item_id": "",
+        "equipped_frame_id": "",
+        "equipped_title_id": "",
+        "created_at": now,
+    }
+    profile.update(updates)
+    records.append(profile)
+    save_user_profile_records(records)
+    return profile
+
+
+def user_owned_items(user_id):
+    owned_records = user_inventory_records(user_id)
+    items_by_id = {item.get("id"): item for item in shop_items()}
+    enriched = []
+    for record in owned_records:
+        item = items_by_id.get(record.get("item_id"))
+        if item:
+            enriched.append({**record, "item": item})
+    return enriched
+
+
+def grant_shop_item_to_user(user_id, item_id, source="admin_grant", note=""):
+    item = shop_item_by_id(item_id)
+    user = get_user_by_id(user_id)
+    if not item or not user:
+        return None, "Không tìm thấy vật phẩm hoặc tài khoản"
+
+    inventory = user_inventory_records()
+    existing = next(
+        (record for record in inventory if record.get("user_id") == user_id and record.get("item_id") == item_id),
+        None,
+    )
+    if existing:
+        return existing, "Người dùng đã sở hữu vật phẩm"
+
+    now = datetime.now().isoformat()
+    record = {
+        "id": f"inv_{len(inventory) + 1:06d}",
+        "user_id": user_id,
+        "username": user.get("username", "Unknown"),
+        "item_id": item_id,
+        "item_type": item.get("type"),
+        "source": source,
+        "note": note,
+        "created_at": now,
+    }
+    inventory.append(record)
+    save_user_inventory(inventory)
+
+    if item.get("type") == "frame" and not user_profile_customization(user_id).get("equipped_frame_id"):
+        save_user_profile_customization(user_id, {"equipped_frame_id": item_id})
+    elif item.get("type") == "title" and not user_profile_customization(user_id).get("equipped_title_id"):
+        save_user_profile_customization(user_id, {"equipped_title_id": item_id})
+
+    orders = read_json(SHOP_ORDERS_FILE, [])
+    orders.append(
+        {
+            "id": f"order_{len(orders) + 1:06d}",
+            "user_id": user_id,
+            "username": user.get("username", "Unknown"),
+            "item_id": item_id,
+            "item_name": item.get("name"),
+            "price": 0,
+            "source": source,
+            "note": note,
+            "created_at": now,
+        }
+    )
+    write_json(SHOP_ORDERS_FILE, orders)
+    return record, "Đã trao vật phẩm"
+
+
+def user_equipped_items(user_id):
+    profile = user_profile_customization(user_id)
+    items_by_id = {item.get("id"): item for item in shop_items()}
+    badges = [record["item"] for record in user_owned_items(user_id) if record["item"].get("type") == "badge"]
+    return {
+        "profile": profile,
+        "frame": items_by_id.get(profile.get("equipped_frame_id")),
+        "title": items_by_id.get(profile.get("equipped_title_id")),
+        "badges": badges,
+    }
+
+
+def decorate_forum_author(payload, user_id):
+    equipped = user_equipped_items(user_id)
+    profile = equipped["profile"]
+    payload["author_avatar_url"] = profile.get("avatar_url", "")
+    payload["author_frame"] = equipped.get("frame")
+    payload["author_title"] = equipped.get("title")
+    payload["author_badges"] = equipped.get("badges", [])[:3]
+    return payload
+
+
+def avatar_file_payload(file):
+    filename = secure_filename(file.filename)
+    ext = filename.rsplit(".", 1)[1].lower() if "." in filename else ""
+    if ext not in {"png", "jpg", "jpeg", "gif"}:
+        raise ValueError("Chỉ hỗ trợ ảnh PNG, JPG, JPEG hoặc GIF")
+
+    file.seek(0, os.SEEK_END)
+    size = file.tell()
+    file.seek(0)
+    if size > 5 * 1024 * 1024:
+        raise ValueError("Ảnh đại diện tối đa 5MB")
+
+    unique_filename = f"avatar_{session['user_id']}_{uuid.uuid4().hex[:8]}_{filename}"
+    file_path = forum_upload_path(unique_filename)
+    file.save(file_path)
+    sync_file_to_remote(file_path)
+    return {
+        "url": forum_upload_url(unique_filename),
+        "storage_path": str(file_path),
+    }
+
+
+def shop_asset_file_payload(file, item_type):
+    filename = secure_filename(file.filename)
+    ext = filename.rsplit(".", 1)[1].lower() if "." in filename else ""
+    if ext not in {"png", "jpg", "jpeg", "gif", "webp"}:
+        raise ValueError("Chỉ hỗ trợ ảnh PNG, JPG, JPEG, GIF hoặc WEBP")
+
+    file.seek(0, os.SEEK_END)
+    size = file.tell()
+    file.seek(0)
+    if size > 5 * 1024 * 1024:
+        raise ValueError("Ảnh vật phẩm tối đa 5MB")
+
+    unique_filename = f"shop_{item_type}_{uuid.uuid4().hex[:8]}_{filename}"
+    file_path = forum_upload_path(unique_filename)
+    file.save(file_path)
+    sync_file_to_remote(file_path)
+    return {
+        "url": forum_upload_url(unique_filename),
+        "storage_path": str(file_path),
+    }
+
+
+def forum_user_stats(user_id):
+    posts = db.get_all_forum_posts()
+    comments = db._load_json(db.forum_comments_file)
+    points = forum_points_events()
+    reports = read_json(FORUM_REPORTS_FILE, [])
+    user_points = [event for event in points if event.get("user_id") == user_id]
+    month = forum_month_key()
+    posts_by_id = {post.get("id"): forum_normalize_question(dict(post)) for post in posts}
+    helped_subject_groups = {
+        "KHTN": 0,
+        "KHXH": 0,
+        "Ngoại Ngữ": 0,
+        "Nghệ Thuật": 0,
+        "KHCN": 0,
+    }
+    subject_groups = {
+        "Toán": "KHTN",
+        "Vật Lý": "KHTN",
+        "Hóa Học": "KHTN",
+        "Sinh Học": "KHTN",
+        "Ngữ Văn": "KHXH",
+        "Lịch Sử": "KHXH",
+        "Địa Lý": "KHXH",
+        "GDCD": "KHXH",
+        "Tiếng Anh": "Ngoại Ngữ",
+        "Công Nghệ": "KHCN",
+        "Tin Học": "KHCN",
+    }
+    for comment in comments:
+        if comment.get("author_id") != user_id:
+            continue
+        post = posts_by_id.get(comment.get("post_id"), {})
+        group = subject_groups.get(post.get("subject"), "KHTN")
+        helped_subject_groups[group] = helped_subject_groups.get(group, 0) + 1
+    max_helped_subject = max(helped_subject_groups.values(), default=0) or 1
+    helped_subjects = [
+        {
+            "label": label,
+            "value": value,
+            "percent": round((value / max_helped_subject) * 100) if value else 0,
+        }
+        for label, value in helped_subject_groups.items()
+    ]
+
+    return {
+        "points": sum(int(event.get("points", 0)) for event in user_points),
+        "monthly_points": sum(
+            int(event.get("points", 0))
+            for event in user_points
+            if event.get("month") == month and int(event.get("points", 0)) > 0
+        ),
+        "questions_count": len([post for post in posts if post.get("author_id") == user_id]),
+        "answers_count": len([comment for comment in comments if comment.get("author_id") == user_id]),
+        "best_answers_count": len([comment for comment in comments if comment.get("author_id") == user_id and comment.get("is_best_answer")]),
+        "warnings_count": len([report for report in reports if report.get("reported_user_id") == user_id]),
+        "thanks_count": 0,
+        "five_star_count": 0,
+        "verified_count": 0,
+        "helped_count": len({comment.get("post_id") for comment in comments if comment.get("author_id") == user_id}),
+        "helped_subjects": helped_subjects,
+    }
+
+
+def forum_user_activity(user_id, limit=6):
+    posts = [forum_normalize_question(dict(post)) for post in db.get_all_forum_posts()]
+    comments = db._load_json(db.forum_comments_file)
+    points = forum_points_events()
+    posts_by_id = {post.get("id"): post for post in posts}
+
+    user_questions = [post for post in posts if post.get("author_id") == user_id]
+    for post in user_questions:
+        post["created_at_formatted"] = format_datetime(post.get("created_at", ""))
+        post["time_ago"] = forum_time_ago(post.get("created_at", ""))
+
+    user_answers = []
+    for comment in comments:
+        if comment.get("author_id") != user_id:
+            continue
+        post = posts_by_id.get(comment.get("post_id"))
+        if not post:
+            continue
+        points_total = int(comment.get("points_awarded") or 0) + int(comment.get("best_bonus_awarded") or 0)
+        user_answers.append(
+            {
+                "id": comment.get("id"),
+                "post_id": post.get("id"),
+                "post_title": post.get("title", "Câu hỏi đã xóa"),
+                "subject": post.get("subject", "Khác"),
+                "grade": post.get("grade", ""),
+                "content": comment.get("content", ""),
+                "created_at": comment.get("created_at", ""),
+                "time_ago": forum_time_ago(comment.get("created_at", "")),
+                "is_best_answer": bool(comment.get("is_best_answer")),
+                "points_total": points_total,
+            }
+        )
+    user_answers.sort(key=lambda item: item.get("created_at", ""), reverse=True)
+
+    user_point_history = [
+        {
+            **event,
+            "time_ago": forum_time_ago(event.get("created_at", "")),
+            "post_title": posts_by_id.get(event.get("post_id"), {}).get("title", "Hoạt động diễn đàn"),
+        }
+        for event in points
+        if event.get("user_id") == user_id
+    ]
+    user_point_history.sort(key=lambda item: item.get("created_at", ""), reverse=True)
+
+    return {
+        "questions": user_questions[:limit],
+        "answers": user_answers[:limit],
+        "best_answers": [answer for answer in user_answers if answer.get("is_best_answer")][:limit],
+        "point_history": user_point_history[:limit],
+    }
+
+
+def forum_leaderboard(limit=20):
+    month = forum_month_key()
+    totals = {}
+    for event in forum_points_events():
+        if event.get("month") != month:
+            continue
+        event_points = int(event.get("points", 0))
+        if event_points <= 0:
+            continue
+        user_id = event.get("user_id")
+        if not user_id:
+            continue
+        if user_id not in totals:
+            totals[user_id] = {
+                "user_id": user_id,
+                "username": event.get("username", "Unknown"),
+                "role": event.get("role", "student"),
+                "points": 0,
+            }
+        totals[user_id]["points"] += event_points
+    ranking = sorted(totals.values(), key=lambda item: item["points"], reverse=True)
+    for index, item in enumerate(ranking, 1):
+        item["rank"] = index
+        item["role_label"] = forum_role_label(item.get("role", "student"))
+        decorate_forum_author(item, item.get("user_id"))
+    return ranking[:limit]
+
+
+def forum_ban_records():
+    records = read_json(FORUM_BANS_FILE, [])
+    return records if isinstance(records, list) else []
+
+
+def save_forum_ban_records(records):
+    write_json(FORUM_BANS_FILE, records)
+
+
+def forum_active_ban(user_id):
+    now = datetime.now()
+    records = forum_ban_records()
+    changed = False
+    active_records = []
+
+    for record in records:
+        if record.get("user_id") != user_id or record.get("status") != "active":
+            continue
+
+        banned_until = record.get("banned_until")
+        if banned_until:
+            try:
+                if datetime.fromisoformat(banned_until) <= now:
+                    record["status"] = "expired"
+                    record["expired_at"] = now.isoformat()
+                    changed = True
+                    continue
+            except Exception:
+                pass
+        active_records.append(record)
+
+    if changed:
+        save_forum_ban_records(records)
+
+    active_records.sort(key=lambda item: item.get("created_at", ""), reverse=True)
+    return active_records[0] if active_records else None
+
+
+def forum_ban_message(ban):
+    if not ban:
+        return ""
+    if ban.get("ban_type") == "permanent":
+        return "Tài khoản của bạn đang bị chặn vĩnh viễn khỏi chat/diễn đàn."
+    try:
+        until_text = format_datetime(ban.get("banned_until", ""))
+    except Exception:
+        until_text = ban.get("banned_until", "")
+    return f"Tài khoản của bạn đang bị chặn chat/diễn đàn đến {until_text}."
+
+
+def current_user_forum_ban():
+    if "user_id" not in session:
+        return None
+    return forum_active_ban(session["user_id"])
+
+
+def forum_ban_json_response():
+    ban = current_user_forum_ban()
+    if not ban:
+        return None
+    message = forum_ban_message(ban)
+    return jsonify({"success": False, "message": message, "error": message, "banned": True}), 403
+
+
+def forum_report_label(reason):
+    return FORUM_REPORT_REASONS.get(reason, reason or "Khác")
+
+
+def forum_report_status_label(status):
+    return FORUM_REPORT_STATUSES.get(status, status or "Chờ xử lý")
+
+
+def annotate_forum_report(report):
+    report = dict(report)
+    report["reason_label"] = forum_report_label(report.get("reason"))
+    report["status_label"] = forum_report_status_label(report.get("status", "pending"))
+    report["created_at_formatted"] = format_datetime(report.get("created_at", ""))
+    report["active_ban"] = forum_active_ban(report.get("reported_user_id"))
+
+    target_text = "Nội dung đã bị xóa hoặc không tìm thấy"
+    if report.get("target_type") == "question":
+        post = db.get_forum_post_by_id(report.get("target_id"))
+        if post:
+            target_text = post.get("title") or post.get("content", "")[:120]
+            report["target_url"] = url_for("forum_post_detail", post_id=post.get("id"))
+    else:
+        comments = db._load_json(db.forum_comments_file)
+        answer = next((c for c in comments if c.get("id") == report.get("target_id")), None)
+        if answer:
+            target_text = answer.get("content", "")[:160]
+            report["target_url"] = url_for("forum_post_detail", post_id=answer.get("post_id"))
+
+    report["target_text"] = target_text
+    return report
+
+
+def forum_admin_report_counts(reports):
+    return {
+        "pending": len([r for r in reports if r.get("status", "pending") == "pending"]),
+        "resolved": len([r for r in reports if r.get("status") == "resolved"]),
+        "rejected": len([r for r in reports if r.get("status") == "rejected"]),
+        "active_bans": len([b for b in forum_ban_records() if b.get("status") == "active"]),
+    }
+
+
+def parse_iso_datetime(value):
+    try:
+        return datetime.fromisoformat(value)
+    except Exception:
+        return None
+
+
+def online_user_records():
+    now = datetime.now()
+    cutoff = now - timedelta(seconds=ONLINE_WINDOW_SECONDS)
+    return [
+        dict(user, last_seen_text=forum_time_ago(user.get("last_seen").isoformat()))
+        for user in ONLINE_USERS.values()
+        if user.get("last_seen") and user.get("last_seen") >= cutoff
+    ]
+
+
+def chart_percent(value, total):
+    if not total:
+        return 0
+    return round((value / total) * 100)
+
+
+def admin_dashboard_stats(reports):
+    users = load_users()
+    posts = db.get_all_forum_posts()
+    comments = db._load_json(db.forum_comments_file)
+    chat_messages = db.get_all_chat_messages()
+    point_events = forum_points_events()
+    active_users = online_user_records()
+
+    role_counts = {
+        "student": len([u for u in users if u.get("role") == "student"]),
+        "teacher": len([u for u in users if u.get("role") == "teacher"]),
+        "admin": len([u for u in users if u.get("role") == "admin"]),
+    }
+    total_users = sum(role_counts.values()) or 1
+    role_rows = [
+        {"label": "Học sinh", "value": role_counts["student"], "percent": chart_percent(role_counts["student"], total_users)},
+        {"label": "Giáo viên", "value": role_counts["teacher"], "percent": chart_percent(role_counts["teacher"], total_users)},
+        {"label": "Admin", "value": role_counts["admin"], "percent": chart_percent(role_counts["admin"], total_users)},
+    ]
+
+    today = datetime.now().date()
+    daily_rows = []
+    for days_ago in range(6, -1, -1):
+        day = today - timedelta(days=days_ago)
+        day_key = day.isoformat()
+        question_count = len([p for p in posts if (parse_iso_datetime(p.get("created_at", "")) or datetime.min).date().isoformat() == day_key])
+        answer_count = len([c for c in comments if (parse_iso_datetime(c.get("created_at", "")) or datetime.min).date().isoformat() == day_key])
+        report_count = len([r for r in reports if (parse_iso_datetime(r.get("created_at", "")) or datetime.min).date().isoformat() == day_key])
+        daily_rows.append(
+            {
+                "label": day.strftime("%d/%m"),
+                "questions": question_count,
+                "answers": answer_count,
+                "reports": report_count,
+                "total": question_count + answer_count + report_count,
+            }
+        )
+    max_daily = max([row["total"] for row in daily_rows] + [1])
+    for row in daily_rows:
+        row["height"] = max(6, chart_percent(row["total"], max_daily)) if row["total"] else 4
+
+    subject_totals = {}
+    for post in posts:
+        normalized = forum_normalize_question(dict(post))
+        subject = normalized.get("subject") or "Khác"
+        subject_totals[subject] = subject_totals.get(subject, 0) + 1
+    max_subject = max(subject_totals.values(), default=1)
+    subject_rows = [
+        {"label": subject, "value": value, "percent": chart_percent(value, max_subject)}
+        for subject, value in sorted(subject_totals.items(), key=lambda item: item[1], reverse=True)[:6]
+    ]
+
+    report_counts = forum_admin_report_counts(reports)
+    total_reports = len(reports)
+    report_rows = [
+        {"label": "Chờ xử lý", "value": report_counts["pending"], "percent": chart_percent(report_counts["pending"], total_reports or 1)},
+        {"label": "Đã xử lý", "value": report_counts["resolved"], "percent": chart_percent(report_counts["resolved"], total_reports or 1)},
+        {"label": "Bỏ qua", "value": report_counts["rejected"], "percent": chart_percent(report_counts["rejected"], total_reports or 1)},
+    ]
+
+    resolved_rate = chart_percent(report_counts["resolved"], total_reports) if total_reports else 0
+    total_diamonds = sum(int(event.get("points", 0)) for event in point_events)
+    ai_chat_count = len([m for m in chat_messages if m.get("response") or m.get("quiz")])
+
+    return {
+        "total_users": len(users),
+        "students": role_counts["student"],
+        "teachers": role_counts["teacher"],
+        "admins": role_counts["admin"],
+        "online_students": len([u for u in active_users if u.get("role") == "student"]),
+        "online_total": len(active_users),
+        "active_users": sorted(active_users, key=lambda item: item.get("last_seen", datetime.min), reverse=True)[:8],
+        "questions": len(posts),
+        "answers": len(comments),
+        "chat_messages": len(chat_messages),
+        "ai_chat_count": ai_chat_count,
+        "total_diamonds": total_diamonds,
+        "resolved_rate": resolved_rate,
+        "role_rows": role_rows,
+        "daily_rows": daily_rows,
+        "subject_rows": subject_rows,
+        "report_rows": report_rows,
+    }
+
+
+def forum_attachment_payload(file):
+    filename = secure_filename(file.filename)
+    unique_filename = f"{uuid.uuid4().hex[:8]}_{filename}"
+    file_path = forum_upload_path(unique_filename)
+    file.save(file_path)
+    sync_file_to_remote(file_path)
+
+    file_size = os.path.getsize(file_path)
+    file_ext = filename.rsplit(".", 1)[1].lower()
+    file_type = "image" if file_ext in {"png", "jpg", "jpeg", "gif"} else "file"
+    return {
+        "type": file_type,
+        "filename": filename,
+        "path": forum_upload_url(unique_filename),
+        "storage_path": str(file_path),
+        "url": forum_upload_url(unique_filename),
+        "size": file_size,
+    }
+
+
+def collect_forum_attachments():
+    attachments = []
+    if "files" not in request.files:
+        return attachments
+    for file in request.files.getlist("files"):
+        if file and file.filename and allowed_file(file.filename):
+            attachments.append(forum_attachment_payload(file))
+    return attachments
+
+
 @app.route("/forum")
 @login_required
 def forum():
     search_query = request.args.get("search", "").strip()
-    filter_type = request.args.get("filter", "all")
+    filter_status = request.args.get("status", "all")
     filter_subject = request.args.get("subject", "all").strip()
     filter_grade = request.args.get("grade", "all").strip()
 
     if search_query:
         posts = db.search_forum_posts(search_query)
-    elif filter_type == "my_posts":
-        posts = db.get_forum_posts_by_user(session["user_id"])
     else:
         posts = db.get_all_forum_posts()
 
-    # Lọc theo môn học
-    if filter_subject != "all":
-        posts = [p for p in posts if filter_subject in p.get("tags", [])]
+    posts = [forum_normalize_question(post) for post in posts]
 
-    # Lọc theo lớp
+    if filter_subject != "all":
+        posts = [p for p in posts if p.get("subject") == filter_subject]
+
     if filter_grade != "all":
-        posts = [p for p in posts if filter_grade in p.get("tags", [])]
+        posts = [p for p in posts if p.get("grade") == filter_grade]
+
+    if filter_status == "answered":
+        posts = [p for p in posts if p.get("answers_count", 0) > 0]
+    elif filter_status == "unanswered":
+        posts = [p for p in posts if p.get("answers_count", 0) == 0]
+    elif filter_status == "first":
+        posts = [p for p in posts if p.get("is_first_question")]
+    elif filter_status == "resolved":
+        posts = [p for p in posts if p.get("status") == "resolved"]
 
     for post in posts:
+        decorate_forum_author(post, post.get("author_id"))
         post["created_at_formatted"] = format_datetime(post["created_at"])
         if post.get("updated_at"):
             post["updated_at_formatted"] = format_datetime(post["updated_at"])
-
-    FORUM_SUBJECTS = [
-        "Toán",
-        "Ngữ Văn",
-        "Tiếng Anh",
-        "Vật Lý",
-        "Hóa Học",
-        "Sinh Học",
-        "Lịch Sử",
-        "Địa Lý",
-        "GDCD",
-        "Công Nghệ",
-        "Tin Học",
-    ]
-    FORUM_GRADES = ["Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9"]
 
     return render_template(
         "forum.html",
         posts=posts,
         search_query=search_query,
-        filter_type=filter_type,
+        filter_status=filter_status,
         filter_subject=filter_subject,
         filter_grade=filter_grade,
         forum_subjects=FORUM_SUBJECTS,
         forum_grades=FORUM_GRADES,
+        leaderboard=forum_leaderboard(5),
+        current_user_stats=forum_user_stats(session["user_id"]),
+        current_user_equipped=user_equipped_items(session["user_id"]),
         username=session.get("username"),
     )
 
@@ -1704,6 +2708,8 @@ def forum_post_detail(post_id):
         return redirect(url_for("forum"))
 
     db.increment_post_views(post_id)
+    post = forum_normalize_question(post)
+    decorate_forum_author(post, post.get("author_id"))
 
     comments = db.get_comments_by_post(post_id)
 
@@ -1712,7 +2718,11 @@ def forum_post_detail(post_id):
         post["updated_at_formatted"] = format_datetime(post["updated_at"])
 
     for comment in comments:
+        decorate_forum_author(comment, comment.get("author_id"))
         comment["created_at_formatted"] = format_datetime(comment["created_at"])
+        comment["time_ago"] = forum_time_ago(comment.get("created_at", ""))
+        comment["role_label"] = forum_role_label(comment.get("author_role", "student"))
+        comment["points_awarded"] = int(comment.get("points_awarded") or 0)
 
     is_author = post["author_id"] == session["user_id"]
 
@@ -1721,6 +2731,7 @@ def forum_post_detail(post_id):
         post=post,
         comments=comments,
         is_author=is_author,
+        user_stats=forum_user_stats(post.get("author_id")),
         username=session.get("username"),
     )
 
@@ -1729,58 +2740,37 @@ def forum_post_detail(post_id):
 @login_required
 def forum_create_post():
     if request.method == "POST":
+        blocked_response = forum_ban_json_response()
+        if blocked_response:
+            return blocked_response
+
         try:
             title = request.form.get("title", "").strip()
             content = request.form.get("content", "").strip()
-            tags_str = request.form.get("tags", "").strip()
+            subject = request.form.get("subject", "").strip()
+            grade = request.form.get("grade", "").strip()
+            extra_tags = request.form.get("tags", "").strip()
+            try:
+                reward_points = int(request.form.get("reward_points", 10))
+            except (TypeError, ValueError):
+                reward_points = 10
+            reward_points = max(0, min(reward_points, 500))
 
-            if not title or not content:
+            if not title or not content or subject not in FORUM_SUBJECTS or grade not in FORUM_GRADES:
                 return jsonify(
                     {
                         "success": False,
-                        "message": "Vui lòng nhập đầy đủ tiêu đề và nội dung",
+                        "message": "Vui lòng nhập đầy đủ tiêu đề, nội dung, môn học và lớp",
                     }
                 )
 
-            tags = (
-                [tag.strip() for tag in tags_str.split(",") if tag.strip()]
-                if tags_str
-                else []
-            )
-
-            attachments = []
-            if "files" in request.files:
-                files = request.files.getlist("files")
-                for file in files:
-                    if file and file.filename and allowed_file(file.filename):
-                        filename = secure_filename(file.filename)
-                        unique_filename = f"{uuid.uuid4().hex[:8]}_{filename}"
-
-                        file_path = forum_upload_path(unique_filename)
-                        file.save(file_path)
-                        sync_file_to_remote(file_path)
-
-                        file_size = os.path.getsize(file_path)
-
-                        file_ext = filename.rsplit(".", 1)[1].lower()
-                        file_type = (
-                            "image"
-                            if file_ext in {"png", "jpg", "jpeg", "gif"}
-                            else "file"
-                        )
-
-                        attachments.append(
-                            {
-                                "type": file_type,
-                                "filename": filename,
-                                "path": forum_upload_url(unique_filename),
-                                "storage_path": str(file_path),
-                                "url": forum_upload_url(unique_filename),
-                                "size": file_size,
-                            }
-                        )
+            tags = [subject, grade]
+            tags.extend(tag.strip() for tag in extra_tags.split(",") if tag.strip())
+            tags = list(dict.fromkeys(tags))
+            attachments = collect_forum_attachments()
 
             user = get_user_by_id(session["user_id"])
+            existing_questions = db.get_forum_posts_by_user(session["user_id"])
 
             post_data = {
                 "title": title,
@@ -1790,6 +2780,13 @@ def forum_create_post():
                 "author_role": user.get("role", "student") if user else "student",
                 "attachments": attachments,
                 "tags": tags,
+                "subject": subject,
+                "grade": grade,
+                "reward_points": reward_points,
+                "status": "open",
+                "accepted_answer_id": None,
+                "is_first_question": len(existing_questions) == 0,
+                "question_type": request.form.get("question_type", "question").strip() or "question",
             }
 
             post_id = db.create_forum_post(post_data)
@@ -1798,14 +2795,19 @@ def forum_create_post():
                 {
                     "success": True,
                     "post_id": post_id,
-                    "message": "Tạo bài viết thành công",
+                    "message": "Đặt câu hỏi thành công",
                 }
             )
 
         except Exception as e:
             return jsonify({"success": False, "message": f"Lỗi: {str(e)}"})
 
-    return render_template("forum_create_post.html", username=session.get("username"))
+    return render_template(
+        "forum_create_post.html",
+        username=session.get("username"),
+        forum_subjects=FORUM_SUBJECTS,
+        forum_grades=FORUM_GRADES,
+    )
 
 
 @app.route("/forum/edit/<post_id>", methods=["GET", "POST"])
@@ -1822,62 +2824,47 @@ def forum_edit_post(post_id):
         return redirect(url_for("forum"))
 
     if request.method == "POST":
+        blocked_response = forum_ban_json_response()
+        if blocked_response:
+            return blocked_response
+
         try:
             title = request.form.get("title", "").strip()
             content = request.form.get("content", "").strip()
-            tags_str = request.form.get("tags", "").strip()
+            subject = request.form.get("subject", "").strip()
+            grade = request.form.get("grade", "").strip()
+            extra_tags = request.form.get("tags", "").strip()
+            try:
+                reward_points = int(request.form.get("reward_points", post.get("reward_points", 10)))
+            except (TypeError, ValueError):
+                reward_points = int(post.get("reward_points", 10) or 10)
+            reward_points = max(0, min(reward_points, 500))
 
-            if not title or not content:
+            if not title or not content or subject not in FORUM_SUBJECTS or grade not in FORUM_GRADES:
                 return jsonify(
                     {
                         "success": False,
-                        "message": "Vui lòng nhập đầy đủ tiêu đề và nội dung",
+                        "message": "Vui lòng nhập đầy đủ tiêu đề, nội dung, môn học và lớp",
                     }
                 )
 
-            tags = (
-                [tag.strip() for tag in tags_str.split(",") if tag.strip()]
-                if tags_str
-                else []
-            )
+            tags = [subject, grade]
+            tags.extend(tag.strip() for tag in extra_tags.split(",") if tag.strip())
+            tags = list(dict.fromkeys(tags))
 
             attachments = post.get("attachments", [])
 
-            if "files" in request.files:
-                files = request.files.getlist("files")
-                for file in files:
-                    if file and file.filename and allowed_file(file.filename):
-                        filename = secure_filename(file.filename)
-                        unique_filename = f"{uuid.uuid4().hex[:8]}_{filename}"
-
-                        file_path = forum_upload_path(unique_filename)
-                        file.save(file_path)
-                        sync_file_to_remote(file_path)
-
-                        file_size = os.path.getsize(file_path)
-                        file_ext = filename.rsplit(".", 1)[1].lower()
-                        file_type = (
-                            "image"
-                            if file_ext in {"png", "jpg", "jpeg", "gif"}
-                            else "file"
-                        )
-
-                        attachments.append(
-                            {
-                                "type": file_type,
-                                "filename": filename,
-                                "path": forum_upload_url(unique_filename),
-                                "storage_path": str(file_path),
-                                "url": forum_upload_url(unique_filename),
-                                "size": file_size,
-                            }
-                        )
+            attachments.extend(collect_forum_attachments())
 
             post_data = {
                 "title": title,
                 "content": content,
                 "attachments": attachments,
                 "tags": tags,
+                "subject": subject,
+                "grade": grade,
+                "reward_points": reward_points,
+                "question_type": request.form.get("question_type", post.get("question_type", "question")).strip() or "question",
             }
 
             success = db.update_forum_post(post_id, post_data)
@@ -1897,6 +2884,8 @@ def forum_edit_post(post_id):
         post=post,
         edit_mode=True,
         username=session.get("username"),
+        forum_subjects=FORUM_SUBJECTS,
+        forum_grades=FORUM_GRADES,
     )
 
 
@@ -1930,6 +2919,10 @@ def forum_delete_post(post_id):
 @login_required
 def forum_add_comment(post_id):
     try:
+        blocked_response = forum_ban_json_response()
+        if blocked_response:
+            return blocked_response
+
         post = db.get_forum_post_by_id(post_id)
 
         if not post:
@@ -1942,53 +2935,55 @@ def forum_add_comment(post_id):
                 {"success": False, "message": "Vui lòng nhập nội dung bình luận"}
             )
 
-        attachments = []
-        if "files" in request.files:
-            files = request.files.getlist("files")
-            for file in files:
-                if file and file.filename and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    unique_filename = f"{uuid.uuid4().hex[:8]}_{filename}"
-
-                    file_path = forum_upload_path(unique_filename)
-                    file.save(file_path)
-                    sync_file_to_remote(file_path)
-
-                    file_size = os.path.getsize(file_path)
-                    file_ext = filename.rsplit(".", 1)[1].lower()
-                    file_type = (
-                        "image" if file_ext in {"png", "jpg", "jpeg", "gif"} else "file"
-                    )
-
-                    attachments.append(
-                        {
-                            "type": file_type,
-                            "filename": filename,
-                            "path": forum_upload_url(unique_filename),
-                            "storage_path": str(file_path),
-                            "url": forum_upload_url(unique_filename),
-                            "size": file_size,
-                        }
-                    )
+        attachments = collect_forum_attachments()
 
         user = get_user_by_id(session["user_id"])
+        author_role = user.get("role", "student") if user else "student"
+        reward_points = int(post.get("reward_points") or 0)
+        existing_comments = db.get_comments_by_post(post_id)
+        already_rewarded = any(
+            comment.get("author_id") == session["user_id"]
+            and int(comment.get("points_awarded") or 0) > 0
+            for comment in existing_comments
+        )
+        points_awarded = 0
+        if post.get("author_id") != session["user_id"] and reward_points > 0 and not already_rewarded:
+            points_awarded = reward_points // 2
 
         comment_data = {
             "post_id": post_id,
             "author_id": session["user_id"],
             "author_name": session.get("username", "Unknown"),
-            "author_role": user.get("role", "student") if user else "student",
+            "author_role": author_role,
             "content": content,
             "attachments": attachments,
+            "points_awarded": points_awarded,
+            "best_bonus_awarded": 0,
+            "is_best_answer": False,
         }
 
         comment_id = db.add_comment(comment_data)
+
+        if points_awarded:
+            add_forum_points(
+                session["user_id"],
+                session.get("username", "Unknown"),
+                author_role,
+                points_awarded,
+                "answer_half_reward",
+                post_id=post_id,
+                answer_id=comment_id,
+            )
+
+        if post.get("status") == "open":
+            db.update_forum_post(post_id, {"status": "answered"})
 
         return jsonify(
             {
                 "success": True,
                 "comment_id": comment_id,
-                "message": "Thêm bình luận thành công",
+                "message": "Gửi câu trả lời thành công",
+                "points_awarded": points_awarded,
             }
         )
 
@@ -2023,6 +3018,606 @@ def forum_delete_comment(comment_id):
     return jsonify({"success": True, "message": "Xóa bình luận thành công"})
 
 
+@app.route("/forum/accept-answer/<comment_id>", methods=["POST"])
+@login_required
+def forum_accept_answer(comment_id):
+    comments = db._load_json(db.forum_comments_file)
+    answer = next((c for c in comments if c["id"] == comment_id), None)
+    if not answer:
+        return jsonify({"success": False, "message": "Không tìm thấy câu trả lời"}), 404
+
+    post = db.get_forum_post_by_id(answer["post_id"])
+    if not post:
+        return jsonify({"success": False, "message": "Không tìm thấy câu hỏi"}), 404
+    if post.get("author_id") != session["user_id"]:
+        return jsonify({"success": False, "message": "Chỉ người đặt câu hỏi mới được chọn câu hay nhất"}), 403
+    if answer.get("author_id") == session["user_id"]:
+        return jsonify({"success": False, "message": "Không thể tự chọn câu trả lời của chính mình"}), 400
+    if post.get("status") == "resolved" or post.get("accepted_answer_id"):
+        return jsonify({"success": False, "message": "Câu hỏi này đã chọn câu trả lời hay nhất"}), 400
+
+    reward_points = int(post.get("reward_points") or 0)
+    already_awarded = int(answer.get("points_awarded") or 0) + int(answer.get("best_bonus_awarded") or 0)
+    bonus_points = max(0, reward_points - already_awarded)
+
+    for comment in comments:
+        if comment.get("post_id") == post["id"]:
+            comment["is_best_answer"] = comment.get("id") == comment_id
+            if comment.get("id") == comment_id:
+                comment["best_bonus_awarded"] = int(comment.get("best_bonus_awarded") or 0) + bonus_points
+
+    write_json(db.forum_comments_file, comments)
+    db.update_forum_post(post["id"], {"status": "resolved", "accepted_answer_id": comment_id})
+
+    if bonus_points:
+        add_forum_points(
+            answer["author_id"],
+            answer.get("author_name", "Unknown"),
+            answer.get("author_role", "student"),
+            bonus_points,
+            "best_answer_bonus",
+            post_id=post["id"],
+            answer_id=comment_id,
+        )
+
+    return jsonify({"success": True, "message": "Đã chọn câu trả lời hay nhất", "points_awarded": bonus_points})
+
+
+@app.route("/forum/report", methods=["POST"])
+@login_required
+def forum_report():
+    try:
+        data = request.get_json() or {}
+        target_type = data.get("target_type", "question")
+        target_id = data.get("target_id")
+        reason = (data.get("reason") or "").strip()
+        detail = (data.get("detail") or "").strip()
+
+        if target_type not in ("question", "answer") or not target_id or not reason:
+            return jsonify({"success": False, "message": "Dữ liệu báo cáo không hợp lệ"}), 400
+
+        reported_user_id = None
+        reported_username = None
+        post_id = None
+
+        if target_type == "question":
+            post = db.get_forum_post_by_id(target_id)
+            if not post:
+                return jsonify({"success": False, "message": "Không tìm thấy câu hỏi"}), 404
+            reported_user_id = post.get("author_id")
+            reported_username = post.get("author_name")
+            post_id = post.get("id")
+        else:
+            comments = db._load_json(db.forum_comments_file)
+            answer = next((c for c in comments if c.get("id") == target_id), None)
+            if not answer:
+                return jsonify({"success": False, "message": "Không tìm thấy câu trả lời"}), 404
+            reported_user_id = answer.get("author_id")
+            reported_username = answer.get("author_name")
+            post_id = answer.get("post_id")
+
+        reports = read_json(FORUM_REPORTS_FILE, [])
+        report = {
+            "id": f"fr_{len(reports) + 1:06d}",
+            "target_type": target_type,
+            "target_id": target_id,
+            "post_id": post_id,
+            "reason": reason,
+            "detail": detail,
+            "reported_user_id": reported_user_id,
+            "reported_username": reported_username,
+            "reporter_id": session["user_id"],
+            "reporter_name": session.get("username", "Unknown"),
+            "status": "pending",
+            "created_at": datetime.now().isoformat(),
+        }
+        reports.append(report)
+        write_json(FORUM_REPORTS_FILE, reports)
+        return jsonify({"success": True, "message": "Đã gửi báo cáo cho quản trị viên"})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@app.route("/forum/leaderboard")
+@login_required
+def forum_leaderboard_page():
+    return render_template(
+        "forum_leaderboard.html",
+        leaderboard=forum_leaderboard(20),
+        top5=forum_leaderboard(5),
+        month=forum_month_key(),
+        username=session.get("username"),
+    )
+
+
+@app.route("/profile")
+@login_required
+def my_profile():
+    return redirect(url_for("forum_profile", user_id=session["user_id"]))
+
+
+@app.route("/profile/<user_id>")
+@login_required
+def forum_profile(user_id):
+    user = get_user_by_id(user_id)
+    if not user:
+        flash("Không tìm thấy tài khoản", "warning")
+        return redirect(url_for("forum"))
+    stats = forum_user_stats(user_id)
+    joined_at = user.get("created_at", "")
+    try:
+        age_days = max(1, (datetime.now() - datetime.fromisoformat(joined_at)).days + 1)
+    except Exception:
+        age_days = 1
+    activity = forum_user_activity(user_id)
+    customization = user_profile_customization(user_id)
+    inventory = user_owned_items(user_id)
+    equipped = user_equipped_items(user_id)
+    return render_template(
+        "forum_profile.html",
+        profile_user=user,
+        stats=stats,
+        activity=activity,
+        customization=customization,
+        inventory=inventory,
+        equipped=equipped,
+        age_days=age_days,
+        role_label=forum_role_label(user.get("role", "student")),
+        username=session.get("username"),
+    )
+
+
+@app.route("/profile/avatar", methods=["POST"])
+@login_required
+def update_profile_avatar():
+    file = request.files.get("avatar")
+    if not file or not file.filename:
+        flash("Vui lòng chọn ảnh đại diện", "warning")
+        return redirect(url_for("my_profile"))
+
+    try:
+        payload = avatar_file_payload(file)
+        save_user_profile_customization(
+            session["user_id"],
+            {
+                "avatar_url": payload["url"],
+                "avatar_storage_path": payload["storage_path"],
+                "equipped_avatar_item_id": "",
+            },
+        )
+        flash("Đã cập nhật avatar", "success")
+    except Exception as e:
+        flash(str(e), "danger")
+    return redirect(url_for("my_profile"))
+
+
+@app.route("/shop")
+@login_required
+def shop():
+    stats = forum_user_stats(session["user_id"])
+    owned_item_ids = {record.get("item_id") for record in user_inventory_records(session["user_id"])}
+    equipped = user_equipped_items(session["user_id"])
+    items = []
+    for item in shop_items():
+        if not item.get("active", True) and item.get("id") not in owned_item_ids:
+            continue
+        item = dict(item)
+        item["owned"] = item.get("id") in owned_item_ids
+        item["equipped"] = item.get("id") in {
+            equipped["profile"].get("equipped_avatar_item_id"),
+            equipped["profile"].get("equipped_frame_id"),
+            equipped["profile"].get("equipped_title_id"),
+        }
+        items.append(item)
+
+    type_order = {"avatar": 1, "frame": 2, "title": 3, "badge": 4, "sticker": 5}
+    items.sort(key=lambda item: (type_order.get(item.get("type"), 9), int(item.get("price", 0))))
+    return render_template(
+        "shop.html",
+        items=items,
+        balance=stats["points"],
+        equipped=equipped,
+        username=session.get("username"),
+    )
+
+
+@app.route("/shop/redeem/<item_id>", methods=["POST"])
+@login_required
+def redeem_shop_item(item_id):
+    item = shop_item_by_id(item_id)
+    if not item or not item.get("active", True):
+        flash("Vật phẩm không tồn tại", "danger")
+        return redirect(url_for("shop"))
+
+    inventory = user_inventory_records()
+    if any(record.get("user_id") == session["user_id"] and record.get("item_id") == item_id for record in inventory):
+        flash("Bạn đã sở hữu vật phẩm này", "warning")
+        return redirect(url_for("shop"))
+
+    price = int(item.get("price", 0))
+    balance = forum_user_stats(session["user_id"])["points"]
+    if balance < price:
+        flash("Bạn chưa đủ kim cương để đổi vật phẩm này", "warning")
+        return redirect(url_for("shop"))
+
+    user = get_user_by_id(session["user_id"])
+    add_forum_points(
+        session["user_id"],
+        session.get("username", "Unknown"),
+        user.get("role", "student") if user else session.get("role", "student"),
+        -price,
+        "shop_redeem",
+    )
+
+    now = datetime.now().isoformat()
+    inventory_record = {
+        "id": f"inv_{len(inventory) + 1:06d}",
+        "user_id": session["user_id"],
+        "item_id": item_id,
+        "item_type": item.get("type"),
+        "created_at": now,
+    }
+    inventory.append(inventory_record)
+    save_user_inventory(inventory)
+
+    orders = read_json(SHOP_ORDERS_FILE, [])
+    orders.append(
+        {
+            "id": f"order_{len(orders) + 1:06d}",
+            "user_id": session["user_id"],
+            "username": session.get("username", "Unknown"),
+            "item_id": item_id,
+            "item_name": item.get("name"),
+            "price": price,
+            "created_at": now,
+        }
+    )
+    write_json(SHOP_ORDERS_FILE, orders)
+
+    if item.get("type") == "avatar":
+        save_user_profile_customization(
+            session["user_id"],
+            {
+                "avatar_url": item.get("image_url", ""),
+                "avatar_storage_path": item.get("image_storage_path", ""),
+                "equipped_avatar_item_id": item_id,
+            },
+        )
+    elif item.get("type") == "frame":
+        save_user_profile_customization(session["user_id"], {"equipped_frame_id": item_id})
+    elif item.get("type") == "title":
+        save_user_profile_customization(session["user_id"], {"equipped_title_id": item_id})
+
+    flash("Đổi vật phẩm thành công", "success")
+    return redirect(url_for("shop"))
+
+
+@app.route("/shop/equip/<inventory_id>", methods=["POST"])
+@login_required
+def equip_shop_item(inventory_id):
+    record = next(
+        (item for item in user_inventory_records(session["user_id"]) if item.get("id") == inventory_id),
+        None,
+    )
+    if not record:
+        flash("Không tìm thấy vật phẩm trong túi đồ", "danger")
+        return redirect(url_for("my_profile"))
+
+    item = shop_item_by_id(record.get("item_id"))
+    if not item:
+        flash("Vật phẩm không còn tồn tại", "danger")
+        return redirect(url_for("my_profile"))
+
+    if item.get("type") == "avatar":
+        if not item.get("image_url"):
+            flash("Avatar này chưa có ảnh để sử dụng", "warning")
+            return redirect(url_for("my_profile"))
+        save_user_profile_customization(
+            session["user_id"],
+            {
+                "avatar_url": item.get("image_url", ""),
+                "avatar_storage_path": item.get("image_storage_path", ""),
+                "equipped_avatar_item_id": item.get("id"),
+            },
+        )
+        flash("Đã dùng avatar", "success")
+    elif item.get("type") == "frame":
+        save_user_profile_customization(session["user_id"], {"equipped_frame_id": item.get("id")})
+        flash("Đã dùng khung avatar", "success")
+    elif item.get("type") == "title":
+        save_user_profile_customization(session["user_id"], {"equipped_title_id": item.get("id")})
+        flash("Đã dùng danh hiệu", "success")
+    else:
+        flash("Huy hiệu sẽ tự hiển thị trên profile", "info")
+    return redirect(url_for("my_profile"))
+
+
+@app.route("/admin")
+@login_required
+@admin_required
+def admin_home():
+    return redirect(url_for("admin_forum_reports"))
+
+
+@app.route("/admin/shop", methods=["GET", "POST"])
+@login_required
+@admin_required
+def admin_shop():
+    allowed_types = {
+        "badge": "Huy hiệu",
+        "frame": "Khung avatar",
+        "title": "Danh hiệu",
+        "avatar": "Avatar",
+        "sticker": "Sticker",
+    }
+
+    if request.method == "POST":
+        items = read_json(SHOP_ITEMS_FILE, [])
+        items = items if isinstance(items, list) else []
+        item_type = request.form.get("type", "badge").strip()
+        name = request.form.get("name", "").strip()
+        description = request.form.get("description", "").strip()
+        icon = request.form.get("icon", "◆").strip() or "◆"
+        css_class = request.form.get("css_class", "").strip()
+        image_url = request.form.get("image_url", "").strip()
+        image_storage_path = ""
+        try:
+            price = max(0, int(request.form.get("price", 0)))
+        except (TypeError, ValueError):
+            price = 0
+
+        if item_type not in allowed_types or not name:
+            flash("Vui lòng nhập đúng loại vật phẩm và tên vật phẩm", "danger")
+            return redirect(url_for("admin_shop"))
+
+        image_file = request.files.get("image_file")
+        if image_file and image_file.filename:
+            try:
+                image_payload = shop_asset_file_payload(image_file, item_type)
+                image_url = image_payload["url"]
+                image_storage_path = image_payload["storage_path"]
+            except ValueError as exc:
+                flash(str(exc), "danger")
+                return redirect(url_for("admin_shop"))
+
+        if item_type in {"avatar", "sticker"} and not image_url:
+            flash("Avatar hoặc sticker cần có ảnh upload hoặc URL ảnh", "warning")
+            return redirect(url_for("admin_shop"))
+
+        item = {
+            "id": create_shop_item_id(item_type, name, items),
+            "type": item_type,
+            "type_label": allowed_types[item_type],
+            "name": name,
+            "description": description,
+            "price": price,
+            "icon": icon,
+            "css_class": css_class,
+            "image_url": image_url,
+            "image_storage_path": image_storage_path,
+            "active": True,
+            "created_by": session["user_id"],
+            "created_at": datetime.now().isoformat(),
+        }
+        items.append(item)
+        write_json(SHOP_ITEMS_FILE, items)
+        flash("Đã tạo vật phẩm mới", "success")
+        return redirect(url_for("admin_shop"))
+
+    items = shop_items()
+    items.sort(key=lambda item: (item.get("type", ""), item.get("price", 0), item.get("name", "")))
+    top5 = forum_leaderboard(5)
+    return render_template(
+        "admin_shop.html",
+        items=items,
+        item_types=allowed_types,
+        top5=top5,
+        username=session.get("username"),
+    )
+
+
+@app.route("/admin/shop/<item_id>/toggle", methods=["POST"])
+@login_required
+@admin_required
+def admin_toggle_shop_item(item_id):
+    items = read_json(SHOP_ITEMS_FILE, [])
+    items = items if isinstance(items, list) else []
+    for item in items:
+        if item.get("id") == item_id:
+            item["active"] = not bool(item.get("active", True))
+            item["updated_by"] = session["user_id"]
+            item["updated_at"] = datetime.now().isoformat()
+            write_json(SHOP_ITEMS_FILE, items)
+            flash("Đã cập nhật trạng thái vật phẩm", "success")
+            return redirect(url_for("admin_shop"))
+
+    flash("Không tìm thấy vật phẩm", "danger")
+    return redirect(url_for("admin_shop"))
+
+
+@app.route("/admin/shop/award-top5", methods=["POST"])
+@login_required
+@admin_required
+def admin_award_top5_shop_item():
+    item_id = request.form.get("item_id", "").strip()
+    item = shop_item_by_id(item_id)
+    if not item:
+        flash("Vui lòng chọn vật phẩm hợp lệ", "danger")
+        return redirect(url_for("admin_shop"))
+
+    top5 = forum_leaderboard(5)
+    if not top5:
+        flash("Chưa có dữ liệu top 5 tháng này", "warning")
+        return redirect(url_for("admin_shop"))
+
+    awarded = 0
+    skipped = 0
+    for user in top5:
+        record, message = grant_shop_item_to_user(
+            user.get("user_id"),
+            item_id,
+            source="admin_award_top5",
+            note=f"Trao thưởng top {user.get('rank')} tháng {forum_month_key()}",
+        )
+        if record and message == "Đã trao vật phẩm":
+            awarded += 1
+        else:
+            skipped += 1
+
+    flash(f"Đã trao cho {awarded} user top 5. Bỏ qua {skipped} user đã sở hữu.", "success")
+    return redirect(url_for("admin_shop"))
+
+
+@app.route("/admin/forum-reports")
+@login_required
+@admin_required
+def admin_forum_reports():
+    reports = read_json(FORUM_REPORTS_FILE, [])
+    reports = reports if isinstance(reports, list) else []
+    status_filter = request.args.get("status", "pending")
+
+    counts = forum_admin_report_counts(reports)
+    dashboard_stats = admin_dashboard_stats(reports)
+    if status_filter != "all":
+        reports = [r for r in reports if r.get("status", "pending") == status_filter]
+
+    annotated_reports = [annotate_forum_report(report) for report in reports]
+    annotated_reports.sort(key=lambda item: item.get("created_at", ""), reverse=True)
+
+    active_bans = []
+    for ban in forum_ban_records():
+        active_ban = forum_active_ban(ban.get("user_id"))
+        if ban.get("status") != "active" or not active_ban or active_ban.get("id") != ban.get("id"):
+            continue
+        ban = dict(ban)
+        ban["created_at_formatted"] = format_datetime(ban.get("created_at", ""))
+        ban["banned_until_formatted"] = (
+            "Vĩnh viễn" if ban.get("ban_type") == "permanent" else format_datetime(ban.get("banned_until", ""))
+        )
+        active_bans.append(ban)
+    active_bans.sort(key=lambda item: item.get("created_at", ""), reverse=True)
+
+    return render_template(
+        "admin_forum_reports.html",
+        reports=annotated_reports,
+        active_bans=active_bans,
+        counts=counts,
+        stats=dashboard_stats,
+        status_filter=status_filter,
+        username=session.get("username"),
+    )
+
+
+@app.route("/admin/forum-reports/<report_id>/status", methods=["POST"])
+@login_required
+@admin_required
+def admin_update_forum_report_status(report_id):
+    reports = read_json(FORUM_REPORTS_FILE, [])
+    reports = reports if isinstance(reports, list) else []
+    new_status = request.form.get("status", "pending")
+    if new_status not in FORUM_REPORT_STATUSES:
+        flash("Trạng thái báo cáo không hợp lệ", "danger")
+        return redirect(url_for("admin_forum_reports"))
+
+    for report in reports:
+        if report.get("id") == report_id:
+            report["status"] = new_status
+            report["admin_note"] = request.form.get("admin_note", "").strip()
+            report["reviewed_by"] = session["user_id"]
+            report["reviewed_at"] = datetime.now().isoformat()
+            write_json(FORUM_REPORTS_FILE, reports)
+            flash("Đã cập nhật báo cáo", "success")
+            return redirect(url_for("admin_forum_reports", status=new_status))
+
+    flash("Không tìm thấy báo cáo", "danger")
+    return redirect(url_for("admin_forum_reports"))
+
+
+@app.route("/admin/forum-bans", methods=["POST"])
+@login_required
+@admin_required
+def admin_create_forum_ban():
+    user_id = request.form.get("user_id", "").strip()
+    report_id = request.form.get("report_id", "").strip()
+    duration = request.form.get("duration", "24h")
+    reason = request.form.get("reason", "").strip() or "Vi phạm quy định cộng đồng"
+
+    user = get_user_by_id(user_id)
+    if not user:
+        flash("Không tìm thấy tài khoản cần chặn", "danger")
+        return redirect(url_for("admin_forum_reports"))
+    if is_admin_account(user):
+        flash("Không thể chặn tài khoản quản trị viên", "danger")
+        return redirect(url_for("admin_forum_reports"))
+
+    now = datetime.now()
+    if duration == "permanent":
+        ban_type = "permanent"
+        banned_until = None
+    else:
+        ban_type = "24h"
+        banned_until = (now + timedelta(hours=24)).isoformat()
+
+    bans = forum_ban_records()
+    for ban in bans:
+        if ban.get("user_id") == user_id and ban.get("status") == "active":
+            ban["status"] = "replaced"
+            ban["replaced_at"] = now.isoformat()
+
+    ban = {
+        "id": f"fb_{len(bans) + 1:06d}",
+        "user_id": user_id,
+        "username": user.get("username", "Unknown"),
+        "role": user.get("role", "student"),
+        "ban_type": ban_type,
+        "banned_until": banned_until,
+        "reason": reason,
+        "source_report_id": report_id,
+        "status": "active",
+        "banned_by": session["user_id"],
+        "banned_by_name": session.get("username", "admin"),
+        "created_at": now.isoformat(),
+    }
+    bans.append(ban)
+    save_forum_ban_records(bans)
+
+    if report_id:
+        reports = read_json(FORUM_REPORTS_FILE, [])
+        for report in reports:
+            if report.get("id") == report_id:
+                report["status"] = "resolved"
+                report["admin_note"] = f"Đã chặn {ban['username']} ({'vĩnh viễn' if ban_type == 'permanent' else '24h'})."
+                report["reviewed_by"] = session["user_id"]
+                report["reviewed_at"] = now.isoformat()
+                break
+        write_json(FORUM_REPORTS_FILE, reports)
+
+    flash("Đã chặn tài khoản khỏi chat/diễn đàn", "success")
+    return redirect(url_for("admin_forum_reports", status="pending"))
+
+
+@app.route("/admin/forum-bans/<ban_id>/lift", methods=["POST"])
+@login_required
+@admin_required
+def admin_lift_forum_ban(ban_id):
+    bans = forum_ban_records()
+    for ban in bans:
+        if ban.get("id") == ban_id:
+            if ban.get("status") != "active":
+                flash("Lệnh chặn này không còn hiệu lực", "warning")
+                return redirect(url_for("admin_forum_reports", status="all"))
+            ban["status"] = "lifted"
+            ban["lifted_by"] = session["user_id"]
+            ban["lifted_by_name"] = session.get("username", "admin")
+            ban["lifted_at"] = datetime.now().isoformat()
+            save_forum_ban_records(bans)
+            flash("Đã gỡ chặn tài khoản", "success")
+            return redirect(url_for("admin_forum_reports", status="all"))
+
+    flash("Không tìm thấy lệnh chặn", "danger")
+    return redirect(url_for("admin_forum_reports", status="all"))
+
+
 def format_datetime(iso_string):
     try:
         dt = datetime.fromisoformat(iso_string)
@@ -2049,6 +3644,10 @@ def chat_room():
 @login_required
 def send_chat_message():
     try:
+        blocked_response = forum_ban_json_response()
+        if blocked_response:
+            return blocked_response
+
         data = request.get_json()
         content = data.get("content", "").strip()
         reply_to = data.get("reply_to")
@@ -2305,6 +3904,10 @@ def chat():
     API chat - xử lý cả text và ảnh
     """
     try:
+        blocked_response = forum_ban_json_response()
+        if blocked_response:
+            return blocked_response
+
         # Kiểm tra Content-Type
         is_json = request.content_type and "application/json" in request.content_type
 
@@ -2352,6 +3955,40 @@ def chat():
                 {"success": False, "error": "Vui lòng nhập tin nhắn hoặc gửi ảnh"}
             ), 400
 
+        if user_message and not image_data and is_quiz_request(user_message):
+            quiz = generate_math_quiz(user_message)
+            response = f"Mình đã tạo {len(quiz['questions'])} câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé."
+            processed = {
+                "text": response,
+                "svgs": [],
+                "mermaids": [],
+                "has_diagrams": False,
+            }
+
+            chat_message_id = db.add_chat_message(
+                {
+                    "content": user_message,
+                    "author_id": session["user_id"],
+                    "author_name": session["username"],
+                    "author_role": session.get("role", "student"),
+                    "response": response,
+                    "processed": processed,
+                    "quiz": quiz,
+                    "has_diagrams": False,
+                    "has_image": False,
+                }
+            )
+
+            return jsonify(
+                {
+                    "success": True,
+                    "response": response,
+                    "processed": processed,
+                    "quiz": quiz,
+                    "chat_message_id": chat_message_id,
+                }
+            )
+
         # Import hàm mới
         from utils.gemini_api import chat_with_gemini_image
 
@@ -2365,19 +4002,25 @@ def chat():
         processed = process_response(response)
 
         # Lưu vào database
-        db.add_chat_message(
+        chat_message_id = db.add_chat_message(
             {
                 "content": user_message if user_message else "[Đã gửi ảnh]",
                 "author_id": session["user_id"],
                 "author_name": session["username"],
                 "author_role": session.get("role", "student"),
                 "response": response,
+                "processed": processed,
                 "has_diagrams": processed["has_diagrams"],
                 "has_image": bool(image_data),
             }
         )
 
-        return jsonify({"success": True, "response": response, "processed": processed})
+        return jsonify({
+            "success": True,
+            "response": response,
+            "processed": processed,
+            "chat_message_id": chat_message_id,
+        })
 
     except Exception as e:
         print(f"Lỗi chat API: {str(e)}")
@@ -2403,12 +4046,79 @@ def get_chat_history():
         user_id = session["user_id"]
         messages = db.get_all_chat_messages()
 
-        # Filter tin nhan cua user
-        user_messages = [m for m in messages if m.get("author_id") == user_id]
+        # Filter AI chat records cua user. Chat room messages share the same file.
+        user_messages = [
+            m for m in messages
+            if m.get("author_id") == user_id and (m.get("response") or m.get("quiz"))
+        ]
 
         return jsonify({"success": True, "messages": user_messages[-50:]})
 
     except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/chat/quiz-submit", methods=["POST"])
+@login_required
+def submit_chat_quiz():
+    """
+    Luu ket qua lam quiz trong chatbot de user mo lai van thay diem.
+    """
+    try:
+        data = request.get_json() or {}
+        message_id = data.get("message_id")
+        answers = data.get("answers", [])
+
+        if not message_id or not isinstance(answers, list):
+            return jsonify({"success": False, "error": "Du lieu nop bai khong hop le"}), 400
+
+        message = db.get_chat_message_by_id(message_id)
+        if not message or message.get("author_id") != session["user_id"]:
+            return jsonify({"success": False, "error": "Khong tim thay bai quiz"}), 404
+
+        quiz = message.get("quiz") or {}
+        questions = quiz.get("questions") or []
+        if not questions:
+            return jsonify({"success": False, "error": "Bai quiz khong hop le"}), 400
+
+        normalized_answers = []
+        score = 0
+        for index, question in enumerate(questions):
+            answer = answers[index] if index < len(answers) else None
+            try:
+                answer = int(answer) if answer is not None else None
+            except (TypeError, ValueError):
+                answer = None
+
+            if answer is not None and (answer < 0 or answer > 3):
+                answer = None
+
+            correct_index = int(question.get("correct_index"))
+            is_correct = answer == correct_index
+            if is_correct:
+                score += 1
+
+            normalized_answers.append({
+                "answer": answer,
+                "correct_index": correct_index,
+                "is_correct": is_correct,
+            })
+
+        total = len(questions)
+        quiz_result = {
+            "answers": normalized_answers,
+            "score": score,
+            "total": total,
+            "percent": round((score / total) * 100) if total else 0,
+            "submitted_at": datetime.now().isoformat(),
+        }
+
+        db.update_chat_message(message_id, {"quiz_result": quiz_result})
+
+        return jsonify({"success": True, "quiz_result": quiz_result})
+
+    except Exception as e:
+        print(f"Loi luu ket qua quiz: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
 
 

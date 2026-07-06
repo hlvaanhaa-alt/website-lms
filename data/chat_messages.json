@@ -574,5 +574,272 @@
     "author_role": "teacher",
     "created_at": "2026-03-27T15:50:27.222298",
     "reply_to": null
+  },
+  {
+    "id": "msg_000065",
+    "content": "hello",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-07-06T22:25:54.646668",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000066",
+    "content": "hi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-07-06T22:26:30.191511",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000067",
+    "content": "hello",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-07-06T23:18:55.551427",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000068",
+    "content": "1+1 bằng mấy?",
+    "author_id": "2",
+    "author_name": "thaydaytoan",
+    "author_role": "student",
+    "created_at": "2026-07-06T23:29:28.266359",
+    "reply_to": null,
+    "response": "$$\n1 + 1 = 2\n$$\n",
+    "processed": {
+      "text": "$$\n1 + 1 = 2\n$$",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
+  },
+  {
+    "id": "msg_000069",
+    "content": "1+1 bằng mấy?",
+    "author_id": "2",
+    "author_name": "thaydaytoan",
+    "author_role": "student",
+    "created_at": "2026-07-06T23:30:14.365936",
+    "reply_to": null,
+    "response": "$$\n1 + 1 = 2\n$$\n",
+    "processed": {
+      "text": "$$\n1 + 1 = 2\n$$",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
+  },
+  {
+    "id": "msg_000070",
+    "content": "Hãy tạo cho tôi 1 câu trắc nghiệm liên quan đến xác suất",
+    "author_id": "2",
+    "author_name": "thaydaytoan",
+    "author_role": "student",
+    "created_at": "2026-07-06T23:30:39.309631",
+    "reply_to": null,
+    "response": "Mình đã tạo 1 câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé.",
+    "processed": {
+      "text": "Mình đã tạo 1 câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé.",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "quiz": {
+      "type": "quiz",
+      "title": "Xác suất cơ bản",
+      "subject": "Toán",
+      "questions": [
+        {
+          "question": "Trong một chiếc túi có $5$ viên bi màu đỏ và $3$ viên bi màu xanh. Nếu bạn lấy ngẫu nhiên một viên bi từ túi, xác suất để viên bi đó là màu đỏ là bao nhiêu?",
+          "options": [
+            "$\\frac{5}{8}$",
+            "$\\frac{3}{8}$",
+            "$\\frac{5}{3}$",
+            "$\\frac{1}{2}$"
+          ],
+          "correct_index": 0,
+          "explanation": "Tổng số viên bi trong túi là $5$ (đỏ) $+ 3$ (xanh) $= 8$ viên. \\newline Số viên bi màu đỏ là $5$ viên. \\newline Xác suất để lấy được viên bi màu đỏ được tính bằng tỉ số giữa số viên bi màu đỏ và tổng số viên bi trong túi. \\newline Vậy, xác suất là $\\frac{5}{8}$."
+        }
+      ]
+    },
+    "has_diagrams": false,
+    "has_image": false
+  },
+  {
+    "id": "msg_000071",
+    "content": "hello",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-07-06T23:31:54.334421",
+    "reply_to": null,
+    "response": "Chào bạn.\n",
+    "processed": {
+      "text": "Chào bạn.",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
+  },
+  {
+    "id": "msg_000072",
+    "content": "bạn nói gì ngắn gọn vậy",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-07-06T23:32:09.438132",
+    "reply_to": null,
+    "response": "Tôi sẽ trả lời ngắn gọn và đi thẳng vào vấn đề.\n",
+    "processed": {
+      "text": "Tôi sẽ trả lời ngắn gọn và đi thẳng vào vấn đề.",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
+  },
+  {
+    "id": "msg_000073",
+    "content": "à vậy bạn cho tôi biết xác suất là gì đi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-07-06T23:32:48.585461",
+    "reply_to": null,
+    "response": "Xác suất là một con số cho biết khả năng xảy ra của một sự kiện.\n\nGiá trị của xác suất nằm trong khoảng từ 0 đến 1.\n\n*   Xác suất bằng 0: Sự kiện không bao giờ xảy ra.\n*   Xác suất bằng 1: Sự kiện chắc chắn xảy ra.\n*   Xác suất càng gần 1: Sự kiện càng có nhiều khả năng xảy ra.\n*   Xác suất càng gần 0: Sự kiện càng ít khả năng xảy ra.\n\nCông thức tính xác suất của một sự kiện A trong trường hợp các kết quả có thể xảy ra là đồng khả năng:\n\n$$\nP(A) = \\frac{\\text{Số trường hợp thuận lợi cho A}}{\\text{Tổng số trường hợp có thể xảy ra}}\n$$\n",
+    "processed": {
+      "text": "Xác suất là một con số cho biết khả năng xảy ra của một sự kiện.\n\nGiá trị của xác suất nằm trong khoảng từ 0 đến 1.\n\n*   Xác suất bằng 0: Sự kiện không bao giờ xảy ra.\n*   Xác suất bằng 1: Sự kiện chắc chắn xảy ra.\n*   Xác suất càng gần 1: Sự kiện càng có nhiều khả năng xảy ra.\n*   Xác suất càng gần 0: Sự kiện càng ít khả năng xảy ra.\n\nCông thức tính xác suất của một sự kiện A trong trường hợp các kết quả có thể xảy ra là đồng khả năng:\n\n$$\nP(A) = \\frac{\\text{Số trường hợp thuận lợi cho A}}{\\text{Tổng số trường hợp có thể xảy ra}}\n$$",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
+  },
+  {
+    "id": "msg_000074",
+    "content": "tạo cho tôi 5 câu hỏi liên quan đến kiến thức này đi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-07-06T23:47:36.169418",
+    "reply_to": null,
+    "response": "Mình đã tạo 5 câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé.",
+    "processed": {
+      "text": "Mình đã tạo 5 câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé.",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "quiz": {
+      "type": "quiz",
+      "title": "Bài Kiểm Tra Toán THCS",
+      "subject": "Toán",
+      "questions": [
+        {
+          "question": "Rút gọn biểu thức $\\sqrt{12} + \\sqrt{27} - \\sqrt{3}$.",
+          "options": [
+            "$4\\sqrt{3}$",
+            "$5\\sqrt{3}$",
+            "$6\\sqrt{3}$",
+            "$3\\sqrt{3}$"
+          ],
+          "correct_index": 0,
+          "explanation": "Ta có: $\\sqrt{12} = \\sqrt{4 \\times 3} = 2\\sqrt{3}$.\\n$\\sqrt{27} = \\sqrt{9 \\times 3} = 3\\sqrt{3}$.\\nVậy biểu thức trở thành $2\\sqrt{3} + 3\\sqrt{3} - \\sqrt{3} = (2+3-1)\\sqrt{3} = 4\\sqrt{3}$."
+        },
+        {
+          "question": "Một tam giác vuông có hai cạnh góc vuông lần lượt là $3$ cm và $4$ cm. Độ dài cạnh huyền của tam giác đó là bao nhiêu?",
+          "options": [
+            "$5$ cm",
+            "$6$ cm",
+            "$7$ cm",
+            "$25$ cm"
+          ],
+          "correct_index": 0,
+          "explanation": "Áp dụng định lý Pytago cho tam giác vuông, ta có bình phương cạnh huyền bằng tổng bình phương hai cạnh góc vuông.\\n$c^2 = a^2 + b^2 = 3^2 + 4^2 = 9 + 16 = 25$.\\nVậy $c = \\sqrt{25} = 5$ cm."
+        },
+        {
+          "question": "Trong các số sau, số nào là số nguyên tố?",
+          "options": [
+            "$91$",
+            "$119$",
+            "$127$",
+            "$143$"
+          ],
+          "correct_index": 2,
+          "explanation": "Số nguyên tố là số tự nhiên lớn hơn $1$ chỉ có hai ước là $1$ và chính nó.\\n$91 = 7 \\times 13$ (không phải số nguyên tố).\\n$119 = 7 \\times 17$ (không phải số nguyên tố).\\n$143 = 11 \\times 13$ (không phải số nguyên tố).\\n$127$ không chia hết cho bất kỳ số nguyên tố nào nhỏ hơn hoặc bằng $\\sqrt{127} \\approx 11.2$ (như $2, 3, 5, 7, 11$). Vậy $127$ là số nguyên tố."
+        },
+        {
+          "question": "Cho hàm số $y = 2x - 3$. Giá trị của $y$ khi $x = -2$ là bao nhiêu?",
+          "options": [
+            "$1$",
+            "$-1$",
+            "$-7$",
+            "$7$"
+          ],
+          "correct_index": 2,
+          "explanation": "Thay $x = -2$ vào hàm số $y = 2x - 3$, ta được:\\n$y = 2(-2) - 3 = -4 - 3 = -7$."
+        },
+        {
+          "question": "Nghiệm của phương trình $3x - 5 = x + 7$ là:",
+          "options": [
+            "$x = 1$",
+            "$x = 2$",
+            "$x = 6$",
+            "$x = 12$"
+          ],
+          "correct_index": 2,
+          "explanation": "Để giải phương trình $3x - 5 = x + 7$, ta chuyển các số hạng chứa $x$ về một vế và các hằng số về vế còn lại:\\n$3x - x = 7 + 5$\\n$2x = 12$\\n$x = \\frac{12}{2}$\\n$x = 6$."
+        }
+      ]
+    },
+    "has_diagrams": false,
+    "has_image": false,
+    "quiz_result": {
+      "answers": [
+        {
+          "answer": 0,
+          "correct_index": 0,
+          "is_correct": true
+        },
+        {
+          "answer": 1,
+          "correct_index": 0,
+          "is_correct": false
+        },
+        {
+          "answer": 2,
+          "correct_index": 2,
+          "is_correct": true
+        },
+        {
+          "answer": 1,
+          "correct_index": 2,
+          "is_correct": false
+        },
+        {
+          "answer": 2,
+          "correct_index": 2,
+          "is_correct": true
+        }
+      ],
+      "score": 3,
+      "total": 5,
+      "percent": 60,
+      "submitted_at": "2026-07-06T23:59:03.127898"
+    },
+    "updated_at": "2026-07-06T23:59:03.128905"
   }
 ]

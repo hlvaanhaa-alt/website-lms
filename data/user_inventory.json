@@ -1,0 +1,68 @@
+[
+  {
+    "id": "inv_000001",
+    "user_id": "2",
+    "username": "thaydaytoan",
+    "item_id": "frame_sky",
+    "item_type": "frame",
+    "source": "shop_redeem",
+    "note": "Dữ liệu mẫu",
+    "created_at": "2026-07-07T03:26:40.402672",
+    "demo_seed": true
+  },
+  {
+    "id": "inv_000002",
+    "user_id": "2",
+    "username": "thaydaytoan",
+    "item_id": "title_helper",
+    "item_type": "title",
+    "source": "shop_redeem",
+    "note": "Dữ liệu mẫu",
+    "created_at": "2026-07-07T03:26:40.402672",
+    "demo_seed": true
+  },
+  {
+    "id": "inv_000003",
+    "user_id": "2",
+    "username": "thaydaytoan",
+    "item_id": "badge_helper",
+    "item_type": "badge",
+    "source": "shop_redeem",
+    "note": "Dữ liệu mẫu",
+    "created_at": "2026-07-07T03:26:40.402672",
+    "demo_seed": true
+  },
+  {
+    "id": "inv_000004",
+    "user_id": "4",
+    "username": "tuan",
+    "item_id": "title_math",
+    "item_type": "title",
+    "source": "shop_redeem",
+    "note": "Dữ liệu mẫu",
+    "created_at": "2026-07-07T03:26:40.402672",
+    "demo_seed": true
+  },
+  {
+    "id": "inv_000005",
+    "user_id": "4",
+    "username": "tuan",
+    "item_id": "badge_math",
+    "item_type": "badge",
+    "source": "shop_redeem",
+    "note": "Dữ liệu mẫu",
+    "created_at": "2026-07-07T03:26:40.402672",
+    "demo_seed": true
+  },
+  {
+    "id": "inv_000006",
+    "user_id": "5",
+    "username": "hocsinh",
+    "item_id": "badge_top_month",
+    "item_type": "badge",
+    "source": "admin_award_top5",
+    "note": "Trao thưởng top 5 tháng demo",
+    "created_at": "2026-07-07T03:26:40.402672",
+    "demo_seed": true
+  }
+]

@@ -211,6 +211,19 @@ class Database:
             'views': 0,
             'comments_count': 0
         }
+
+        optional_fields = [
+            'subject',
+            'grade',
+            'reward_points',
+            'status',
+            'accepted_answer_id',
+            'is_first_question',
+            'question_type',
+        ]
+        for field in optional_fields:
+            if field in post_data:
+                new_post[field] = post_data[field]
         
         posts.append(new_post)
         self._save_json(self.forum_posts_file, posts)
@@ -229,6 +242,16 @@ class Database:
                     posts[i]['attachments'] = post_data['attachments']
                 if 'tags' in post_data:
                     posts[i]['tags'] = post_data['tags']
+                for field in [
+                    'subject',
+                    'grade',
+                    'reward_points',
+                    'status',
+                    'accepted_answer_id',
+                    'question_type',
+                ]:
+                    if field in post_data:
+                        posts[i][field] = post_data[field]
                 
                 posts[i]['updated_at'] = datetime.now().isoformat()
                 self._save_json(self.forum_posts_file, posts)
@@ -288,6 +311,10 @@ class Database:
             'created_at': datetime.now().isoformat(),
             'attachments': comment_data.get('attachments', [])
         }
+
+        for field in ['points_awarded', 'best_bonus_awarded', 'is_best_answer']:
+            if field in comment_data:
+                new_comment[field] = comment_data[field]
         
         comments.append(new_comment)
         self._save_json(self.forum_comments_file, comments)
@@ -344,10 +371,32 @@ class Database:
             'created_at': datetime.now().isoformat(),
             'reply_to': message_data.get('reply_to')
         }
+
+        optional_fields = [
+            'response',
+            'processed',
+            'quiz',
+            'quiz_result',
+            'has_diagrams',
+            'has_image',
+        ]
+        for field in optional_fields:
+            if field in message_data:
+                new_message[field] = message_data[field]
         
         messages.append(new_message)
         self._save_json(self.chat_messages_file, messages)
         return message_id
+
+    def update_chat_message(self, message_id, updates):
+        messages = self._load_json(self.chat_messages_file)
+        for i, message in enumerate(messages):
+            if message['id'] == message_id:
+                messages[i].update(updates)
+                messages[i]['updated_at'] = datetime.now().isoformat()
+                self._save_json(self.chat_messages_file, messages)
+                return messages[i]
+        return None
 
     def delete_chat_message(self, message_id):
         messages = self._load_json(self.chat_messages_file)

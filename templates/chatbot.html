@@ -9,40 +9,11 @@ body {
     min-height: 100vh;
 }
 
-.container {
-    max-width: 1400px;
+.chatbot-page-container {
+    width: min(96vw, 1720px);
+    max-width: none;
     margin: 0 auto;
-    padding: 20px 20px;
-}
-
-.header-section {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.main-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #d946ef, #a855f7);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-}
-
-.subtitle {
-    font-size: 1.1rem;
-    color: #a855f7;
-    font-weight: 500;
-    margin-bottom: 12px;
-}
-
-.subtitle-underline {
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(135deg, #d946ef, #a855f7);
-    margin: 0 auto;
-    border-radius: 2px;
+    padding: 18px 12px;
 }
 
 .chatbot-container {
@@ -61,8 +32,8 @@ body {
 
 .chat-box {
     padding: 35px;
-    height: calc(80vh - 200px);
-    min-height: 450px;
+    height: calc(100vh - 260px);
+    min-height: 560px;
     overflow-y: auto;
     background: linear-gradient(180deg, #fef9ff 0%, #fdf5ff 100%);
 }
@@ -395,17 +366,114 @@ body {
     color: white;
 }
 
-@media (max-width: 768px) {
-    .container {
-        padding: 20px 15px;
-    }
+.quiz-card {
+    margin-top: 16px;
+    border: 2px solid #e9d5ff;
+    border-radius: 16px;
+    background: #ffffff;
+    overflow: hidden;
+}
 
-    .main-title {
-        font-size: 2rem;
+.quiz-title {
+    padding: 16px 18px;
+    background: linear-gradient(135deg, #7c3aed, #d946ef);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.quiz-body {
+    padding: 18px;
+}
+
+.quiz-question {
+    padding: 16px 0;
+    border-bottom: 1px solid #f3e8ff;
+}
+
+.quiz-question:last-child {
+    border-bottom: 0;
+}
+
+.quiz-question-text {
+    font-weight: 700;
+    color: #4a044e;
+    margin-bottom: 12px;
+}
+
+.quiz-options {
+    display: grid;
+    gap: 10px;
+}
+
+.quiz-option {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 11px 12px;
+    border: 1px solid #e9d5ff;
+    border-radius: 12px;
+    background: #fdf4ff;
+    cursor: pointer;
+}
+
+.quiz-option input {
+    margin-top: 5px;
+}
+
+.quiz-option.correct {
+    border-color: #22c55e;
+    background: #ecfdf5;
+}
+
+.quiz-option.incorrect {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+.quiz-explanation {
+    display: none;
+    margin-top: 10px;
+    padding: 12px;
+    border-left: 4px solid #7c3aed;
+    background: #faf5ff;
+    border-radius: 10px;
+    color: #581c87;
+}
+
+.quiz-result {
+    display: none;
+    margin: 16px 0;
+    padding: 14px;
+    border-radius: 12px;
+    background: #f0fdf4;
+    color: #166534;
+    font-weight: 700;
+}
+
+.quiz-submit {
+    margin-top: 16px;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #7c3aed, #d946ef);
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.quiz-submit:disabled {
+    opacity: 0.65;
+    cursor: default;
+}
+
+@media (max-width: 768px) {
+    .chatbot-page-container {
+        width: 100%;
+        padding: 12px 10px;
     }
 
     .chat-box {
-        height: calc(80vh - 280px);
+        height: calc(100vh - 245px);
         min-height: 350px;
         padding: 20px;
     }
@@ -445,13 +513,7 @@ body {
 }
 </style>
 
-<div class="container">
-    <div class="header-section">
-        <h1 class="main-title">Chatbot AI</h1>
-        <p class="subtitle">Trợ lý học tập của các bạn</p>
-        <div class="subtitle-underline"></div>
-    </div>
-
+<div class="chatbot-page-container">
     <div class="chatbot-container">
         <div class="chat-wrapper">
             <div class="chat-box" id="chatBox">
@@ -486,6 +548,9 @@ body {
             <div class="suggestions-grid">
                 <button onclick="quickQuestion('Giải hệ phương trình: 2x + y = 7 và x - y = 2')" class="suggestion-btn">
                     <span class="suggestion-text">Giải hệ phương trình</span>
+                </button>
+                <button onclick="quickQuestion('Hãy tạo cho tôi 5 câu trắc nghiệm liên quan đến xác suất')" class="suggestion-btn">
+                    <span class="suggestion-text">Tạo trắc nghiệm xác suất</span>
                 </button>
                 <button onclick="quickQuestion('Giải thích công thức động năng')" class="suggestion-btn">
                     <span class="suggestion-text">Giải thích công thức động năng</span>
@@ -528,6 +593,8 @@ body {
 
 <script>
 let selectedImage = null;
+const quizStore = {};
+const quizMessageMap = {};
 
 // ============== IMAGE HANDLING ==============
 function previewImage(event) {
@@ -605,7 +672,9 @@ async function sendMessage(event) {
             return;
         }
         
-        if (data.processed) {
+        if (data.quiz) {
+            addQuizMessage(data.response, data.quiz, data.chat_message_id);
+        } else if (data.processed) {
             addMessageWithDiagrams(data.response, data.processed);
         } else {
             addMessage(data.response, 'bot');
@@ -651,6 +720,72 @@ function formatText(text) {
     return text;
 }
 
+function escapeHTML(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function formatQuizText(text) {
+    const normalized = String(text || '')
+        .replace(/\\r\\n/g, '\n')
+        .replace(/\\n/g, '\n')
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n');
+    return formatText(escapeHTML(normalized));
+}
+
+function renderMathInNode(node) {
+    if (typeof renderMathInElement === 'undefined') return;
+    try {
+        renderMathInElement(node, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false}
+            ],
+            throwOnError: false,
+            trust: true,
+            strict: false
+        });
+    } catch (e) {
+        console.error('LaTeX render error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadChatHistory);
+
+async function loadChatHistory() {
+    try {
+        const response = await fetch('/api/chat/history');
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (!data.success || !Array.isArray(data.messages) || data.messages.length === 0) {
+            return;
+        }
+
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML = '';
+
+        data.messages.forEach(message => {
+            addMessage(message.content || '', 'user');
+
+            if (message.quiz) {
+                addQuizMessage(message.response || '', message.quiz, message.id, message.quiz_result);
+            } else if (message.processed) {
+                addMessageWithDiagrams(message.response || '', message.processed);
+            } else if (message.response) {
+                addMessage(message.response, 'bot');
+            }
+        });
+    } catch (error) {
+        console.error('Load chat history error:', error);
+    }
+}
+
 // ============== ADD MESSAGE ==============
 function addMessage(text, sender, imageFile = null, isLoading = false) {
     const chatBox = document.getElementById('chatBox');
@@ -660,7 +795,7 @@ function addMessage(text, sender, imageFile = null, isLoading = false) {
     messageDiv.id = messageId;
     messageDiv.className = `message ${sender}-message ${isLoading ? 'loading' : ''}`;
     
-    const formattedText = formatText(text);
+    const formattedText = formatText(escapeHTML(text));
     let imageHTML = '';
     
     if (imageFile && sender === 'user') {
@@ -782,6 +917,185 @@ function addMessageWithDiagrams(fullResponse, processed) {
     }, 150);
     
     return messageId;
+}
+
+// ============== INTERACTIVE QUIZ ==============
+function addQuizMessage(introText, quiz, chatMessageId = null, savedResult = null) {
+    const chatBox = document.getElementById('chatBox');
+    const messageDiv = document.createElement('div');
+    const messageId = 'quiz-' + (chatMessageId || Date.now());
+    quizStore[messageId] = quiz;
+    if (chatMessageId) {
+        quizMessageMap[messageId] = chatMessageId;
+    }
+
+    messageDiv.id = messageId;
+    messageDiv.className = 'message bot-message';
+
+    const questionsHTML = (quiz.questions || []).map((question, questionIndex) => {
+        const optionsHTML = (question.options || []).map((option, optionIndex) => `
+            <label class="quiz-option" data-question-index="${questionIndex}" data-option-index="${optionIndex}">
+                <input type="radio" name="${messageId}-q-${questionIndex}" value="${optionIndex}">
+                <span>${String.fromCharCode(65 + optionIndex)}. ${formatQuizText(option)}</span>
+            </label>
+        `).join('');
+
+        return `
+            <div class="quiz-question" data-question-index="${questionIndex}">
+                <div class="quiz-question-text">Câu ${questionIndex + 1}. ${formatQuizText(question.question)}</div>
+                <div class="quiz-options">${optionsHTML}</div>
+                <div class="quiz-explanation" id="${messageId}-explain-${questionIndex}">
+                    ${formatQuizText(question.explanation || '')}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    messageDiv.innerHTML = `
+        <div class="message-header">AI Assistant</div>
+        <div class="message-content">
+            <div>${formatQuizText(introText || '')}</div>
+            <div class="quiz-card">
+                <div class="quiz-title">${formatQuizText(quiz.title || 'Trắc nghiệm Toán')}</div>
+                <div class="quiz-body">
+                    ${questionsHTML}
+                    <div class="quiz-result" id="${messageId}-result"></div>
+                    <button class="quiz-submit" onclick="submitQuiz('${messageId}')">Nộp bài</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    chatBox.appendChild(messageDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    if (savedResult) {
+        applyQuizResult(messageId, savedResult);
+    }
+    setTimeout(() => renderMathInNode(messageDiv), 150);
+    return messageId;
+}
+
+function collectQuizAnswers(messageId, questions) {
+    const messageDiv = document.getElementById(messageId);
+    return questions.map((_question, questionIndex) => {
+        const selected = messageDiv.querySelector(`input[name="${messageId}-q-${questionIndex}"]:checked`);
+        return selected ? Number(selected.value) : null;
+    });
+}
+
+function applyQuizResult(messageId, quizResult) {
+    const quiz = quizStore[messageId];
+    const messageDiv = document.getElementById(messageId);
+    if (!quiz || !messageDiv) return;
+
+    const questions = quiz.questions || [];
+    const resultAnswers = quizResult.answers || [];
+
+    questions.forEach((question, questionIndex) => {
+        const answerInfo = resultAnswers[questionIndex] || {};
+        const selectedIndex = answerInfo.answer;
+        const correctIndex = Number(question.correct_index);
+        const selectedInput = selectedIndex === null || selectedIndex === undefined
+            ? null
+            : messageDiv.querySelector(`input[name="${messageId}-q-${questionIndex}"][value="${selectedIndex}"]`);
+        if (selectedInput) selectedInput.checked = true;
+
+        const optionLabels = messageDiv.querySelectorAll(`.quiz-option[data-question-index="${questionIndex}"]`);
+
+        optionLabels.forEach(label => {
+            const optionIndex = Number(label.dataset.optionIndex);
+            label.classList.remove('correct', 'incorrect');
+            if (optionIndex === correctIndex) {
+                label.classList.add('correct');
+            }
+        });
+
+        if (selectedIndex !== null && selectedIndex !== undefined && Number(selectedIndex) !== correctIndex) {
+            const selectedLabel = messageDiv.querySelector(
+                `.quiz-option[data-question-index="${questionIndex}"][data-option-index="${selectedIndex}"]`
+            );
+            if (selectedLabel) selectedLabel.classList.add('incorrect');
+        }
+
+        const explanation = document.getElementById(`${messageId}-explain-${questionIndex}`);
+        if (explanation) explanation.style.display = 'block';
+    });
+
+    const result = document.getElementById(`${messageId}-result`);
+    const score = Number(quizResult.score || 0);
+    const total = Number(quizResult.total || questions.length);
+    const percent = Number(quizResult.percent || 0);
+    if (result) {
+        result.style.display = 'block';
+        result.textContent = `Kết quả: ${score}/${total} câu đúng (${percent}%).`;
+    }
+
+    messageDiv.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.disabled = true;
+    });
+    const submitButton = messageDiv.querySelector('.quiz-submit');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Đã nộp bài';
+    }
+
+    renderMathInNode(messageDiv);
+    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function submitQuiz(messageId) {
+    const quiz = quizStore[messageId];
+    const messageDiv = document.getElementById(messageId);
+    if (!quiz || !messageDiv) return;
+
+    const questions = quiz.questions || [];
+    const answers = collectQuizAnswers(messageId, questions);
+    const answered = answers.filter(answer => answer !== null).length;
+
+    if (answered < questions.length) {
+        const confirmSubmit = confirm(`Bạn mới trả lời ${answered}/${questions.length} câu. Vẫn nộp bài?`);
+        if (!confirmSubmit) return;
+    }
+
+    let quizResult = null;
+    const chatMessageId = quizMessageMap[messageId];
+    if (chatMessageId) {
+        try {
+            const response = await fetch('/api/chat/quiz-submit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    message_id: chatMessageId,
+                    answers: answers
+                })
+            });
+            const data = await response.json();
+            if (data.success && data.quiz_result) {
+                quizResult = data.quiz_result;
+            }
+        } catch (error) {
+            console.error('Save quiz result error:', error);
+        }
+    }
+
+    if (!quizResult) {
+        let score = 0;
+        const resultAnswers = questions.map((question, index) => {
+            const correctIndex = Number(question.correct_index);
+            const answer = answers[index];
+            const isCorrect = answer === correctIndex;
+            if (isCorrect) score += 1;
+            return {answer, correct_index: correctIndex, is_correct: isCorrect};
+        });
+        quizResult = {
+            answers: resultAnswers,
+            score,
+            total: questions.length,
+            percent: questions.length ? Math.round((score / questions.length) * 100) : 0
+        };
+    }
+
+    applyQuizResult(messageId, quizResult);
 }
 
 // ============== UTILITY FUNCTIONS ==============

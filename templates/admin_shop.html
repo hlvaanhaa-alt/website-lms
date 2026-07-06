@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Quản lý shop{% endblock %}
+
+{% block content %}
+<div class="admin-shop-page">
+    <header class="admin-shop-header">
+        <div>
+            <h1>Quản lý shop</h1>
+            <p>Tạo vật phẩm, bật/tắt hiển thị và trao thưởng cho top 5 bảng xếp hạng tháng.</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_forum_reports') }}">Kiểm duyệt</a>
+            <a href="{{ url_for('shop') }}">Xem shop</a>
+        </div>
+    </header>
+
+    <div class="admin-shop-grid">
+        <section class="panel create-panel">
+            <h2>Tạo vật phẩm</h2>
+            <form method="POST" action="{{ url_for('admin_shop') }}" enctype="multipart/form-data">
+                <label>
+                    Loại vật phẩm
+                    <select name="type" required>
+                        {% for value, label in item_types.items() %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>
+                    Tên vật phẩm
+                    <input name="name" required placeholder="VD: Khung bạc mùa hè">
+                </label>
+                <label>
+                    Mô tả
+                    <textarea name="description" rows="3" placeholder="Mô tả ngắn cách vật phẩm hiển thị"></textarea>
+                </label>
+                <div class="form-split">
+                    <label>
+                        Giá kim cương
+                        <input type="number" name="price" min="0" value="50">
+                    </label>
+                    <label>
+                        Icon
+                        <input name="icon" value="◆">
+                    </label>
+                </div>
+                <label>
+                    CSS class
+                    <input name="css_class" placeholder="VD: frame-gold, badge-math">
+                </label>
+                <div class="asset-upload">
+                    <div class="asset-preview" id="assetPreview">◆</div>
+                    <label>
+                        Upload ảnh vật phẩm
+                        <input type="file" name="image_file" accept=".png,.jpg,.jpeg,.gif,.webp" id="assetFile">
+                        <small>Bắt buộc với Avatar và Sticker. Nên dùng ảnh vuông, tối đa 5MB.</small>
+                    </label>
+                </div>
+                <label>
+                    Hoặc dùng URL ảnh ngoài
+                    <input name="image_url" placeholder="Tùy chọn nếu không upload ảnh">
+                </label>
+                <button type="submit">Tạo vật phẩm</button>
+            </form>
+        </section>
+
+        <section class="panel award-panel">
+            <h2>Trao thưởng top 5 tháng</h2>
+            <form method="POST" action="{{ url_for('admin_award_top5_shop_item') }}">
+                <label>
+                    Vật phẩm trao thưởng
+                    <select name="item_id" required>
+                        {% for item in items %}
+                        <option value="{{ item.id }}">{{ item.name }} · {{ item.type_label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button type="submit" {% if not top5 or not items %}disabled{% endif %}>Trao cho top 5</button>
+            </form>
+
+            <div class="top5-list">
+                {% for user in top5 %}
+                <a href="{{ url_for('forum_profile', user_id=user.user_id) }}">
+                    <span>{{ user.rank }}</span>
+                    <strong>{{ user.username }}</strong>
+                    <b>{{ user.points }}</b>
+                </a>
+                {% else %}
+                <p>Chưa có xếp hạng tháng này.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <section class="panel inventory-panel">
+        <div class="section-head">
+            <h2>Danh sách vật phẩm</h2>
+            <span>{{ items|length }} vật phẩm</span>
+        </div>
+        <div class="item-table">
+            {% for item in items %}
+            <article class="item-row">
+                <div class="item-icon {{ item.css_class }}">
+                    {% if item.image_url %}
+                    <img src="{{ item.image_url }}" alt="">
+                    {% else %}
+                    {{ item.icon }}
+                    {% endif %}
+                </div>
+                <div class="item-main">
+                    <strong>{{ item.name }}</strong>
+                    <span>{{ item.type_label }} · {{ item.price }} kim cương</span>
+                    <p>{{ item.description }}</p>
+                </div>
+                <div class="item-status {% if item.active %}active{% else %}inactive{% endif %}">
+                    {{ "Đang bán" if item.active else "Đã ẩn" }}
+                </div>
+                <form method="POST" action="{{ url_for('admin_toggle_shop_item', item_id=item.id) }}">
+                    <button type="submit">{{ "Ẩn" if item.active else "Bật" }}</button>
+                </form>
+            </article>
+            {% else %}
+            <p class="empty-state">Chưa có vật phẩm.</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<style>
+body { background: #eef1f4; }
+.admin-shop-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 16px 56px;
+}
+.admin-shop-header,
+.panel {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+}
+.admin-shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 22px;
+    margin-bottom: 16px;
+}
+.admin-shop-header h1,
+.panel h2 {
+    margin: 0;
+    color: #111827;
+}
+.admin-shop-header p {
+    color: #64748b;
+    margin: 6px 0 0;
+}
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+.header-actions a {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    color: #4387b9;
+    font-weight: 800;
+    padding: 9px 12px;
+    text-decoration: none;
+}
+.admin-shop-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 16px;
+    align-items: start;
+    margin-bottom: 16px;
+}
+.panel {
+    padding: 18px;
+}
+.panel form {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+}
+.panel label {
+    color: #475569;
+    display: grid;
+    gap: 6px;
+    font-size: .92rem;
+    font-weight: 700;
+}
+.panel input,
+.panel select,
+.panel textarea {
+    border: 1px solid #cdd5dd;
+    border-radius: 6px;
+    font: inherit;
+    padding: 10px 11px;
+}
+.form-split {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 10px;
+}
+.asset-upload {
+    border: 1px dashed #b9c5d1;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+}
+.asset-preview {
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #dce2e8;
+    border-radius: 16px;
+    color: #4387b9;
+    display: flex;
+    font-size: 1.8rem;
+    font-weight: 900;
+    height: 78px;
+    justify-content: center;
+    overflow: hidden;
+    width: 78px;
+}
+.asset-preview img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+.asset-upload small {
+    color: #64748b;
+    font-weight: 600;
+}
+.panel button {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    background: #4387b9;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 10px 12px;
+}
+.panel button:disabled {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+}
+.top5-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+}
+.top5-list a {
+    border-top: 1px solid #edf2f7;
+    color: #111827;
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 8px;
+    padding: 9px 0;
+    text-decoration: none;
+}
+.top5-list span,
+.top5-list b {
+    color: #4387b9;
+    font-weight: 900;
+}
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.section-head span {
+    color: #64748b;
+}
+.item-table {
+    display: grid;
+    gap: 10px;
+}
+.item-row {
+    border: 1px solid #edf2f7;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) 90px 70px;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+}
+.item-icon {
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #dce2e8;
+    border-radius: 14px;
+    display: flex;
+    font-size: 1.35rem;
+    height: 52px;
+    justify-content: center;
+    overflow: hidden;
+    width: 52px;
+}
+.item-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.item-main strong,
+.item-main span,
+.item-main p {
+    display: block;
+}
+.item-main strong { color: #111827; }
+.item-main span {
+    color: #4387b9;
+    font-size: .9rem;
+    margin: 3px 0;
+}
+.item-main p {
+    color: #64748b;
+    margin: 0;
+}
+.item-status {
+    border-radius: 999px;
+    font-size: .84rem;
+    font-weight: 900;
+    padding: 4px 9px;
+    text-align: center;
+}
+.item-status.active { background: #ecfdf5; color: #047857; }
+.item-status.inactive { background: #f1f5f9; color: #475569; }
+.empty-state {
+    color: #64748b;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+@media (max-width: 900px) {
+    .admin-shop-header,
+    .admin-shop-grid,
+    .item-row {
+        grid-template-columns: 1fr;
+    }
+    .admin-shop-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .form-split {
+        grid-template-columns: 1fr;
+    }
+    .asset-upload {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+<script>
+const assetFile = document.getElementById("assetFile");
+const assetPreview = document.getElementById("assetPreview");
+if (assetFile && assetPreview) {
+    assetFile.addEventListener("change", () => {
+        const file = assetFile.files && assetFile.files[0];
+        if (!file) {
+            assetPreview.textContent = "◆";
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = event => {
+            assetPreview.innerHTML = "";
+            const image = document.createElement("img");
+            image.src = event.target.result;
+            image.alt = "Xem trước ảnh vật phẩm";
+            assetPreview.appendChild(image);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+</script>
+{% endblock %}

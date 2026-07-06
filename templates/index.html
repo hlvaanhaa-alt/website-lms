@@ -1,780 +1,929 @@
 {% extends "base.html" %}
 
-{% block title %}Trang chủ - edu-lms{% endblock %}
+{% block title %}EduPath - Học tập thông minh{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
+body {
+    background: #f5f7fb;
+}
+.main-content {
     padding: 0;
 }
-
-/* Hero Section */
-.hero {
-    position: relative;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 100px 0 80px;
+.home-page {
+    background: #f5f7fb;
+    color: #102033;
     overflow: hidden;
 }
-
-.hero::before {
-    content: '';
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    top: -200px;
-    right: -100px;
-    animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-}
-
-.hero-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+.home-hero {
+    min-height: calc(100svh - 132px);
+    position: relative;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
     align-items: center;
+    padding: 76px 0 58px;
+    background:
+        linear-gradient(90deg, rgba(13, 32, 54, .86) 0%, rgba(13, 32, 54, .72) 42%, rgba(13, 32, 54, .25) 100%),
+        url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1800&q=82") center / cover;
+}
+.home-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 9px;
+    background: linear-gradient(90deg, #37b6a3, #4d83d8, #f4b740);
+}
+.home-wrap {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
     position: relative;
     z-index: 1;
 }
-
-.hero-text h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    color: white;
-    margin-bottom: 20px;
-    line-height: 1.2;
-}
-
-.hero-text p {
-    font-size: 1.3rem;
-    color: rgba(255,255,255,0.9);
-    margin-bottom: 30px;
-    line-height: 1.6;
-}
-
-.hero-stats {
+.hero-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-top: 40px;
+    grid-template-columns: minmax(0, 1fr) 430px;
+    gap: 44px;
+    align-items: center;
 }
-
-.stat-item {
-    text-align: center;
-    padding: 20px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
+.hero-kicker {
+    color: #9ee8dc;
+    font-size: .9rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0 0 12px;
+    text-transform: uppercase;
 }
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: white;
+.hero-copy h1 {
+    color: #fff;
+    font-size: clamp(3.2rem, 7vw, 6rem);
+    font-weight: 900;
+    line-height: .95;
+    margin: 0 0 18px;
+}
+.hero-copy p {
+    color: rgba(255, 255, 255, .88);
+    font-size: clamp(1.05rem, 2vw, 1.28rem);
+    line-height: 1.7;
+    max-width: 660px;
+    margin: 0;
+}
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+}
+.hero-btn {
+    align-items: center;
+    border-radius: 6px;
+    display: inline-flex;
+    gap: 9px;
+    font-weight: 850;
+    min-height: 48px;
+    padding: 0 18px;
+    text-decoration: none;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.hero-btn:hover {
+    transform: translateY(-2px);
+}
+.hero-btn.primary {
+    background: #fff;
+    border: 1px solid #fff;
+    color: #1f5cbb;
+}
+.hero-btn.secondary {
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid rgba(255, 255, 255, .55);
+    color: #fff;
+}
+.hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 34px;
+    max-width: 620px;
+}
+.metric {
+    border-left: 3px solid #9ee8dc;
+    color: #fff;
+    padding: 3px 0 3px 14px;
+}
+.metric strong {
     display: block;
+    font-size: 1.75rem;
+    line-height: 1;
 }
-
-.stat-label {
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.8);
+.metric span {
+    color: rgba(255, 255, 255, .78);
+    display: block;
+    font-size: .9rem;
     margin-top: 5px;
 }
-
-.hero-visual {
+.hero-panel {
+    background: rgba(255, 255, 255, .94);
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: 8px;
+    box-shadow: 0 24px 70px rgba(4, 13, 25, .26);
+    padding: 18px;
+}
+.panel-head {
+    align-items: center;
+    border-bottom: 1px solid #e4eaf2;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 14px;
+}
+.panel-head h2 {
+    color: #102033;
+    font-size: 1.05rem;
+    margin: 0;
+}
+.panel-head span {
+    background: #eaf7f5;
+    border-radius: 999px;
+    color: #147d70;
+    font-size: .78rem;
+    font-weight: 850;
+    padding: 5px 9px;
+    white-space: nowrap;
+}
+.today-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+}
+.today-item {
+    align-items: center;
+    background: #f7f9fc;
+    border: 1px solid #e6edf5;
+    border-radius: 7px;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 12px;
+}
+.item-icon {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #d9e4ef;
+    border-radius: 6px;
+    color: #1f5cbb;
+    display: flex;
+    height: 42px;
+    justify-content: center;
+    width: 42px;
+}
+.today-item strong,
+.today-item span {
+    display: block;
+}
+.today-item strong {
+    color: #102033;
+    font-size: .96rem;
+}
+.today-item span {
+    color: #657589;
+    font-size: .86rem;
+    margin-top: 2px;
+}
+.today-item b {
+    color: #147d70;
+    font-size: .86rem;
+    white-space: nowrap;
+}
+.progress-box {
+    background: #102033;
+    border-radius: 7px;
+    color: #fff;
+    margin-top: 12px;
+    padding: 14px;
+}
+.progress-title {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-weight: 850;
+    margin-bottom: 10px;
+}
+.progress-track {
+    background: rgba(255, 255, 255, .18);
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+}
+.progress-track i {
+    background: #f4b740;
+    border-radius: inherit;
+    display: block;
+    height: 100%;
+    width: 68%;
+}
+.quick-strip {
+    background: #fff;
+    border-bottom: 1px solid #dde5ef;
+}
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: #dde5ef;
+}
+.quick-card {
+    background: #fff;
+    color: #102033;
+    min-height: 128px;
+    padding: 22px;
+    text-decoration: none;
+}
+.quick-card i {
+    color: #1f5cbb;
+    font-size: 1.35rem;
+}
+.quick-card strong {
+    display: block;
+    font-size: 1rem;
+    margin: 12px 0 6px;
+}
+.quick-card span {
+    color: #657589;
+    display: block;
+    font-size: .92rem;
+    line-height: 1.5;
+}
+.section {
+    padding: 64px 0;
+}
+.section-head {
+    align-items: end;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+.section-head h2 {
+    color: #102033;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 900;
+    margin: 0;
+}
+.section-head p {
+    color: #657589;
+    margin: 0;
+    max-width: 560px;
+}
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+.subject-card {
+    background: #fff;
+    border: 1px solid #dde5ef;
+    border-radius: 8px;
+    padding: 20px;
+}
+.subject-card h3 {
+    color: #102033;
+    font-size: 1.1rem;
+    margin: 0 0 8px;
+}
+.subject-card p {
+    color: #657589;
+    line-height: 1.55;
+    margin: 0 0 16px;
+}
+.subject-meta {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    color: #1f5cbb;
+    font-size: .88rem;
+    font-weight: 800;
+}
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.math-section {
+    background: #eef5ff;
+    border-top: 1px solid #dce7f5;
+    border-bottom: 1px solid #dce7f5;
+}
+.math-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    gap: 18px;
+    align-items: stretch;
+}
+.math-map,
+.math-board,
+.chart-panel,
+.testimonial-card {
+    background: #fff;
+    border: 1px solid #d9e4ef;
+    border-radius: 8px;
+    box-shadow: 0 14px 34px rgba(15, 38, 68, .08);
+}
+.math-map {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding: 18px;
+}
+.map-node {
+    border: 1px solid #dce7f5;
+    border-radius: 8px;
+    padding: 16px;
     position: relative;
 }
-
-.learning-diagram {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+.map-node::after {
+    content: "";
+    position: absolute;
+    right: -13px;
+    top: 50%;
+    width: 13px;
+    height: 2px;
+    background: #4d83d8;
 }
-
-.diagram-title {
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #667eea;
-    margin-bottom: 30px;
+.map-node:nth-child(3n)::after,
+.map-node:last-child::after {
+    display: none;
 }
-
-.flow-chart {
+.map-node b {
+    color: #1f5cbb;
+    display: block;
+    font-size: .86rem;
+    margin-bottom: 16px;
+}
+.map-node strong {
+    color: #102033;
+    display: block;
+    font-size: 1rem;
+}
+.map-node span {
+    color: #657589;
+    display: block;
+    font-size: .9rem;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+.math-board {
+    padding: 20px;
+}
+.board-head {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.board-head h3 {
+    color: #102033;
+    font-size: 1.14rem;
+    margin: 0;
+}
+.board-head span {
+    background: #eaf7f5;
+    border: 1px solid #bee9e2;
+    border-radius: 999px;
+    color: #147d70;
+    font-size: .8rem;
+    font-weight: 850;
+    padding: 5px 9px;
+    white-space: nowrap;
+}
+.formula-list {
+    display: grid;
+    gap: 12px;
+}
+.formula-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid #d7e5f4;
+    border-left: 4px solid #1f5cbb;
+    border-radius: 8px;
+    display: grid;
+    gap: 8px;
+    padding: 13px 14px;
+}
+.formula-tag {
+    color: #1f5cbb;
+    font-size: .78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+.formula-math {
+    color: #102033;
+    display: block;
+    font-size: 1.08rem;
+    min-height: 30px;
+}
+.formula-card span {
+    color: #657589;
+    font-size: .9rem;
+    line-height: 1.45;
+}
+.analytics-layout {
+    display: grid;
+    grid-template-columns: 420px minmax(0, 1fr);
+    gap: 18px;
+    align-items: stretch;
+}
+.chart-panel {
+    padding: 18px;
+}
+.chart-panel h3 {
+    color: #102033;
+    font-size: 1.08rem;
+    margin: 0 0 18px;
+}
+.bar-chart {
+    align-items: end;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    height: 210px;
+    padding: 10px 4px 0;
+}
+.bar {
+    align-items: center;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 8px;
+    height: 100%;
+    justify-content: flex-end;
 }
-
-.flow-step {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    background: linear-gradient(135deg, #f8f9ff 0%, #e8eaff 100%);
-    border-radius: 12px;
-    border-left: 4px solid #667eea;
-    transition: transform 0.3s;
+.bar i {
+    background: linear-gradient(180deg, #37b6a3, #1f5cbb);
+    border-radius: 8px 8px 3px 3px;
+    display: block;
+    min-height: 30px;
+    width: 100%;
 }
-
-.flow-step:hover {
-    transform: translateX(10px);
-}
-
-.step-number {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.step-text {
-    font-size: 1rem;
-    color: #333;
-    font-weight: 600;
-}
-
-.flow-arrow {
-    text-align: center;
-    color: #667eea;
-    font-size: 1.5rem;
-}
-
-.hero-buttons {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.btn {
-    padding: 15px 35px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 50px;
-    text-decoration: none;
-    transition: all 0.3s;
-    display: inline-block;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background: white;
-    color: #667eea;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-}
-
-.btn-secondary {
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border: 2px solid white;
-    backdrop-filter: blur(10px);
-}
-
-.btn-secondary:hover {
-    background: white;
-    color: #667eea;
-}
-
-/* Features Section */
-.features-section {
-    padding: 80px 0;
-    background: #f8f9fa;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.section-header {
-    text-align: center;
-    margin-bottom: 60px;
-}
-
-.section-title {
-    font-size: 2.5rem;
+.bar span {
+    color: #657589;
+    font-size: .8rem;
     font-weight: 800;
-    color: #2d3748;
-    margin-bottom: 15px;
 }
-
-.section-subtitle {
-    font-size: 1.2rem;
-    color: #718096;
-}
-
-.features-grid {
+.insight-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
 }
-
-.feature-card {
-    background: white;
-    padding: 40px 30px;
-    border-radius: 20px;
-    text-align: center;
-    transition: all 0.3s;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    position: relative;
-    overflow: hidden;
+.insight-card {
+    background: #fff;
+    border: 1px solid #d9e4ef;
+    border-radius: 8px;
+    padding: 18px;
 }
-
-.feature-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    transform: scaleX(0);
-    transition: transform 0.3s;
+.insight-card i {
+    color: #1f5cbb;
+    font-size: 1.25rem;
 }
-
-.feature-card:hover::before {
-    transform: scaleX(1);
+.insight-card strong {
+    color: #102033;
+    display: block;
+    margin: 14px 0 7px;
 }
-
-.feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(102,126,234,0.2);
+.insight-card span {
+    color: #657589;
+    display: block;
+    line-height: 1.5;
 }
-
-.feature-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 20px;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    color: white;
-    transition: transform 0.3s;
+.review-section {
+    background: #fff;
 }
-
-.feature-card:hover .feature-icon {
-    transform: scale(1.1) rotate(5deg);
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
 }
-
-.feature-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #2d3748;
+.testimonial-card {
+    padding: 18px;
+}
+.stars {
+    color: #f4b740;
+    letter-spacing: 0;
     margin-bottom: 12px;
 }
-
-.feature-description {
-    font-size: 1rem;
-    color: #718096;
+.testimonial-card p {
+    color: #31445b;
     line-height: 1.6;
+    margin: 0 0 16px;
 }
-
-/* System Architecture Section */
-.architecture-section {
-    padding: 80px 0;
-    background: linear-gradient(135deg, #f8f9ff 0%, #e8eaff 100%);
-}
-
-.architecture-diagram {
-    background: white;
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    margin-top: 40px;
-}
-
-.diagram-row {
-    display: flex;
-    justify-content: center;
+.reviewer {
     align-items: center;
-    gap: 20px;
-    margin: 30px 0;
-    flex-wrap: wrap;
-}
-
-.diagram-box {
-    padding: 25px 35px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border-radius: 15px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    text-align: center;
-    box-shadow: 0 8px 25px rgba(102,126,234,0.3);
-    transition: transform 0.3s;
-    min-width: 180px;
-}
-
-.diagram-box:hover {
-    transform: scale(1.05);
-}
-
-.diagram-box.secondary {
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
-}
-
-.diagram-box.tertiary {
-    background: linear-gradient(135deg, #43e97b, #38f9d7);
-}
-
-.diagram-arrow {
-    font-size: 2rem;
-    color: #667eea;
-}
-
-.diagram-connector {
-    width: 2px;
-    height: 40px;
-    background: linear-gradient(180deg, #667eea, transparent);
-    margin: 0 auto;
-}
-
-/* Learning Path Section */
-.learning-path-section {
-    padding: 80px 0;
-    background: white;
-}
-
-.path-timeline {
-    max-width: 800px;
-    margin: 40px auto 0;
-    position: relative;
-}
-
-.path-timeline::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, #667eea, #764ba2);
-    transform: translateX(-50%);
-}
-
-.timeline-item {
     display: flex;
+    gap: 10px;
+}
+.avatar-dot {
     align-items: center;
-    margin-bottom: 50px;
-    position: relative;
-}
-
-.timeline-item:nth-child(odd) {
-    flex-direction: row;
-}
-
-.timeline-item:nth-child(even) {
-    flex-direction: row-reverse;
-}
-
-.timeline-content {
-    flex: 1;
-    padding: 25px;
-    background: linear-gradient(135deg, #f8f9ff, #e8eaff);
-    border-radius: 15px;
-    margin: 0 30px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
-}
-
-.timeline-content:hover {
-    transform: scale(1.05);
-}
-
-.timeline-dot {
-    width: 20px;
-    height: 20px;
-    background: #667eea;
+    background: #eaf7f5;
     border-radius: 50%;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 4px solid white;
-    box-shadow: 0 0 0 4px #667eea;
-    z-index: 1;
+    color: #147d70;
+    display: flex;
+    font-weight: 900;
+    height: 40px;
+    justify-content: center;
+    width: 40px;
 }
-
-.timeline-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #667eea;
+.reviewer strong,
+.reviewer span {
+    display: block;
+}
+.reviewer span {
+    color: #657589;
+    font-size: .86rem;
+}
+.workflow {
+    background: #102033;
+    color: #fff;
+}
+.workflow .section-head h2,
+.workflow .section-head p {
+    color: #fff;
+}
+.workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+.workflow-step {
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 8px;
+    padding: 20px;
+}
+.workflow-step b {
+    color: #9ee8dc;
+    display: block;
+    font-size: .95rem;
+    margin-bottom: 26px;
+}
+.workflow-step strong {
+    display: block;
+    font-size: 1.06rem;
     margin-bottom: 8px;
 }
-
-.timeline-description {
-    font-size: 1rem;
-    color: #4a5568;
+.workflow-step span {
+    color: rgba(255, 255, 255, .72);
+    line-height: 1.55;
 }
-
-/* CTA Section */
-.cta-section {
-    padding: 80px 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+.final-cta {
+    background:
+        linear-gradient(90deg, rgba(255, 255, 255, .92), rgba(255, 255, 255, .76)),
+        url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80") center / cover;
+    border-top: 1px solid #dde5ef;
+    padding: 64px 0;
 }
-
-.cta-section::before {
-    content: '';
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
-    top: -100px;
-    left: -100px;
-    animation: float 8s ease-in-out infinite;
+.final-cta-box {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: center;
 }
-
-.cta-content {
-    position: relative;
-    z-index: 1;
+.final-cta h2 {
+    color: #102033;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900;
+    margin: 0 0 8px;
 }
-
-.cta-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: white;
-    margin-bottom: 20px;
+.final-cta p {
+    color: #526277;
+    margin: 0;
 }
-
-.cta-description {
-    font-size: 1.2rem;
-    color: rgba(255,255,255,0.9);
-    margin-bottom: 30px;
+.final-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
-
-/* Responsive */
-@media (max-width: 968px) {
-    .hero-content {
+.final-actions a {
+    border-radius: 6px;
+    font-weight: 850;
+    min-height: 46px;
+    padding: 12px 16px;
+    text-decoration: none;
+}
+.final-actions .solid {
+    background: #1f5cbb;
+    color: #fff;
+}
+.final-actions .line {
+    background: #fff;
+    border: 1px solid #b9c7d8;
+    color: #102033;
+}
+@media (max-width: 980px) {
+    .home-hero {
+        min-height: auto;
+        padding: 56px 0 42px;
+    }
+    .hero-grid,
+    .quick-grid,
+    .subject-grid,
+    .workflow-grid,
+    .math-layout,
+    .analytics-layout,
+    .testimonial-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .math-map,
+    .insight-grid {
         grid-template-columns: 1fr;
-        gap: 40px;
     }
-    
-    .hero-text h1 {
-        font-size: 2.5rem;
-    }
-    
-    .hero-stats {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .timeline-item:nth-child(odd),
-    .timeline-item:nth-child(even) {
-        flex-direction: column;
-    }
-    
-    .path-timeline::before {
-        left: 20px;
-    }
-    
-    .timeline-dot {
-        left: 20px;
-    }
-    
-    .timeline-content {
-        margin-left: 60px;
-        margin-right: 0;
+    .map-node::after {
+        display: none;
     }
 }
-
 @media (max-width: 640px) {
-    .hero-text h1 {
-        font-size: 2rem;
+    .home-wrap {
+        width: min(100% - 28px, 1180px);
     }
-    
-    .hero-stats {
+    .home-hero {
+        padding: 44px 0 34px;
+    }
+    .hero-grid,
+    .hero-metrics,
+    .quick-grid,
+    .subject-grid,
+    .workflow-grid,
+    .math-layout,
+    .analytics-layout,
+    .testimonial-grid,
+    .insight-grid {
         grid-template-columns: 1fr;
     }
-    
-    .features-grid {
-        grid-template-columns: 1fr;
+    .hero-panel {
+        padding: 14px;
     }
-    
-    .diagram-row {
+    .today-item {
+        grid-template-columns: 40px minmax(0, 1fr);
+    }
+    .today-item b {
+        grid-column: 2;
+    }
+    .section-head,
+    .final-cta-box {
+        align-items: flex-start;
         flex-direction: column;
     }
 }
 </style>
 
-<div class="hero">
-    <div class="hero-content">
-        <div class="hero-text">
-            <h1>Học tập thông minh cùng AI</h1>
-            <p>Hệ thống học trực tuyến toàn diện với công nghệ AI Gemini hỗ trợ học tập 24/7</p>
-            
-            {% if not session.user_id %}
-            <div class="hero-buttons">
-                <a href="{{ url_for('register') }}" class="btn btn-primary">Đăng ký miễn phí</a>
-                <a href="{{ url_for('login') }}" class="btn btn-secondary">Đăng nhập</a>
-            </div>
-            {% else %}
-            <div class="hero-buttons">
-                <a href="{{ url_for('courses') }}" class="btn btn-primary">Vào học ngay</a>
-                <a href="{{ url_for('chatbot_ai') }}" class="btn btn-secondary">Chatbot AI</a>
-            </div>
-            {% endif %}
-            
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">500+</span>
-                    <span class="stat-label">Học viên</span>
+<div class="home-page">
+    <section class="home-hero">
+        <div class="home-wrap hero-grid">
+            <div class="hero-copy">
+                <p class="hero-kicker">LMS cho học sinh THCS và giáo viên</p>
+                <h1>EduPath</h1>
+                <p>Nền tảng học tập gọn, có bài giảng, bài tập, trợ lí AI môn Toán và cộng đồng hỏi đáp để học sinh được hỗ trợ đúng lúc.</p>
+
+                {% if not session.user_id %}
+                <div class="hero-actions">
+                    <a href="{{ url_for('register') }}" class="hero-btn primary"><i class="fa-solid fa-user-plus"></i> Đăng ký miễn phí</a>
+                    <a href="{{ url_for('login') }}" class="hero-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</a>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">50+</span>
-                    <span class="stat-label">Khóa học</span>
+                {% else %}
+                <div class="hero-actions">
+                    <a href="{{ url_for('courses') }}" class="hero-btn primary"><i class="fa-solid fa-book-open-reader"></i> Vào học ngay</a>
+                    <a href="{{ url_for('chatbot') }}" class="hero-btn secondary"><i class="fa-solid fa-wand-magic-sparkles"></i> Hỏi AI</a>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">1000+</span>
-                    <span class="stat-label">Bài tập</span>
+                {% endif %}
+
+                <div class="hero-metrics">
+                    <div class="metric"><strong>500+</strong><span>học viên</span></div>
+                    <div class="metric"><strong>{{ total_courses or 50 }}+</strong><span>khóa học</span></div>
+                    <div class="metric"><strong>{{ total_documents or 100 }}+</strong><span>tài liệu</span></div>
                 </div>
             </div>
-        </div>
-        
-        <div class="hero-visual">
-            <div class="learning-diagram">
-                <div class="diagram-title">Quy trình học tập</div>
-                <div class="flow-chart">
-                    <div class="flow-step">
-                        <div class="step-number">1</div>
-                        <div class="step-text">Đăng ký tài khoản</div>
+
+            <aside class="hero-panel" aria-label="Bảng học tập hôm nay">
+                <div class="panel-head">
+                    <h2>Học tập hôm nay</h2>
+                    <span>AI sẵn sàng</span>
+                </div>
+                <div class="today-list">
+                    <div class="today-item">
+                        <div class="item-icon"><i class="fa-solid fa-square-root-variable"></i></div>
+                        <div><strong>Toán 9: Hàm số bậc nhất</strong><span>Bài giảng và bài luyện tập</span></div>
+                        <b>35 phút</b>
                     </div>
-                    <div class="flow-arrow">↓</div>
-                    <div class="flow-step">
-                        <div class="step-number">2</div>
-                        <div class="step-text">Chọn khóa học phù hợp</div>
+                    <div class="today-item">
+                        <div class="item-icon"><i class="fa-solid fa-comments"></i></div>
+                        <div><strong>Diễn đàn hỏi đáp</strong><span>Đặt câu hỏi, nhận kim cương</span></div>
+                        <b>Top tháng</b>
                     </div>
-                    <div class="flow-arrow">↓</div>
-                    <div class="flow-step">
-                        <div class="step-number">3</div>
-                        <div class="step-text">Học và làm bài tập</div>
-                    </div>
-                    <div class="flow-arrow">↓</div>
-                    <div class="flow-step">
-                        <div class="step-number">4</div>
-                        <div class="step-text">Nhận phản hồi từ AI</div>
-                    </div>
-                    <div class="flow-arrow">↓</div>
-                    <div class="flow-step">
-                        <div class="step-number">5</div>
-                        <div class="step-text">Hoàn thành khóa học</div>
+                    <div class="today-item">
+                        <div class="item-icon"><i class="fa-solid fa-robot"></i></div>
+                        <div><strong>Trợ lí AI môn Toán</strong><span>Tạo quiz nhanh trong khung chat</span></div>
+                        <b>24/7</b>
                     </div>
                 </div>
-            </div>
+                <div class="progress-box">
+                    <div class="progress-title"><span>Tiến độ mẫu</span><span>68%</span></div>
+                    <div class="progress-track"><i></i></div>
+                </div>
+            </aside>
         </div>
-    </div>
-</div>
+    </section>
 
-<div class="features-section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Tính năng nổi bật</h2>
-            <p class="section-subtitle">Trải nghiệm học tập toàn diện với công nghệ hiện đại</p>
+    <section class="quick-strip">
+        <div class="home-wrap quick-grid">
+            <a class="quick-card" href="{{ url_for('courses') }}"><i class="fa-solid fa-layer-group"></i><strong>Khóa học</strong><span>Lộ trình học rõ ràng theo từng môn.</span></a>
+            <a class="quick-card" href="{{ url_for('tracnghiem') }}"><i class="fa-solid fa-list-check"></i><strong>Trắc nghiệm</strong><span>Làm bài, nhận điểm và xem lại kết quả.</span></a>
+            <a class="quick-card" href="{{ url_for('chatbot') }}"><i class="fa-solid fa-wand-magic-sparkles"></i><strong>Trợ lí AI</strong><span>Hỏi bài, tạo câu hỏi luyện tập môn Toán.</span></a>
+            <a class="quick-card" href="{{ url_for('forum') }}"><i class="fa-solid fa-trophy"></i><strong>Diễn đàn</strong><span>Hỏi đáp, nhận kim cương và vật phẩm.</span></a>
         </div>
-        
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon"></div>
-                <h3 class="feature-title">Khóa học đa dạng</h3>
-                <p class="feature-description">Hơn 50 khóa học từ cơ bản đến nâng cao cho tất cả các môn học THCS</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon"></div>
-                <h3 class="feature-title">Bài tập thực hành</h3>
-                <p class="feature-description">Hệ thống bài tập phong phú với chấm điểm tự động và giải thích chi tiết</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon"></div>
-                <h3 class="feature-title">Video bài giảng</h3>
-                <p class="feature-description">Thư viện video chất lượng cao, dễ hiểu và có thể xem lại nhiều lần</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon"></div>
-                <h3 class="feature-title">AI Chatbot</h3>
-                <p class="feature-description">Trợ lý AI Gemini hỗ trợ giải đáp thắc mắc và hướng dẫn học tập 24/7</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon"></div>
-                <h3 class="feature-title">Theo dõi tiến độ</h3>
-                <p class="feature-description">Dashboard cá nhân để theo dõi quá trình học tập và thành tích</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon"></div>
-                <h3 class="feature-title">Diễn đàn học tập</h3>
-                <p class="feature-description">Cộng đồng học viên giao lưu, thảo luận và giúp đỡ lẫn nhau</p>
-            </div>
-        </div>
-    </div>
-</div>
+    </section>
 
-<div class="subjects-section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Môn học</h2>
-            <p class="section-subtitle">Đầy đủ các môn học THCS theo chương trình Bộ Giáo dục</p>
-        </div>
-        
-        <div class="subjects-grid">
-            <div class="subject-card">
-                <h3 class="subject-title">Toán học</h3>
-                <p class="subject-description">Đại số, Hình học, Số học</p>
-                <div class="subject-stats">
-                    <span>15 khóa học</span>
-                    <span>•</span>
-                    <span>300+ bài tập</span>
-                </div>
+    <section class="section reveal">
+        <div class="home-wrap">
+            <div class="section-head">
+                <h2>Không gian học tập có tổ chức</h2>
+                <p>Trang chủ tập trung vào các hành động chính: vào học, luyện tập, hỏi AI và tham gia cộng đồng. Người dùng mới không bị ngợp, người dùng cũ vẫn vào việc rất nhanh.</p>
             </div>
-            
-            <div class="subject-card">
-                <h3 class="subject-title">Ngữ văn</h3>
-                <p class="subject-description">Văn học, Tiếng Việt, Làm văn</p>
-                <div class="subject-stats">
-                    <span>12 khóa học</span>
-                    <span>•</span>
-                    <span>200+ bài tập</span>
-                </div>
-            </div>
-            
-            <div class="subject-card">
-                <h3 class="subject-title">Tiếng Anh</h3>
-                <p class="subject-description">Ngữ pháp, Từ vựng, Giao tiếp</p>
-                <div class="subject-stats">
-                    <span>10 khóa học</span>
-                    <span>•</span>
-                    <span>250+ bài tập</span>
-                </div>
-            </div>
-            
-            <div class="subject-card">
-                <h3 class="subject-title">Vật lý</h3>
-                <p class="subject-description">Cơ học, Điện học, Quang học</p>
-                <div class="subject-stats">
-                    <span>8 khóa học</span>
-                    <span>•</span>
-                    <span>150+ bài tập</span>
-                </div>
-            </div>
-            
-            <div class="subject-card">
-                <h3 class="subject-title">Hóa học</h3>
-                <p class="subject-description">Vô cơ, Hữu cơ, Thực hành</p>
-                <div class="subject-stats">
-                    <span>7 khóa học</span>
-                    <span>•</span>
-                    <span>120+ bài tập</span>
-                </div>
-            </div>
-            
-            <div class="subject-card">
-                <h3 class="subject-title">Sinh học</h3>
-                <p class="subject-description">Thực vật, Động vật, Con người</p>
-                <div class="subject-stats">
-                    <span>6 khóa học</span>
-                    <span>•</span>
-                    <span>100+ bài tập</span>
-                </div>
+            <div class="subject-grid">
+                <article class="subject-card">
+                    <h3>Toán học</h3>
+                    <p>Ưu tiên hiển thị công thức rõ ràng, bài luyện tập có đáp án và giải thích từng bước.</p>
+                    <div class="subject-meta"><i class="fa-solid fa-calculator"></i> Đại số · Hình học · Xác suất</div>
+                </article>
+                <article class="subject-card">
+                    <h3>Tài liệu và bài giảng</h3>
+                    <p>Giáo viên quản lý nội dung, học sinh theo dõi tiến độ và quay lại bài học nhanh.</p>
+                    <div class="subject-meta"><i class="fa-solid fa-file-lines"></i> {{ total_documents or 100 }}+ tài liệu</div>
+                </article>
+                <article class="subject-card">
+                    <h3>Cộng đồng hỏi đáp</h3>
+                    <p>Câu hỏi, trả lời hay nhất, báo cáo vi phạm, bảng xếp hạng và shop kim cương liên kết với profile.</p>
+                    <div class="subject-meta"><i class="fa-solid fa-gem"></i> Kim cương · Huy hiệu · Avatar</div>
+                </article>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<div class="learning-path-section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Lộ trình học tập</h2>
-            <p class="section-subtitle">Từng bước tiến bộ vững chắc</p>
-        </div>
-        
-        <div class="path-timeline">
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-title">Giai đoạn 1: Làm quen</div>
-                    <div class="timeline-description">Tìm hiểu giao diện, chọn khóa học phù hợp với trình độ</div>
-                </div>
+    <section class="section math-section reveal">
+        <div class="home-wrap">
+            <div class="section-head">
+                <h2>Sơ đồ nội dung môn Toán</h2>
+                <p>Mỗi chủ đề được chia thành nhánh nhỏ để học sinh nhìn nhanh mình đang ở đâu và cần luyện phần nào tiếp theo.</p>
             </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-title">Giai đoạn 2: Học lý thuyết</div>
-                    <div class="timeline-description">Xem video bài giảng, đọc tài liệu và ghi chú quan trọng</div>
+            <div class="math-layout">
+                <div class="math-map">
+                    <div class="map-node"><b>01</b><strong>Số học</strong><span>Phân số, lũy thừa, căn bậc hai.</span></div>
+                    <div class="map-node"><b>02</b><strong>Đại số</strong><span>Biểu thức, phương trình, hàm số.</span></div>
+                    <div class="map-node"><b>03</b><strong>Hình học</strong><span>Tam giác, đường tròn, góc và tỉ lệ.</span></div>
+                    <div class="map-node"><b>04</b><strong>Xác suất</strong><span>Biến cố, tổ hợp, bảng thống kê.</span></div>
+                    <div class="map-node"><b>05</b><strong>Ứng dụng</strong><span>Bài toán thực tế, đọc biểu đồ.</span></div>
+                    <div class="map-node"><b>06</b><strong>Ôn thi</strong><span>Đề tổng hợp, lỗi thường gặp.</span></div>
                 </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-title">Giai đoạn 3: Thực hành</div>
-                    <div class="timeline-description">Làm bài tập, kiểm tra và nhận phản hồi từ hệ thống</div>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-title">Giai đoạn 4: Tương tác</div>
-                    <div class="timeline-description">Tham gia diễn đàn, hỏi đáp với AI và cộng đồng</div>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-title">Giai đoạn 5: Hoàn thành</div>
-                    <div class="timeline-description">Đạt thành tích cao và nhận chứng nhận khóa học</div>
-                </div>
+                <aside class="math-board">
+                    <div class="board-head">
+                        <h3>Góc công thức</h3>
+                        <span>Công thức trọng tâm</span>
+                    </div>
+                    <div class="formula-list">
+                        <div class="formula-card">
+                            <div class="formula-tag">Xác suất</div>
+                            <div class="formula-math">\(P(A)=\dfrac{n(A)}{n(\Omega)}\)</div>
+                            <span>Xác suất của biến cố A.</span>
+                        </div>
+                        <div class="formula-card">
+                            <div class="formula-tag">Hàm số</div>
+                            <div class="formula-math">\(y=ax+b\)</div>
+                            <span>Hàm số bậc nhất lớp 9.</span>
+                        </div>
+                        <div class="formula-card">
+                            <div class="formula-tag">Hình học</div>
+                            <div class="formula-math">\(a^2+b^2=c^2\)</div>
+                            <span>Định lý Pythagore.</span>
+                        </div>
+                    </div>
+                </aside>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<div class="cta-section">
-    <div class="container cta-content">
-        <h2 class="cta-title">Sẵn sàng bắt đầu học tập?</h2>
-        <p class="cta-description">Tham gia cùng hàng trăm học viên đang học tập hiệu quả</p>
-        
-        {% if not session.user_id %}
-        <div class="hero-buttons">
-            <a href="{{ url_for('register') }}" class="btn btn-primary">Đăng ký ngay</a>
-            <a href="{{ url_for('courses') }}" class="btn btn-secondary">Xem khóa học</a>
+    <section class="section reveal">
+        <div class="home-wrap">
+            <div class="section-head">
+                <h2>Tiến độ được nhìn bằng biểu đồ</h2>
+                <p>Không cần nhiều chữ: học sinh thấy môn nào đang mạnh, phần nào cần luyện thêm và dùng AI đúng lúc.</p>
+            </div>
+            <div class="analytics-layout">
+                <div class="chart-panel">
+                    <h3>Mức hoàn thành theo chủ đề</h3>
+                    <div class="bar-chart" aria-label="Biểu đồ tiến độ học Toán">
+                        <div class="bar"><i style="height: 76%"></i><span>Số học</span></div>
+                        <div class="bar"><i style="height: 58%"></i><span>Đại số</span></div>
+                        <div class="bar"><i style="height: 68%"></i><span>Hình</span></div>
+                        <div class="bar"><i style="height: 44%"></i><span>Xác suất</span></div>
+                        <div class="bar"><i style="height: 82%"></i><span>Ôn thi</span></div>
+                    </div>
+                </div>
+                <div class="insight-grid">
+                    <div class="insight-card"><i class="fa-solid fa-bolt"></i><strong>Quiz trong chat</strong><span>Học sinh hỏi một chủ đề, AI tạo bộ câu trắc nghiệm để làm ngay.</span></div>
+                    <div class="insight-card"><i class="fa-solid fa-chart-line"></i><strong>Lưu kết quả</strong><span>Điểm số và hoạt động được gom lại để theo dõi lâu dài.</span></div>
+                    <div class="insight-card"><i class="fa-solid fa-gem"></i><strong>Kim cương</strong><span>Trả lời tốt trong diễn đàn sẽ nhận thưởng và đổi vật phẩm.</span></div>
+                    <div class="insight-card"><i class="fa-solid fa-shield-halved"></i><strong>Kiểm duyệt</strong><span>Báo cáo vi phạm giúp cộng đồng học tập sạch hơn.</span></div>
+                </div>
+            </div>
         </div>
-        {% else %}
-        <div class="hero-buttons">
-            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Vào Dashboard</a>
-            <a href="{{ url_for('courses') }}" class="btn btn-secondary">Xem khóa học</a>
-        </div>
-        {% endif %}
-    </div>
-</div>
+    </section>
 
+    <section class="section workflow reveal">
+        <div class="home-wrap">
+            <div class="section-head">
+                <h2>Quy trình học gọn hơn</h2>
+                <p>Quy trình được đưa xuống section riêng để first screen thoáng, có điểm nhấn và giống một sản phẩm thật hơn.</p>
+            </div>
+            <div class="workflow-grid">
+                <div class="workflow-step"><b>01</b><strong>Chọn nội dung</strong><span>Vào khóa học, bài tập hoặc đề trắc nghiệm phù hợp.</span></div>
+                <div class="workflow-step"><b>02</b><strong>Luyện tập</strong><span>Làm bài trực tiếp, xem điểm và lưu tiến độ.</span></div>
+                <div class="workflow-step"><b>03</b><strong>Hỏi khi bí</strong><span>Dùng AI hoặc đăng câu hỏi lên diễn đàn.</span></div>
+                <div class="workflow-step"><b>04</b><strong>Ghi nhận</strong><span>Profile, kim cương, bảng xếp hạng và shop phản ánh hoạt động thật.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section review-section reveal">
+        <div class="home-wrap">
+            <div class="section-head">
+                <h2>Đánh giá từ người dùng</h2>
+                <p>Các phản hồi ngắn để người mới hiểu nhanh giá trị của EduPath.</p>
+            </div>
+            <div class="testimonial-grid">
+                <article class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>“Em thích phần AI tạo câu hỏi Toán, làm xong biết điểm ngay nên dễ luyện mỗi ngày.”</p>
+                    <div class="reviewer"><div class="avatar-dot">A</div><div><strong>Anh Minh</strong><span>Học sinh lớp 9</span></div></div>
+                </article>
+                <article class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>“Diễn đàn có điểm thưởng làm học sinh chịu giải thích bài rõ hơn, không chỉ gửi đáp án.”</p>
+                    <div class="reviewer"><div class="avatar-dot">T</div><div><strong>Cô Thảo</strong><span>Giáo viên Toán</span></div></div>
+                </article>
+                <article class="testimonial-card">
+                    <div class="stars">★★★★☆</div>
+                    <p>“Profile, huy hiệu và shop làm trang học có động lực hơn, nhìn hoạt động rất thật.”</p>
+                    <div class="reviewer"><div class="avatar-dot">K</div><div><strong>Khánh Linh</strong><span>Học sinh lớp 8</span></div></div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="home-wrap final-cta-box">
+            <div>
+                <h2>Bắt đầu học theo cách rõ ràng hơn</h2>
+                <p>EduPath gom bài học, AI, diễn đàn và thành tích vào cùng một luồng học tập.</p>
+            </div>
+            <div class="final-actions">
+                {% if not session.user_id %}
+                <a class="solid" href="{{ url_for('register') }}">Tạo tài khoản</a>
+                <a class="line" href="{{ url_for('login') }}">Đăng nhập</a>
+                {% else %}
+                <a class="solid" href="{{ url_for('courses') }}">Vào khóa học</a>
+                <a class="line" href="{{ url_for('forum') }}">Vào diễn đàn</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+const revealItems = document.querySelectorAll(".reveal");
+if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.16 });
+    revealItems.forEach((item) => revealObserver.observe(item));
+} else {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const mathBoard = document.querySelector(".math-board");
+    if (!mathBoard || typeof renderMathInElement === "undefined") return;
+    renderMathInElement(mathBoard, {
+        delimiters: [
+            {left: "\\(", right: "\\)", display: false},
+            {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false
+    });
+});
+</script>
 {% endblock %}

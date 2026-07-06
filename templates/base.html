@@ -346,6 +346,15 @@
             padding: 2.5rem 0;
         }
 
+        .main-content.auth-notebook {
+            background-color: #fff7fb;
+            background-image:
+                linear-gradient(rgba(236, 72, 153, 0.42) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(236, 72, 153, 0.42) 2px, transparent 2px);
+            background-position: 0 0;
+            background-size: 28px 28px;
+        }
+
         .footer {
             background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
             color: rgba(255, 255, 255, 0.95);
@@ -531,10 +540,13 @@
                         <div class="dropdown-menu-custom">
                             <a href="{{ url_for('forum') }}">Diễn đàn</a>
                             <a href="{{ url_for('chat_room') }}">Chat</a>
+                            <a href="{{ url_for('shop') }}">Shop</a>
                         </div>
                     </li>
                     <li><a href="{{ url_for('chatbot') }}">Trợ lí AI</a></li>
-                    {% if session.role == 'teacher' %}
+                    {% if is_admin_session %}
+                        <li><a href="{{ url_for('admin_home') }}">Admin</a></li>
+                    {% elif session.role == 'teacher' %}
                         <li><a href="{{ url_for('teacher_dashboard') }}">Dashboard</a></li>
                     {% else %}
                         <li><a href="{{ url_for('student_dashboard') }}">Dashboard</a></li>
@@ -562,7 +574,7 @@
         {% endif %}
     {% endwith %}
 
-    <main class="main-content">
+    <main class="main-content{% if session.user_id %} auth-notebook{% endif %}">
         {% block content %}{% endblock %}
     </main>
 

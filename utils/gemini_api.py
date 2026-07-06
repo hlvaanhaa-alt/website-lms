@@ -5,18 +5,411 @@ import json
 from PIL import Image
 import io
 import os
+import threading
 
 # Cấu hình API key
 load_dotenv()
 
 # Lấy API key từ biến môi trường
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+def _parse_api_keys():
+    raw_keys = os.getenv('GEMINI_API_KEYS') or ''
+    normalized = raw_keys.replace('\n', ',').replace(';', ',')
+    keys = [key.strip() for key in normalized.split(',') if key.strip()]
 
-if not GEMINI_API_KEY:
-    raise ValueError(" Không tìm thấy GEMINI_API_KEY trong file .env")
+    legacy_key = os.getenv('GEMINI_API_KEY', '').strip()
+    if legacy_key and legacy_key not in keys:
+        keys.append(legacy_key)
 
-genai.configure(api_key=GEMINI_API_KEY)
+    return keys
+
+
+GEMINI_API_KEYS = _parse_api_keys()
+
+if not GEMINI_API_KEYS:
+    raise ValueError("Khong tim thay GEMINI_API_KEYS hoac GEMINI_API_KEY trong bien moi truong")
+
+_gemini_key_lock = threading.Lock()
+_next_gemini_key_index = 0
+
+
+def _configure_gemini_key(index):
+    genai.configure(api_key=GEMINI_API_KEYS[index])
+
+
+def _is_key_rotation_error(error):
+    message = str(error).lower()
+    class_name = error.__class__.__name__.lower()
+    retry_markers = (
+        '429',
+        'quota',
+        'rate',
+        'limit',
+        'exhausted',
+        'resource_exhausted',
+        'too many requests',
+        'api key',
+        'apikey',
+        'unauthorized',
+        'permission',
+        'forbidden',
+        'invalid',
+    )
+    return any(marker in message or marker in class_name for marker in retry_markers)
+
+
+def _run_with_gemini_key(operation):
+    global _next_gemini_key_index
+
+    last_error = None
+    with _gemini_key_lock:
+        start_index = _next_gemini_key_index
+
+        for offset in range(len(GEMINI_API_KEYS)):
+            key_index = (start_index + offset) % len(GEMINI_API_KEYS)
+            _configure_gemini_key(key_index)
+
+            try:
+                result = operation()
+                _next_gemini_key_index = (key_index + 1) % len(GEMINI_API_KEYS)
+                return result
+            except Exception as error:
+                last_error = error
+                _next_gemini_key_index = (key_index + 1) % len(GEMINI_API_KEYS)
+                if len(GEMINI_API_KEYS) == 1 or not _is_key_rotation_error(error):
+                    raise
+                print(f"Gemini key #{key_index + 1} failed, rotating to next key: {error}")
+
+    raise last_error
+
+
+_configure_gemini_key(0)
 MODEL_NAME = 'gemini-2.5-flash'
+CHAT_MAX_OUTPUT_TOKENS = int(os.getenv('GEMINI_CHAT_MAX_OUTPUT_TOKENS', '900'))
+IMAGE_MAX_OUTPUT_TOKENS = int(os.getenv('GEMINI_IMAGE_MAX_OUTPUT_TOKENS', '1600'))
+JSON_MAX_OUTPUT_TOKENS = int(os.getenv('GEMINI_JSON_MAX_OUTPUT_TOKENS', '1100'))
+
+
+def _response_text(response):
+    try:
+        text = response.text
+        if text:
+            return text.strip()
+    except Exception:
+        pass
+
+    parts_text = []
+    finish_reason = None
+    for candidate in getattr(response, 'candidates', []) or []:
+        finish_reason = getattr(candidate, 'finish_reason', finish_reason)
+        content = getattr(candidate, 'content', None)
+        for part in getattr(content, 'parts', []) or []:
+            text = getattr(part, 'text', '')
+            if text:
+                parts_text.append(text)
+
+    text = ''.join(parts_text).strip()
+    if text:
+        return text
+
+    raise ValueError(f'Gemini returned empty response. finish_reason={finish_reason}')
+
+
+def _quiz_max_output_tokens(question_count):
+    return min(7000, max(1200, 700 + question_count * 520))
+
+
+def is_quiz_request(message):
+    if not message:
+        return False
+    normalized = message.lower()
+    quiz_markers = (
+        'trắc nghiệm',
+        'trac nghiem',
+        'multiple choice',
+        'quiz',
+        'bài tập',
+        'bai tap',
+        'câu hỏi',
+        'cau hoi',
+    )
+    create_markers = (
+        'tạo',
+        'tao',
+        'hãy cho',
+        'hay cho',
+        'ra đề',
+        'ra de',
+        'luyện tập',
+        'luyen tap',
+    )
+    return any(marker in normalized for marker in quiz_markers) and any(
+        marker in normalized for marker in create_markers
+    )
+
+
+def _extract_quiz_count(message):
+    match = re.search(r'(\d{1,2})\s*(câu|cau|question)', message.lower())
+    if not match:
+        return 5
+    return max(1, min(int(match.group(1)), 10))
+
+
+def _clean_json_response(text):
+    text = text.strip()
+    if '```json' in text:
+        return text.split('```json', 1)[1].split('```', 1)[0].strip()
+    if '```' in text:
+        return text.split('```', 1)[1].split('```', 1)[0].strip()
+    start = text.find('{')
+    end = text.rfind('}')
+    if start != -1 and end != -1 and end > start:
+        return text[start:end + 1]
+    return text
+
+
+def _escape_json_string_backslashes(text):
+    repaired = []
+    in_string = False
+    i = 0
+
+    while i < len(text):
+        char = text[i]
+
+        if char == '"':
+            backslashes = 0
+            j = i - 1
+            while j >= 0 and text[j] == '\\':
+                backslashes += 1
+                j -= 1
+            if backslashes % 2 == 0:
+                in_string = not in_string
+            repaired.append(char)
+            i += 1
+            continue
+
+        if in_string and char == '\\':
+            next_char = text[i + 1] if i + 1 < len(text) else ''
+
+            if next_char in ('"', '\\', '/'):
+                repaired.append(char)
+                repaired.append(next_char)
+                i += 2
+                continue
+
+            if (
+                next_char == 'u'
+                and i + 5 < len(text)
+                and re.fullmatch(r'[0-9a-fA-F]{4}', text[i + 2:i + 6])
+            ):
+                repaired.append(text[i:i + 6])
+                i += 6
+                continue
+
+            repaired.append('\\\\')
+            i += 1
+            continue
+
+        repaired.append(char)
+        i += 1
+
+    return ''.join(repaired)
+
+
+def _parse_json_response(text):
+    cleaned = _clean_json_response(text)
+    repaired = _escape_json_string_backslashes(cleaned)
+    try:
+        return json.loads(repaired)
+    except json.JSONDecodeError:
+        return json.loads(cleaned)
+
+
+def _validate_quiz_payload(payload, requested_count):
+    questions = payload.get('questions', [])
+    if not isinstance(questions, list) or not questions:
+        raise ValueError('Quiz payload missing questions')
+
+    def normalize_quiz_text(value):
+        return (
+            str(value or '')
+            .replace('\\r\\n', '\n')
+            .replace('\\n', '\n')
+            .replace('\r\n', '\n')
+            .replace('\r', '\n')
+            .strip()
+        )
+
+    validated_questions = []
+    for idx, question in enumerate(questions[:requested_count], 1):
+        options = question.get('options', [])
+        if not isinstance(options, list) or len(options) != 4:
+            raise ValueError(f'Question {idx} must have exactly 4 options')
+
+        correct_index = question.get('correct_index')
+        if not isinstance(correct_index, int) or correct_index < 0 or correct_index > 3:
+            correct_answer = str(question.get('correct_answer', '')).strip()
+            correct_index = next(
+                (i for i, option in enumerate(options) if str(option).strip() == correct_answer),
+                None,
+            )
+        if correct_index is None:
+            raise ValueError(f'Question {idx} missing correct_index')
+
+        validated_questions.append({
+            'question': normalize_quiz_text(question.get('question', '')),
+            'options': [normalize_quiz_text(option) for option in options],
+            'correct_index': correct_index,
+            'explanation': normalize_quiz_text(question.get('explanation', '')),
+        })
+
+    return {
+        'type': 'quiz',
+        'title': str(payload.get('title') or 'Trắc nghiệm Toán').strip(),
+        'subject': str(payload.get('subject') or 'Toán').strip(),
+        'questions': validated_questions,
+    }
+
+
+def generate_math_quiz(user_message):
+    requested_count = _extract_quiz_count(user_message)
+    prompt = f"""
+Bạn là giáo viên Toán THCS. Hãy tạo một bài trắc nghiệm tương tác dựa trên yêu cầu của học sinh:
+
+{user_message}
+
+YÊU CẦU BẮT BUỘC:
+- Tạo đúng {requested_count} câu trắc nghiệm.
+- Mỗi câu có đúng 4 lựa chọn.
+- Chỉ có một đáp án đúng.
+- Nội dung thuộc môn Toán, ưu tiên đúng chủ đề học sinh yêu cầu.
+- Công thức và kí hiệu Toán phải viết bằng LaTeX chuẩn.
+- Inline math dùng $...$, công thức dài dùng $$...$$.
+- Vì đang trả về JSON, mọi dấu \\ trong LaTeX phải escape thành \\\\.
+- Ví dụ viết "$\\\\frac{{1}}{{2}}$", không viết "$\\frac{{1}}{{2}}$".
+- Không dùng HTML, không markdown ngoài LaTeX.
+- Trả về JSON hợp lệ duy nhất, không thêm ```json.
+
+SCHEMA:
+{{
+  "type": "quiz",
+  "title": "Tên bài trắc nghiệm ngắn",
+  "subject": "Toán",
+  "questions": [
+    {{
+      "question": "Nội dung câu hỏi, có thể chứa LaTeX",
+      "options": ["A", "B", "C", "D"],
+      "correct_index": 0,
+      "explanation": "Giải thích ngắn, rõ, có thể chứa LaTeX"
+    }}
+  ]
+}}
+"""
+
+    def build_quiz():
+        model = genai.GenerativeModel(
+            MODEL_NAME,
+            generation_config={
+                "temperature": 0.35,
+                "top_p": 0.9,
+                "max_output_tokens": _quiz_max_output_tokens(requested_count),
+                "response_mime_type": "application/json",
+            }
+        )
+        return _response_text(model.generate_content(prompt))
+
+    response_text = _run_with_gemini_key(build_quiz)
+    payload = _parse_json_response(response_text)
+    return _validate_quiz_payload(payload, requested_count)
+
+
+def generate_teacher_exam(subject_name, topic, question_count=10, grade='', time_limit=30):
+    question_count = max(1, min(int(question_count or 10), 30))
+    time_limit = max(5, min(int(time_limit or 30), 180))
+    grade_text = f"lớp {grade}" if grade else "THCS"
+
+    prompt = f"""
+Bạn là giáo viên {subject_name} {grade_text}. Tạo một đề trắc nghiệm theo yêu cầu:
+
+Chủ đề/yêu cầu: {topic}
+
+YÊU CẦU:
+- Tạo đúng {question_count} câu trắc nghiệm.
+- Mỗi câu có đúng 4 lựa chọn A, B, C, D.
+- Chỉ có một đáp án đúng, ghi bằng chữ A/B/C/D.
+- Câu hỏi phù hợp học sinh THCS.
+- Nếu có công thức/kí hiệu toán hoặc khoa học, viết bằng LaTeX chuẩn.
+- Vì đang trả về JSON, mọi dấu \\ trong LaTeX phải escape thành \\\\.
+- Không dùng HTML, không markdown ngoài LaTeX.
+- Trả về JSON hợp lệ duy nhất.
+
+SCHEMA:
+{{
+  "title": "Tên đề ngắn",
+  "description": "Mô tả ngắn",
+  "time_limit": {time_limit},
+  "questions": [
+    {{
+      "question": "Nội dung câu hỏi",
+      "options": {{"A": "...", "B": "...", "C": "...", "D": "..."}},
+      "correct_answer": "A",
+      "explanation": "Giải thích ngắn"
+    }}
+  ]
+}}
+"""
+
+    def build_exam():
+        model = genai.GenerativeModel(
+            MODEL_NAME,
+            generation_config={
+                "temperature": 0.35,
+                "top_p": 0.9,
+                "max_output_tokens": min(12000, max(1800, 850 + question_count * 620)),
+                "response_mime_type": "application/json",
+            }
+        )
+        return _response_text(model.generate_content(prompt))
+
+    payload = _parse_json_response(_run_with_gemini_key(build_exam))
+    questions = payload.get('questions', [])
+    if not isinstance(questions, list) or not questions:
+        raise ValueError('AI không tạo được danh sách câu hỏi')
+
+    normalized_questions = []
+    for index, question in enumerate(questions[:question_count], 1):
+        options = question.get('options', {})
+        if isinstance(options, list):
+            options = {
+                chr(65 + i): str(value).strip()
+                for i, value in enumerate(options[:4])
+            }
+
+        normalized_options = {
+            letter: str(options.get(letter, '')).strip()
+            for letter in ('A', 'B', 'C', 'D')
+        }
+        if not all(normalized_options.values()):
+            raise ValueError(f'Câu {index} thiếu lựa chọn A/B/C/D')
+
+        correct_answer = str(question.get('correct_answer', '')).strip().upper()
+        if correct_answer not in normalized_options:
+            raise ValueError(f'Câu {index} thiếu đáp án đúng hợp lệ')
+
+        normalized_questions.append({
+            'id': index,
+            'number': index,
+            'question': str(question.get('question', '')).strip(),
+            'options': normalized_options,
+            'correct_answer': correct_answer,
+            'explanation': str(question.get('explanation', '')).strip(),
+        })
+
+    return {
+        'title': str(payload.get('title') or f'Đề trắc nghiệm {subject_name}').strip(),
+        'description': str(payload.get('description') or topic).strip(),
+        'time_limit': time_limit,
+        'questions': normalized_questions,
+    }
 
 SYSTEM_PROMPT_BASE = """
 Bạn là trợ lý AI cho học sinh THCS Việt Nam.
@@ -170,36 +563,26 @@ def chat_with_gemini(user_message, chat_history=None):
         if not user_message or not user_message.strip():
             return "Vui lòng nhập câu hỏi."
             
-        model = genai.GenerativeModel(
-            MODEL_NAME,
-            system_instruction=SYSTEM_PROMPT_BASE,
-            generation_config={
-                "temperature": 0.3,
-                "top_p": 1,
-                "top_k": 1,
-                "max_output_tokens": 1024,
-            }
-        )
-        
-        if chat_history:
-            chat = model.start_chat(history=chat_history)
-            response = chat.send_message(user_message)
-        else:
-            response = model.generate_content(user_message)
-        
-        response_text = response.text
-        
-        # DEBUG: In ra để kiểm tra
-        print("=" * 60)
-        print("RAW RESPONSE (first 500 chars):")
-        print(response_text[:500])
-        print("=" * 60)
+        def send_message():
+            model = genai.GenerativeModel(
+                MODEL_NAME,
+                system_instruction=SYSTEM_PROMPT_BASE,
+                generation_config={
+                    "temperature": 0.3,
+                    "top_p": 1,
+                    "top_k": 1,
+                    "max_output_tokens": CHAT_MAX_OUTPUT_TOKENS,
+                }
+            )
+
+            if chat_history:
+                chat = model.start_chat(history=chat_history)
+                return _response_text(chat.send_message(user_message))
+            return _response_text(model.generate_content(user_message))
+
+        response_text = _run_with_gemini_key(send_message)
         
         formatted = format_latex(response_text)
-        
-        print("AFTER FORMAT (first 500 chars):")
-        print(formatted[:500])
-        print("=" * 60)
         
         return formatted
     
@@ -421,9 +804,17 @@ TRẢ LỜI ĐÚNG ĐỊNH DẠNG JSON (KHÔNG thêm ```json):
 }}
 """
         
-        model = genai.GenerativeModel(MODEL_NAME)
-        response = model.generate_content(prompt)
-        result_text = response.text.strip()
+        def analyze():
+            model = genai.GenerativeModel(
+                MODEL_NAME,
+                generation_config={
+                    "temperature": 0.2,
+                    "max_output_tokens": 1500,
+                }
+            )
+            return _response_text(model.generate_content(prompt))
+
+        result_text = _run_with_gemini_key(analyze)
         
         # Parse JSON
         if '```json' in result_text:
@@ -507,15 +898,17 @@ TRẢ LỜI JSON (KHÔNG thêm ```json):
 }}
 """
         
-        model = genai.GenerativeModel(
-            MODEL_NAME,
-            generation_config={
-                "temperature": 0.1,
-                "max_output_tokens": 1024,
-            }
-        )
-        response = model.generate_content(prompt)
-        result_text = response.text.strip()
+        def grade_essay():
+            model = genai.GenerativeModel(
+                MODEL_NAME,
+                generation_config={
+                    "temperature": 0.1,
+                    "max_output_tokens": JSON_MAX_OUTPUT_TOKENS,
+                }
+            )
+            return _response_text(model.generate_content(prompt))
+
+        result_text = _run_with_gemini_key(grade_essay)
         
         if '```json' in result_text:
             result_text = result_text.split('```json')[1].split('```')[0].strip()
@@ -546,17 +939,7 @@ def chat_with_gemini_image(user_message, image_data=None):
         str: Phản hồi từ AI
     """
     try:
-        model = genai.GenerativeModel(
-            MODEL_NAME,
-            system_instruction=SYSTEM_PROMPT_BASE,
-            generation_config={
-                "temperature": 0.4,
-                "top_p": 1,
-                "top_k": 32,
-                "max_output_tokens": 2048,
-            }
-        )
-        
+        image = None
         if image_data:
             # Xử lý ảnh
             image = Image.open(io.BytesIO(image_data))
@@ -568,16 +951,28 @@ def chat_with_gemini_image(user_message, image_data=None):
                 new_size = tuple(int(dim * ratio) for dim in image.size)
                 image = image.resize(new_size, Image.Resampling.LANCZOS)
             
-            # Gửi cả text và ảnh
+        def send_image_message():
+            model = genai.GenerativeModel(
+                MODEL_NAME,
+                system_instruction=SYSTEM_PROMPT_BASE,
+                generation_config={
+                    "temperature": 0.4,
+                    "top_p": 1,
+                    "top_k": 32,
+                    "max_output_tokens": IMAGE_MAX_OUTPUT_TOKENS,
+                }
+            )
+
             if user_message and user_message.strip():
-                response = model.generate_content([user_message, image])
-            else:
-                response = model.generate_content(["Hãy mô tả và phân tích ảnh này chi tiết", image])
-        else:
-            # Chỉ text
-            response = model.generate_content(user_message)
+                content = [user_message, image] if image else user_message
+                return _response_text(model.generate_content(content))
+            if image:
+                return _response_text(model.generate_content(["Hãy mô tả và phân tích ảnh này chi tiết", image]))
+            return _response_text(model.generate_content(user_message))
+
+        response_text = _run_with_gemini_key(send_image_message)
         
-        return format_latex(response.text)
+        return format_latex(response_text)
     
     except Exception as e:
         print(f"❌ Error: {str(e)}")

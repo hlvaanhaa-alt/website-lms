@@ -1,0 +1,623 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Báo cáo diễn đàn{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+    <header class="admin-header">
+        <div>
+            <h1>Dashboard quản trị</h1>
+            <p>{{ counts.pending }} báo cáo chờ xử lý · {{ stats.online_students }} học sinh online · {{ counts.active_bans }} tài khoản đang bị chặn</p>
+        </div>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('admin_shop') }}">Quản lý shop</a>
+            <a href="{{ url_for('forum') }}">Mở diễn đàn</a>
+        </div>
+    </header>
+
+    <section class="metric-grid">
+        <article class="metric-card accent-blue">
+            <span>Tổng tài khoản</span>
+            <strong>{{ stats.total_users }}</strong>
+            <em>{{ stats.teachers }} giáo viên · {{ stats.students }} học sinh</em>
+        </article>
+        <article class="metric-card accent-green">
+            <span>Học sinh online</span>
+            <strong>{{ stats.online_students }}</strong>
+            <em>{{ stats.online_total }} người đang hoạt động</em>
+        </article>
+        <article class="metric-card accent-amber">
+            <span>Câu hỏi diễn đàn</span>
+            <strong>{{ stats.questions }}</strong>
+            <em>{{ stats.answers }} câu trả lời</em>
+        </article>
+        <article class="metric-card accent-rose">
+            <span>Báo cáo vi phạm</span>
+            <strong>{{ counts.pending }}</strong>
+            <em>{{ stats.resolved_rate }}% đã xử lý</em>
+        </article>
+        <article class="metric-card accent-indigo">
+            <span>Kim cương đã trao</span>
+            <strong>{{ stats.total_diamonds }}</strong>
+            <em>Bảng xếp hạng theo tháng</em>
+        </article>
+        <article class="metric-card accent-slate">
+            <span>Chat AI</span>
+            <strong>{{ stats.ai_chat_count }}</strong>
+            <em>{{ stats.chat_messages }} bản ghi chat</em>
+        </article>
+    </section>
+
+    <section class="analytics-grid">
+        <article class="chart-card wide">
+            <div class="card-title">
+                <h2>Hoạt động 7 ngày</h2>
+                <span>Câu hỏi · trả lời · báo cáo</span>
+            </div>
+            <div class="activity-chart">
+                {% for row in stats.daily_rows %}
+                <div class="day-bar">
+                    <div class="bar-track">
+                        <div class="bar-fill" style="height: {{ row.height }}%"></div>
+                    </div>
+                    <strong>{{ row.total }}</strong>
+                    <span>{{ row.label }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="chart-card">
+            <div class="card-title">
+                <h2>Cơ cấu tài khoản</h2>
+                <span>Theo vai trò</span>
+            </div>
+            <div class="progress-list">
+                {% for row in stats.role_rows %}
+                <div class="progress-row">
+                    <div><span>{{ row.label }}</span><b>{{ row.value }}</b></div>
+                    <div class="progress-track"><span style="width: {{ row.percent }}%"></span></div>
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="chart-card">
+            <div class="card-title">
+                <h2>Môn hỏi nhiều</h2>
+                <span>Top chuyên mục</span>
+            </div>
+            <div class="progress-list">
+                {% for row in stats.subject_rows %}
+                <div class="progress-row">
+                    <div><span>{{ row.label }}</span><b>{{ row.value }}</b></div>
+                    <div class="progress-track"><span style="width: {{ row.percent }}%"></span></div>
+                </div>
+                {% else %}
+                <p class="muted">Chưa có dữ liệu môn học.</p>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="chart-card">
+            <div class="card-title">
+                <h2>Tình trạng report</h2>
+                <span>Luồng kiểm duyệt</span>
+            </div>
+            <div class="progress-list report-progress">
+                {% for row in stats.report_rows %}
+                <div class="progress-row">
+                    <div><span>{{ row.label }}</span><b>{{ row.value }}</b></div>
+                    <div class="progress-track"><span style="width: {{ row.percent }}%"></span></div>
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="chart-card online-card">
+            <div class="card-title">
+                <h2>Đang online</h2>
+                <span>Hoạt động gần đây</span>
+            </div>
+            <div class="online-list">
+                {% for user in stats.active_users %}
+                <div class="online-row">
+                    <span class="online-dot"></span>
+                    <strong>{{ user.username }}</strong>
+                    <em>{{ user.role }}</em>
+                </div>
+                {% else %}
+                <p class="muted">Chưa có user hoạt động gần đây.</p>
+                {% endfor %}
+            </div>
+        </article>
+    </section>
+
+    <nav class="status-tabs">
+        <a class="{% if status_filter == 'pending' %}active{% endif %}" href="{{ url_for('admin_forum_reports', status='pending') }}">
+            Chờ xử lý <span>{{ counts.pending }}</span>
+        </a>
+        <a class="{% if status_filter == 'resolved' %}active{% endif %}" href="{{ url_for('admin_forum_reports', status='resolved') }}">
+            Đã xử lý <span>{{ counts.resolved }}</span>
+        </a>
+        <a class="{% if status_filter == 'rejected' %}active{% endif %}" href="{{ url_for('admin_forum_reports', status='rejected') }}">
+            Bỏ qua <span>{{ counts.rejected }}</span>
+        </a>
+        <a class="{% if status_filter == 'all' %}active{% endif %}" href="{{ url_for('admin_forum_reports', status='all') }}">Tất cả</a>
+    </nav>
+
+    <div class="admin-grid">
+        <main class="report-list">
+            {% for report in reports %}
+            <article class="report-row">
+                <div class="report-main">
+                    <div class="report-top">
+                        <strong>{{ report.reason_label }}</strong>
+                        <span class="status {{ report.status|default('pending') }}">{{ report.status_label }}</span>
+                    </div>
+
+                    <p class="target-text">{{ report.target_text }}</p>
+
+                    <div class="meta-line">
+                        <span>Bị báo cáo: <b>{{ report.reported_username|default('Unknown') }}</b></span>
+                        <span>Người gửi: {{ report.reporter_name|default('Unknown') }}</span>
+                        <span>{{ report.created_at_formatted }}</span>
+                    </div>
+
+                    {% if report.detail %}
+                    <p class="detail-note">{{ report.detail }}</p>
+                    {% endif %}
+
+                    <div class="row-actions">
+                        {% if report.target_url %}
+                        <a href="{{ report.target_url }}">Xem nội dung</a>
+                        {% endif %}
+
+                        {% if report.status|default('pending') == 'pending' %}
+                        <form method="POST" action="{{ url_for('admin_update_forum_report_status', report_id=report.id) }}">
+                            <input type="hidden" name="status" value="rejected">
+                            <button type="submit">Bỏ qua</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <aside class="moderation-box">
+                    {% if report.active_ban %}
+                    <div class="ban-state">Đang bị chặn</div>
+                    {% elif report.reported_user_id %}
+                    <form method="POST" action="{{ url_for('admin_create_forum_ban') }}">
+                        <input type="hidden" name="user_id" value="{{ report.reported_user_id }}">
+                        <input type="hidden" name="report_id" value="{{ report.id }}">
+                        <label>
+                            Thời hạn
+                            <select name="duration">
+                                <option value="24h">24 giờ</option>
+                                <option value="permanent">Vĩnh viễn</option>
+                            </select>
+                        </label>
+                        <label>
+                            Lý do
+                            <input name="reason" value="{{ report.reason_label }}">
+                        </label>
+                        <button type="submit">Chặn chat/diễn đàn</button>
+                    </form>
+                    {% else %}
+                    <div class="ban-state muted">Không có user để chặn</div>
+                    {% endif %}
+                </aside>
+            </article>
+            {% else %}
+            <div class="empty-state">Không có báo cáo trong bộ lọc này.</div>
+            {% endfor %}
+        </main>
+
+        <aside class="ban-panel">
+            <h2>Đang bị chặn</h2>
+            {% for ban in active_bans %}
+            <div class="ban-card">
+                <div>
+                    <strong>{{ ban.username }}</strong>
+                    <span>{{ ban.banned_until_formatted }}</span>
+                </div>
+                <p>{{ ban.reason }}</p>
+                <form method="POST" action="{{ url_for('admin_lift_forum_ban', ban_id=ban.id) }}">
+                    <button type="submit">Gỡ chặn</button>
+                </form>
+            </div>
+            {% else %}
+            <p class="muted">Chưa có tài khoản nào đang bị chặn.</p>
+            {% endfor %}
+        </aside>
+    </div>
+</div>
+
+<style>
+body { background: #eef1f4; }
+.admin-page {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 24px 16px 56px;
+}
+.admin-header,
+.report-top,
+.meta-line,
+.row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.admin-header {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    padding: 22px 24px;
+}
+.admin-header h1 { margin: 0; font-size: 1.8rem; }
+.admin-header p,
+.meta-line,
+.muted { color: #64748b; }
+.admin-header a,
+.row-actions a {
+    color: #2b7bbb;
+    font-weight: 800;
+    text-decoration: none;
+}
+.admin-header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.metric-card {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    min-height: 128px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+}
+.metric-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: #2b7bbb;
+}
+.metric-card span,
+.card-title span {
+    color: #64748b;
+    font-size: .9rem;
+    font-weight: 700;
+}
+.metric-card strong {
+    display: block;
+    color: #111827;
+    font-size: 2rem;
+    line-height: 1;
+    margin: 14px 0 9px;
+}
+.metric-card em {
+    color: #475569;
+    display: block;
+    font-style: normal;
+    font-size: .88rem;
+    line-height: 1.35;
+}
+.accent-blue::before { background: #2b7bbb; }
+.accent-green::before { background: #16a34a; }
+.accent-amber::before { background: #d97706; }
+.accent-rose::before { background: #e11d48; }
+.accent-indigo::before { background: #4f46e5; }
+.accent-slate::before { background: #475569; }
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+}
+.chart-card {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    padding: 18px;
+    min-height: 250px;
+}
+.chart-card.wide { grid-column: span 2; }
+.card-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.card-title h2 {
+    color: #111827;
+    font-size: 1.05rem;
+    margin: 0;
+}
+.activity-chart {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(34px, 1fr));
+    gap: 10px;
+    height: 178px;
+    align-items: end;
+}
+.day-bar {
+    display: grid;
+    grid-template-rows: 1fr auto auto;
+    gap: 6px;
+    min-width: 0;
+    text-align: center;
+}
+.bar-track {
+    align-self: stretch;
+    background: #edf2f7;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-end;
+    min-height: 118px;
+    overflow: hidden;
+}
+.bar-fill {
+    background: linear-gradient(180deg, #2b7bbb, #16a34a);
+    border-radius: 6px 6px 0 0;
+    min-height: 4px;
+    width: 100%;
+}
+.day-bar strong {
+    color: #111827;
+    font-size: .9rem;
+}
+.day-bar span {
+    color: #64748b;
+    font-size: .8rem;
+}
+.progress-list {
+    display: grid;
+    gap: 14px;
+}
+.progress-row {
+    display: grid;
+    gap: 7px;
+}
+.progress-row div:first-child {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.progress-row span {
+    color: #374151;
+    font-weight: 700;
+}
+.progress-row b {
+    color: #111827;
+}
+.progress-track {
+    background: #edf2f7;
+    border-radius: 999px;
+    height: 9px;
+    overflow: hidden;
+}
+.progress-track span {
+    background: #2b7bbb;
+    border-radius: 999px;
+    display: block;
+    height: 100%;
+    min-width: 4px;
+}
+.report-progress .progress-row:nth-child(1) .progress-track span { background: #d97706; }
+.report-progress .progress-row:nth-child(2) .progress-track span { background: #16a34a; }
+.report-progress .progress-row:nth-child(3) .progress-track span { background: #64748b; }
+.online-list {
+    display: grid;
+    gap: 10px;
+}
+.online-row {
+    align-items: center;
+    border-bottom: 1px solid #edf2f7;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 10px 1fr auto;
+    padding-bottom: 10px;
+}
+.online-dot {
+    background: #16a34a;
+    border-radius: 50%;
+    height: 9px;
+    width: 9px;
+}
+.online-row strong {
+    color: #111827;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.online-row em {
+    color: #64748b;
+    font-style: normal;
+    font-size: .86rem;
+}
+.status-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.status-tabs a {
+    border: 1px solid #cdd5dd;
+    border-radius: 6px;
+    background: #fff;
+    color: #1f2937;
+    padding: 9px 13px;
+    text-decoration: none;
+    font-weight: 700;
+}
+.status-tabs a.active {
+    border-color: #2b7bbb;
+    color: #1f6aa5;
+}
+.status-tabs span {
+    color: #64748b;
+    margin-left: 4px;
+}
+.admin-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 18px;
+    align-items: start;
+}
+.report-list { display: grid; gap: 12px; }
+.report-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 16px;
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    padding: 18px;
+}
+.report-top { justify-content: flex-start; }
+.status {
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-size: .84rem;
+    font-weight: 800;
+}
+.status.pending { background: #fff7ed; color: #b45309; }
+.status.resolved { background: #ecfdf5; color: #047857; }
+.status.rejected { background: #f1f5f9; color: #475569; }
+.target-text {
+    margin: 10px 0;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+.meta-line {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    font-size: .92rem;
+}
+.detail-note {
+    border-left: 3px solid #cdd5dd;
+    color: #374151;
+    margin: 12px 0 0;
+    padding-left: 10px;
+}
+.row-actions {
+    justify-content: flex-start;
+    margin-top: 12px;
+}
+button,
+select,
+input {
+    border: 1px solid #cdd5dd;
+    border-radius: 6px;
+    font: inherit;
+}
+button {
+    background: #fff;
+    color: #2b7bbb;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 8px 12px;
+}
+.moderation-box form {
+    display: grid;
+    gap: 9px;
+}
+.moderation-box label {
+    display: grid;
+    gap: 5px;
+    color: #475569;
+    font-size: .92rem;
+}
+.moderation-box select,
+.moderation-box input {
+    padding: 8px 9px;
+    min-width: 0;
+}
+.moderation-box button {
+    background: #2b7bbb;
+    border-color: #2b7bbb;
+    color: #fff;
+}
+.ban-state {
+    border: 1px solid #86efac;
+    border-radius: 6px;
+    color: #047857;
+    font-weight: 800;
+    padding: 10px;
+    text-align: center;
+}
+.ban-panel {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    padding: 16px;
+}
+.ban-panel h2 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+}
+.ban-card {
+    border-top: 1px solid #e5e7eb;
+    padding: 12px 0;
+}
+.ban-card:first-of-type { border-top: 0; }
+.ban-card div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.ban-card span {
+    color: #64748b;
+    font-size: .9rem;
+}
+.ban-card p {
+    color: #374151;
+    margin: 8px 0;
+}
+.empty-state {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    color: #64748b;
+    padding: 28px;
+    text-align: center;
+}
+@media (max-width: 980px) {
+    .metric-grid,
+    .analytics-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .chart-card.wide { grid-column: span 2; }
+    .admin-grid,
+    .report-row {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 640px) {
+    .admin-header,
+    .card-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .metric-grid,
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+    .chart-card.wide { grid-column: span 1; }
+    .activity-chart {
+        gap: 6px;
+    }
+}
+</style>
+{% endblock %}

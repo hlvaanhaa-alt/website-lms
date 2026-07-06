@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Shop kim cương{% endblock %}
+
+{% block content %}
+<div class="shop-page">
+    <header class="shop-header">
+        <div>
+            <h1>Shop kim cương</h1>
+            <p>Đổi vật phẩm để làm đẹp profile và tên hiển thị trong diễn đàn.</p>
+        </div>
+        <div class="balance-box">
+            <span>Số dư</span>
+            <strong>{{ balance }}</strong>
+            <em>kim cương</em>
+        </div>
+    </header>
+
+    <section class="shop-grid">
+        {% for item in items %}
+        <article class="shop-card">
+            <div class="item-icon {{ item.css_class }}">
+                {% if item.image_url %}<img src="{{ item.image_url }}" alt="">{% else %}{{ item.icon }}{% endif %}
+            </div>
+            <div class="item-main">
+                <div class="item-top">
+                    <h2>{{ item.name }}</h2>
+                    <span>{{ item.type_label }}</span>
+                </div>
+                <p>{{ item.description }}</p>
+                <strong>{{ item.price }} kim cương</strong>
+            </div>
+            <div class="item-actions">
+                {% if item.owned %}
+                    {% if item.equipped %}
+                    <button disabled>Đang dùng</button>
+                    {% else %}
+                    <button disabled>Đã sở hữu</button>
+                    {% endif %}
+                {% else %}
+                <form method="POST" action="{{ url_for('redeem_shop_item', item_id=item.id) }}">
+                    <button type="submit" {% if balance < item.price %}disabled{% endif %}>
+                        {% if balance < item.price %}Chưa đủ{% else %}Đổi ngay{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </article>
+        {% else %}
+        <div class="empty-shop">Chưa có vật phẩm trong shop.</div>
+        {% endfor %}
+    </section>
+</div>
+
+<style>
+body { background: #eef1f4; }
+.shop-page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 28px 16px 56px;
+}
+.shop-header {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: center;
+    padding: 22px;
+    margin-bottom: 16px;
+}
+.shop-header h1 {
+    margin: 0 0 6px;
+    color: #111827;
+}
+.shop-header p {
+    margin: 0;
+    color: #64748b;
+}
+.balance-box {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    min-width: 150px;
+    padding: 13px 16px;
+    text-align: center;
+}
+.balance-box span,
+.balance-box em {
+    color: #64748b;
+    display: block;
+    font-style: normal;
+}
+.balance-box strong {
+    color: #4387b9;
+    display: block;
+    font-size: 2rem;
+}
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+.shop-card {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 66px minmax(0, 1fr) 112px;
+    gap: 14px;
+    align-items: center;
+    padding: 16px;
+}
+.item-icon {
+    align-items: center;
+    background: #f8fafc;
+    border: 2px solid #dce2e8;
+    border-radius: 18px;
+    display: flex;
+    font-size: 1.7rem;
+    height: 62px;
+    justify-content: center;
+    width: 62px;
+    overflow: hidden;
+}
+.item-icon img { width: 100%; height: 100%; object-fit: cover; }
+.badge-helper { background: #ecfdf5; border-color: #16a34a; color: #047857; }
+.badge-math { background: #eff6ff; border-color: #4387b9; color: #1d4ed8; }
+.badge-top { background: #fff7ed; border-color: #d97706; color: #b45309; }
+.frame-sky { border-color: #7dd3fc; color: #0284c7; }
+.frame-gold { border-color: #f6c453; color: #b45309; }
+.frame-diamond { border-color: #8dd7ff; color: #1d4ed8; }
+.title-helper { background: #ecfdf5; border-color: #16a34a; color: #047857; }
+.title-math { background: #eff6ff; border-color: #4387b9; color: #1d4ed8; }
+.title-diamond { background: #f5f3ff; border-color: #8b5cf6; color: #6d28d9; }
+.item-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.item-top h2 {
+    color: #111827;
+    font-size: 1rem;
+    margin: 0;
+}
+.item-top span {
+    color: #4387b9;
+    font-size: .82rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+.item-main p {
+    color: #64748b;
+    margin: 8px 0;
+}
+.item-main strong {
+    color: #111827;
+}
+.item-actions button {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    background: #4387b9;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 9px 12px;
+    width: 100%;
+}
+.item-actions button:disabled {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+}
+.empty-shop {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    color: #64748b;
+    grid-column: 1 / -1;
+    padding: 28px;
+    text-align: center;
+}
+@media (max-width: 860px) {
+    .shop-header,
+    .shop-card {
+        grid-template-columns: 1fr;
+    }
+    .shop-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,664 @@
+{% extends "base.html" %}
+
+{% block title %}Hồ sơ {{ profile_user.username }}{% endblock %}
+
+{% block content %}
+<div class="profile-shell">
+    <section class="profile-card">
+        <header class="profile-head">
+            <div class="avatar-column">
+                <div class="avatar-box {{ equipped.frame.css_class if equipped.frame else '' }}" aria-hidden="true">
+                    {% if customization.avatar_url %}
+                    <img src="{{ customization.avatar_url }}" alt="">
+                    {% else %}
+                    <div class="avatar-head"></div>
+                    <div class="avatar-body"></div>
+                    {% endif %}
+                </div>
+                {% if session.user_id == profile_user.id %}
+                <form class="avatar-form" method="POST" action="{{ url_for('update_profile_avatar') }}" enctype="multipart/form-data">
+                    <label>
+                        Đổi avatar
+                        <input type="file" name="avatar" accept=".png,.jpg,.jpeg,.gif" onchange="this.form.submit()">
+                    </label>
+                </form>
+                {% endif %}
+            </div>
+
+            <div class="identity-block">
+                <div class="name-line">
+                    <h1>{{ profile_user.username }}</h1>
+                    <span class="role-badge">{{ role_label }}</span>
+                    {% if equipped.title %}
+                    <span class="title-badge {{ equipped.title.css_class }}">{{ equipped.title.name }}</span>
+                    {% endif %}
+                </div>
+                <p class="quote-mark">“ .................... ”</p>
+                {% if equipped.badges %}
+                <div class="owned-badges">
+                    {% for badge in equipped.badges %}
+                    <span class="{{ badge.css_class }}">{{ badge.icon }} {{ badge.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span>Điểm số</span>
+                        <strong><em class="icon-blue">H</em> {{ stats.points }}</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Cảm ơn</span>
+                        <strong><em class="icon-red">♥</em> {{ stats.thanks_count }}</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Hay nhất</span>
+                        <strong><em class="icon-gold">🏅</em> {{ stats.best_answers_count }}</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>5 Sao</span>
+                        <strong><em class="icon-gold">★</em> {{ stats.five_star_count }}</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Xác thực</span>
+                        <strong><em class="icon-teal">✿</em> {{ stats.verified_count }}</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Đã giúp</span>
+                        <strong><em class="icon-cyan">☃</em> {{ stats.helped_count }}</strong>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="profile-section badge-section">
+            <div class="section-title-row">
+                <h2>Danh hiệu của bạn</h2>
+                <a href="{{ url_for('shop') }}">Vào shop</a>
+            </div>
+            <div class="badge-display">
+                <div class="badge-wrap">
+                    <div class="leaf-badge">
+                        <span></span>
+                    </div>
+                    <p>Lính mới</p>
+                </div>
+                {% for badge in equipped.badges %}
+                <div class="badge-wrap shop-badge">
+                    <div class="shop-badge-icon {{ badge.css_class }}">{{ badge.icon }}</div>
+                    <p>{{ badge.name }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="profile-section shelf-section">
+            <div class="section-title-row">
+                <h2>Kệ sách</h2>
+                <a href="#">Xem tất cả</a>
+            </div>
+            <p>Đọc sách gì hay, chia sẻ ngay cùng cộng đồng <a href="#">Viết chia sẻ</a></p>
+        </section>
+
+        <section class="profile-section">
+            <h2>Các môn đã giúp đỡ bạn bè</h2>
+            <div class="radar-area">
+                <div class="radar-chart" aria-hidden="true">
+                    <svg viewBox="0 0 260 240" role="img">
+                        <polygon class="radar-grid" points="130,20 235,95 195,218 65,218 25,95"></polygon>
+                        <polygon class="radar-grid" points="130,68 186,108 165,174 95,174 74,108"></polygon>
+                        <line x1="130" y1="20" x2="130" y2="132"></line>
+                        <line x1="235" y1="95" x2="130" y2="132"></line>
+                        <line x1="195" y1="218" x2="130" y2="132"></line>
+                        <line x1="65" y1="218" x2="130" y2="132"></line>
+                        <line x1="25" y1="95" x2="130" y2="132"></line>
+                        <circle cx="130" cy="132" r="4"></circle>
+                    </svg>
+                    <span class="radar-label label-top">KHTN</span>
+                    <span class="radar-label label-right">KHXH</span>
+                    <span class="radar-label label-bottom-right">Ngoại Ngữ</span>
+                    <span class="radar-label label-bottom-left">Nghệ Thuật</span>
+                    <span class="radar-label label-left">KHCN</span>
+                </div>
+
+                <div class="subject-bars">
+                    {% for subject in stats.helped_subjects %}
+                    <div class="subject-row">
+                        <div><span>{{ subject.label }}</span><b>{{ subject.value }}</b></div>
+                        <p><i style="width: {{ subject.percent }}%"></i></p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="profile-section">
+            <h2>Hoạt động diễn đàn</h2>
+            <div class="forum-activity-grid">
+                <article class="activity-panel">
+                    <h3>Câu hỏi đã đặt</h3>
+                    {% for post in activity.questions %}
+                    <a class="activity-item" href="{{ url_for('forum_post_detail', post_id=post.id) }}">
+                        <strong>{{ post.title }}</strong>
+                        <span>{{ post.subject }}{% if post.grade %} · {{ post.grade }}{% endif %} · {{ post.answers_count }} trả lời · {{ post.time_ago }}</span>
+                    </a>
+                    {% else %}
+                    <p class="empty-note">Chưa đặt câu hỏi nào.</p>
+                    {% endfor %}
+                </article>
+
+                <article class="activity-panel">
+                    <h3>Câu trả lời gần đây</h3>
+                    {% for answer in activity.answers %}
+                    <a class="activity-item" href="{{ url_for('forum_post_detail', post_id=answer.post_id) }}">
+                        <strong>{{ answer.post_title }}</strong>
+                        <span>{{ answer.subject }}{% if answer.grade %} · {{ answer.grade }}{% endif %} · {{ answer.time_ago }}{% if answer.points_total %} · +{{ answer.points_total }} kim cương{% endif %}</span>
+                    </a>
+                    {% else %}
+                    <p class="empty-note">Chưa có câu trả lời nào.</p>
+                    {% endfor %}
+                </article>
+
+                <article class="activity-panel">
+                    <h3>Câu hay nhất</h3>
+                    {% for answer in activity.best_answers %}
+                    <a class="activity-item" href="{{ url_for('forum_post_detail', post_id=answer.post_id) }}">
+                        <strong>{{ answer.post_title }}</strong>
+                        <span>{{ answer.subject }} · +{{ answer.points_total }} kim cương</span>
+                    </a>
+                    {% else %}
+                    <p class="empty-note">Chưa có câu trả lời hay nhất.</p>
+                    {% endfor %}
+                </article>
+
+                <article class="activity-panel">
+                    <h3>Kim cương gần đây</h3>
+                    {% for event in activity.point_history %}
+                    <a class="activity-item" href="{{ url_for('forum_post_detail', post_id=event.post_id) if event.post_id else url_for('forum') }}">
+                        <strong>+{{ event.points }} kim cương</strong>
+                        <span>{{ event.post_title }} · {{ event.time_ago }}</span>
+                    </a>
+                    {% else %}
+                    <p class="empty-note">Chưa có lịch sử nhận kim cương.</p>
+                    {% endfor %}
+                </article>
+            </div>
+        </section>
+
+        <section class="profile-section inventory-section">
+            <div class="section-title-row">
+                <h2>Túi đồ từ shop</h2>
+                <a href="{{ url_for('shop') }}">Đổi vật phẩm</a>
+            </div>
+            <div class="inventory-grid">
+                {% for record in inventory %}
+                <article class="inventory-card">
+                    <div class="inventory-icon {{ record.item.css_class }}">
+                        {% if record.item.image_url %}<img src="{{ record.item.image_url }}" alt="">{% else %}{{ record.item.icon }}{% endif %}
+                    </div>
+                    <div>
+                        <strong>{{ record.item.name }}</strong>
+                        <span>{{ record.item.description }}</span>
+                    </div>
+                    {% if session.user_id == profile_user.id and record.item.type in ['avatar', 'frame', 'title'] %}
+                    <form method="POST" action="{{ url_for('equip_shop_item', inventory_id=record.id) }}">
+                        <button type="submit">
+                            {% if (record.item.type == 'avatar' and customization.equipped_avatar_item_id == record.item.id) or (record.item.type == 'frame' and customization.equipped_frame_id == record.item.id) or (record.item.type == 'title' and customization.equipped_title_id == record.item.id) %}
+                            Đang dùng
+                            {% else %}
+                            Dùng
+                            {% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
+                </article>
+                {% else %}
+                <p class="empty-note">Chưa có vật phẩm nào. Dùng kim cương ở diễn đàn để đổi đồ trong shop.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="profile-section info-grid">
+            <div>
+                <p>Ngày tham gia: {{ profile_user.created_at[:10] if profile_user.created_at else '-' }}</p>
+                <p>Tuổi Hoidap247: {{ age_days }} ngày</p>
+                <a class="more-link" href="#">Xem thêm thông tin</a>
+            </div>
+            <div>
+                <p>Số câu trả lời: <strong>{{ stats.answers_count }}</strong></p>
+                <p>Số câu hỏi đã đặt: <strong>{{ stats.questions_count }}</strong></p>
+                <p>Số lượng câu trả lời hay nhất: <strong>{{ stats.best_answers_count }}</strong></p>
+                <p>Số cảnh báo: <strong>{{ stats.warnings_count }}</strong></p>
+            </div>
+        </section>
+    </section>
+</div>
+
+<style>
+body { background: #eef1f4; }
+.profile-shell {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 20px 16px 56px;
+}
+.profile-card {
+    background: #fff;
+    border: 1px solid #d9dee5;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, .08);
+    padding: 28px 30px 20px;
+}
+.profile-head {
+    background: #fff;
+    border: 0;
+    color: #111827;
+    display: grid;
+    grid-template-columns: 142px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    padding: 0;
+}
+.avatar-column {
+    display: grid;
+    gap: 10px;
+    justify-items: center;
+}
+.avatar-box {
+    width: 142px;
+    height: 142px;
+    background: #eef1f5;
+    border: 1px solid #d9dee5;
+    border-radius: 28px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    position: relative;
+}
+.avatar-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.frame-sky { box-shadow: 0 0 0 5px #7dd3fc inset; }
+.frame-gold { box-shadow: 0 0 0 5px #f6c453 inset, 0 0 18px rgba(246, 196, 83, .45); }
+.frame-diamond { box-shadow: 0 0 0 5px #8dd7ff inset, 0 0 22px rgba(45, 125, 255, .35); }
+.avatar-form label {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    color: #4387b9;
+    cursor: pointer;
+    display: inline-block;
+    font-size: .86rem;
+    font-weight: 800;
+    padding: 7px 10px;
+}
+.avatar-form input { display: none; }
+.avatar-head {
+    width: 58px;
+    height: 58px;
+    background: #cfcfcf;
+    border-radius: 50%;
+    position: absolute;
+    top: 28px;
+}
+.avatar-body {
+    width: 94px;
+    height: 74px;
+    background: #cfcfcf;
+    border-radius: 52px 52px 18px 18px;
+    position: absolute;
+    bottom: -6px;
+}
+.identity-block { min-width: 0; }
+.name-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px;
+}
+.name-line h1 {
+    color: #4387b9;
+    font-size: 1.08rem;
+    margin: 0;
+}
+.role-badge {
+    border: 1px solid #d8e7f2;
+    border-radius: 999px;
+    color: #4387b9;
+    font-size: .78rem;
+    font-weight: 800;
+    padding: 2px 8px;
+}
+.title-badge {
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 900;
+    padding: 3px 9px;
+}
+.title-helper { background: #ecfdf5; color: #047857; }
+.title-math { background: #eff6ff; color: #1d4ed8; }
+.title-diamond { background: #f5f3ff; color: #6d28d9; }
+.quote-mark {
+    color: #111827;
+    font-weight: 800;
+    margin: 4px 0 16px;
+}
+.owned-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: -6px 0 14px;
+}
+.owned-badges span {
+    border: 1px solid #dce2e8;
+    border-radius: 999px;
+    color: #374151;
+    font-size: .82rem;
+    font-weight: 800;
+    padding: 4px 8px;
+}
+.stats-row {
+    background: #fff;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(72px, 1fr));
+    gap: 18px;
+    align-items: start;
+}
+.stat-item {
+    text-align: center;
+    min-width: 0;
+}
+.stat-item span {
+    display: block;
+    color: #111827;
+    margin-bottom: 7px;
+}
+.stat-item strong {
+    color: #111827;
+    font-size: 1rem;
+}
+.stat-item em {
+    font-style: normal;
+    font-weight: 900;
+}
+.icon-blue { color: #2778ba; }
+.icon-red { color: #d65b5b; }
+.icon-gold { color: #d6a100; }
+.icon-teal { color: #45a695; }
+.icon-cyan { color: #4387b9; }
+.profile-section {
+    border-top: 1px dotted #cfd5dd;
+    margin-top: 22px;
+    padding-top: 18px;
+}
+.profile-section h2 {
+    color: #111827;
+    font-size: 1rem;
+    margin: 0 0 16px;
+    text-transform: uppercase;
+}
+.badge-wrap {
+    display: inline-grid;
+    gap: 7px;
+    justify-items: center;
+}
+.badge-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: start;
+}
+.badge-wrap p {
+    color: #111827;
+    margin: 0;
+}
+.leaf-badge {
+    width: 78px;
+    height: 78px;
+    border: 3px solid #7c9f72;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+}
+.leaf-badge span {
+    width: 18px;
+    height: 30px;
+    background: #7c9f72;
+    border-radius: 18px 18px 18px 4px;
+    transform: rotate(-6deg);
+}
+.shop-badge-icon,
+.inventory-icon {
+    align-items: center;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+}
+.shop-badge-icon {
+    border: 3px solid #4387b9;
+    font-size: 1.45rem;
+    height: 78px;
+    width: 78px;
+}
+.badge-helper { background: #ecfdf5; border-color: #16a34a; color: #047857; }
+.badge-math { background: #eff6ff; border-color: #4387b9; color: #1d4ed8; }
+.badge-top { background: #fff7ed; border-color: #d97706; color: #b45309; }
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+.section-title-row h2 { margin-bottom: 0; }
+.section-title-row a,
+.shelf-section a,
+.more-link {
+    color: #4387b9;
+    font-weight: 800;
+}
+.shelf-section p {
+    color: #64748b;
+    margin: 16px 0 0;
+}
+.radar-area {
+    display: grid;
+    grid-template-columns: 320px minmax(220px, 1fr);
+    gap: 26px;
+    align-items: center;
+}
+.radar-chart {
+    width: 286px;
+    height: 286px;
+    position: relative;
+    margin: 4px 0 10px 4px;
+}
+.radar-chart svg {
+    display: block;
+    height: 240px;
+    left: 14px;
+    position: absolute;
+    top: 28px;
+    width: 260px;
+}
+.radar-chart polygon,
+.radar-chart line {
+    fill: none;
+    stroke: #d8dee7;
+    stroke-width: 1;
+}
+.radar-chart circle {
+    fill: #4387b9;
+}
+.radar-label {
+    color: #111827;
+    font-size: .76rem;
+    position: absolute;
+    white-space: nowrap;
+}
+.label-top { left: 128px; top: 2px; transform: translateX(-50%); }
+.label-right { right: 0; top: 104px; }
+.label-bottom-right { right: 22px; bottom: 8px; }
+.label-bottom-left { left: 18px; bottom: 8px; }
+.label-left { left: 0; top: 104px; }
+.subject-bars {
+    display: grid;
+    gap: 12px;
+}
+.subject-row {
+    display: grid;
+    gap: 6px;
+}
+.subject-row div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+.subject-row span,
+.subject-row b {
+    color: #111827;
+}
+.subject-row p {
+    background: #eef2f6;
+    border-radius: 999px;
+    height: 8px;
+    margin: 0;
+    overflow: hidden;
+}
+.subject-row i {
+    background: #4387b9;
+    display: block;
+    height: 100%;
+    min-width: 3px;
+}
+.forum-activity-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+.activity-panel {
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    padding: 14px;
+    min-width: 0;
+}
+.activity-panel h3 {
+    color: #111827;
+    font-size: .98rem;
+    margin: 0 0 10px;
+}
+.activity-item {
+    border-top: 1px solid #edf2f7;
+    color: #111827;
+    display: grid;
+    gap: 4px;
+    padding: 10px 0;
+    text-decoration: none;
+}
+.activity-item:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+}
+.activity-item strong {
+    color: #4387b9;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.activity-item span,
+.empty-note {
+    color: #64748b;
+    font-size: .9rem;
+}
+.empty-note {
+    margin: 0;
+}
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+.inventory-card {
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+}
+.inventory-icon {
+    background: #f8fafc;
+    border: 1px solid #dce2e8;
+    height: 44px;
+    width: 44px;
+    overflow: hidden;
+}
+.inventory-icon img { width: 100%; height: 100%; object-fit: cover; }
+.inventory-card strong,
+.inventory-card span {
+    display: block;
+}
+.inventory-card strong {
+    color: #111827;
+}
+.inventory-card span {
+    color: #64748b;
+    font-size: .88rem;
+}
+.inventory-card button {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    background: #fff;
+    color: #4387b9;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 7px 10px;
+}
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+.info-grid p {
+    color: #374151;
+    margin: 0 0 9px;
+}
+.more-link {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+}
+@media (max-width: 860px) {
+    .profile-head,
+    .radar-area,
+    .forum-activity-grid,
+    .inventory-grid,
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    .stats-row {
+        grid-template-columns: repeat(3, minmax(84px, 1fr));
+    }
+    .radar-chart {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+@media (max-width: 560px) {
+    .profile-card { padding: 20px 18px; }
+    .profile-head {
+        justify-items: center;
+        text-align: center;
+    }
+    .stats-row {
+        grid-template-columns: repeat(2, minmax(94px, 1fr));
+        gap: 16px 10px;
+    }
+    .section-title-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

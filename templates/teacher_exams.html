@@ -1,0 +1,544 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý đề trắc nghiệm{% endblock %}
+
+{% block content %}
+<div class="exam-admin-page">
+    <div class="page-header">
+        <div>
+            <h1>Quản lý đề trắc nghiệm</h1>
+            <p>Tạo đề cho trang học sinh làm bài trực tiếp</p>
+        </div>
+        <a href="{{ url_for('tracnghiem') }}" class="ghost-link">Xem kho đề</a>
+    </div>
+
+    <div class="tool-grid">
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Tạo thủ công</h2>
+                <button type="button" class="small-btn" onclick="resetBuilder()">Làm mới</button>
+            </div>
+
+            <div class="form-grid">
+                <label>
+                    <span>Môn học</span>
+                    <select id="subjectInput">
+                        {% for code, info in subjects.items() %}
+                        <option value="{{ code }}">{{ info.name }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label>
+                    <span>Thời gian</span>
+                    <input id="timeLimitInput" type="number" min="5" max="180" value="30">
+                </label>
+
+                <label class="wide">
+                    <span>Tên đề</span>
+                    <input id="titleInput" type="text" placeholder="Đề trắc nghiệm Toán 9 - Chương 1">
+                </label>
+
+                <label class="wide">
+                    <span>Mô tả</span>
+                    <textarea id="descriptionInput" rows="2" placeholder="Kiểm tra kiến thức trọng tâm..."></textarea>
+                </label>
+            </div>
+
+            <div class="question-toolbar">
+                <h3>Câu hỏi</h3>
+                <button type="button" class="small-btn" onclick="addQuestion()">Thêm câu</button>
+            </div>
+
+            <div id="questionsBuilder"></div>
+
+            <div class="actions">
+                <button type="button" class="primary-btn" onclick="saveExam()">Lưu đề trắc nghiệm</button>
+                <span id="saveStatus" class="status-text"></span>
+            </div>
+        </section>
+
+        <section class="panel ai-panel">
+            <div class="panel-header">
+                <h2>AI tạo bản nháp</h2>
+            </div>
+
+            <div class="form-grid">
+                <label>
+                    <span>Môn học</span>
+                    <select id="aiSubjectInput">
+                        {% for code, info in subjects.items() %}
+                        <option value="{{ code }}">{{ info.name }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label>
+                    <span>Lớp</span>
+                    <input id="aiGradeInput" type="text" placeholder="9">
+                </label>
+
+                <label>
+                    <span>Số câu</span>
+                    <input id="aiCountInput" type="number" min="1" max="30" value="10">
+                </label>
+
+                <label>
+                    <span>Thời gian</span>
+                    <input id="aiTimeInput" type="number" min="5" max="180" value="30">
+                </label>
+
+                <label class="wide">
+                    <span>Yêu cầu cho AI</span>
+                    <textarea id="aiTopicInput" rows="5" placeholder="Tạo đề Toán 9 về căn bậc hai, phương trình bậc nhất và hệ phương trình. Mức độ vừa phải, có giải thích ngắn."></textarea>
+                </label>
+            </div>
+
+            <div class="actions">
+                <button type="button" class="primary-btn" onclick="generateWithAI()">Nhờ AI tạo đề</button>
+                <span id="aiStatus" class="status-text"></span>
+            </div>
+
+            <div id="aiPreview" class="ai-preview"></div>
+        </section>
+    </div>
+
+    <section class="panel existing-panel">
+        <div class="panel-header">
+            <h2>Đề hiện có</h2>
+        </div>
+
+        <div class="existing-grid">
+            {% for subject_code, exams in exams_by_subject.items() %}
+                {% for exam in exams %}
+                <div class="exam-card">
+                    <div class="exam-meta">{{ exam.subject_name }} · {{ exam.time_limit|default(15) }} phút · {{ exam.questions|length }} câu</div>
+                    <h3>{{ exam.title }}</h3>
+                    <p>{{ exam.description|default('') }}</p>
+                    <div class="exam-actions">
+                        <a href="/tracnghiem/lam-bai/{{ subject_code }}/{{ exam.id }}" target="_blank">Xem đề</a>
+                        <button type="button" onclick="deleteExam('{{ subject_code }}', '{{ exam.id }}', this)">Xóa</button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<script>
+let questionCounter = 0;
+
+function optionTemplate(questionId, letter, value = '') {
+    return `
+        <label>
+            <span>${letter}</span>
+            <input type="text" data-option="${letter}" value="${escapeAttribute(value)}" placeholder="Lựa chọn ${letter}">
+        </label>
+    `;
+}
+
+function addQuestion(question = null) {
+    questionCounter += 1;
+    const questionId = `question-${questionCounter}`;
+    const options = question?.options || {};
+    const correct = question?.correct_answer || 'A';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'question-editor';
+    wrapper.dataset.questionId = questionId;
+    wrapper.innerHTML = `
+        <div class="question-editor-header">
+            <strong>Câu <span class="question-number"></span></strong>
+            <button type="button" onclick="this.closest('.question-editor').remove(); renumberQuestions();">Xóa</button>
+        </div>
+        <label class="wide">
+            <span>Nội dung câu hỏi</span>
+            <textarea data-question rows="2" placeholder="Nhập nội dung câu hỏi">${escapeHTML(question?.question || '')}</textarea>
+        </label>
+        <div class="option-grid">
+            ${optionTemplate(questionId, 'A', options.A)}
+            ${optionTemplate(questionId, 'B', options.B)}
+            ${optionTemplate(questionId, 'C', options.C)}
+            ${optionTemplate(questionId, 'D', options.D)}
+        </div>
+        <label>
+            <span>Đáp án đúng</span>
+            <select data-correct>
+                ${['A', 'B', 'C', 'D'].map(letter => `<option value="${letter}" ${letter === correct ? 'selected' : ''}>${letter}</option>`).join('')}
+            </select>
+        </label>
+        <label class="wide">
+            <span>Giải thích</span>
+            <textarea data-explanation rows="2" placeholder="Giải thích ngắn để học sinh xem sau khi làm sai">${escapeHTML(question?.explanation || '')}</textarea>
+        </label>
+    `;
+    document.getElementById('questionsBuilder').appendChild(wrapper);
+    renumberQuestions();
+}
+
+function renumberQuestions() {
+    document.querySelectorAll('.question-editor').forEach((editor, index) => {
+        editor.querySelector('.question-number').textContent = index + 1;
+    });
+}
+
+function resetBuilder() {
+    document.getElementById('titleInput').value = '';
+    document.getElementById('descriptionInput').value = '';
+    document.getElementById('timeLimitInput').value = '30';
+    document.getElementById('questionsBuilder').innerHTML = '';
+    questionCounter = 0;
+    addQuestion();
+    setStatus('saveStatus', '');
+}
+
+function collectExamPayload() {
+    const questions = [...document.querySelectorAll('.question-editor')].map(editor => ({
+        question: editor.querySelector('[data-question]').value.trim(),
+        options: {
+            A: editor.querySelector('[data-option="A"]').value.trim(),
+            B: editor.querySelector('[data-option="B"]').value.trim(),
+            C: editor.querySelector('[data-option="C"]').value.trim(),
+            D: editor.querySelector('[data-option="D"]').value.trim()
+        },
+        correct_answer: editor.querySelector('[data-correct]').value,
+        explanation: editor.querySelector('[data-explanation]').value.trim()
+    }));
+
+    return {
+        subject: document.getElementById('subjectInput').value,
+        title: document.getElementById('titleInput').value.trim(),
+        description: document.getElementById('descriptionInput').value.trim(),
+        time_limit: Number(document.getElementById('timeLimitInput').value || 30),
+        questions
+    };
+}
+
+async function saveExam() {
+    setStatus('saveStatus', 'Đang lưu...');
+    try {
+        const response = await fetch('/teacher/exams/create', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(collectExamPayload())
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'Không lưu được đề');
+        setStatus('saveStatus', 'Đã lưu đề. Đang tải lại...', 'success');
+        setTimeout(() => window.location.reload(), 800);
+    } catch (error) {
+        setStatus('saveStatus', error.message, 'error');
+    }
+}
+
+async function generateWithAI() {
+    setStatus('aiStatus', 'AI đang tạo đề...');
+    document.getElementById('aiPreview').innerHTML = '';
+    try {
+        const response = await fetch('/teacher/exams/ai-generate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                subject: document.getElementById('aiSubjectInput').value,
+                grade: document.getElementById('aiGradeInput').value.trim(),
+                question_count: Number(document.getElementById('aiCountInput').value || 10),
+                time_limit: Number(document.getElementById('aiTimeInput').value || 30),
+                topic: document.getElementById('aiTopicInput').value.trim()
+            })
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'AI không tạo được đề');
+
+        fillBuilder(data.exam);
+        renderAiPreview(data.exam);
+        setStatus('aiStatus', 'Đã tạo bản nháp. Bạn có thể sửa rồi bấm lưu.', 'success');
+    } catch (error) {
+        setStatus('aiStatus', error.message, 'error');
+    }
+}
+
+function fillBuilder(exam) {
+    document.getElementById('subjectInput').value = exam.subject || document.getElementById('aiSubjectInput').value;
+    document.getElementById('titleInput').value = exam.title || '';
+    document.getElementById('descriptionInput').value = exam.description || '';
+    document.getElementById('timeLimitInput').value = exam.time_limit || document.getElementById('aiTimeInput').value || 30;
+    document.getElementById('questionsBuilder').innerHTML = '';
+    questionCounter = 0;
+    (exam.questions || []).forEach(question => addQuestion(question));
+}
+
+function renderAiPreview(exam) {
+    const questions = (exam.questions || []).slice(0, 5).map((question, index) => `
+        <div class="preview-question">
+            <strong>Câu ${index + 1}.</strong> ${escapeHTML(question.question)}
+        </div>
+    `).join('');
+    document.getElementById('aiPreview').innerHTML = `
+        <h3>${escapeHTML(exam.title || 'Bản nháp AI')}</h3>
+        <p>${escapeHTML(exam.description || '')}</p>
+        ${questions}
+        ${(exam.questions || []).length > 5 ? `<small>Và ${(exam.questions || []).length - 5} câu khác...</small>` : ''}
+    `;
+}
+
+async function deleteExam(subject, examId, button) {
+    if (!confirm('Xóa đề này khỏi kho trắc nghiệm?')) return;
+    button.disabled = true;
+    try {
+        const response = await fetch('/teacher/exams/delete', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({subject, exam_id: examId})
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'Không xóa được đề');
+        button.closest('.exam-card').remove();
+    } catch (error) {
+        alert(error.message);
+        button.disabled = false;
+    }
+}
+
+function setStatus(id, text, type = '') {
+    const element = document.getElementById(id);
+    element.textContent = text;
+    element.className = `status-text ${type}`;
+}
+
+function escapeHTML(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function escapeAttribute(value) {
+    return escapeHTML(value).replace(/`/g, '&#096;');
+}
+
+document.addEventListener('DOMContentLoaded', () => addQuestion());
+</script>
+
+<style>
+.exam-admin-page {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+}
+
+.page-header,
+.panel-header,
+.question-toolbar,
+.actions,
+.exam-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h1,
+.panel h2,
+.question-toolbar h3 {
+    margin: 0;
+}
+
+.page-header p {
+    margin: 6px 0 0;
+    color: #6b7280;
+}
+
+.tool-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(360px, 0.7fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 22px;
+    box-shadow: 0 12px 32px rgba(168, 85, 247, 0.12);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+label {
+    display: grid;
+    gap: 7px;
+    color: #374151;
+    font-weight: 600;
+}
+
+label span {
+    font-size: 0.92rem;
+}
+
+.wide {
+    grid-column: 1 / -1;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font: inherit;
+    background: #ffffff;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.question-toolbar {
+    margin: 24px 0 12px;
+}
+
+.question-editor {
+    border: 1px solid #e9d5ff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 14px;
+    background: #fdfcff;
+}
+
+.question-editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+}
+
+.primary-btn,
+.small-btn,
+.ghost-link,
+.exam-actions a,
+.exam-actions button,
+.question-editor-header button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #7c3aed, #d946ef);
+    color: #ffffff;
+}
+
+.small-btn,
+.ghost-link,
+.exam-actions a {
+    background: #f3e8ff;
+    color: #6d28d9;
+}
+
+.question-editor-header button,
+.exam-actions button {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.actions {
+    justify-content: flex-start;
+    margin-top: 18px;
+}
+
+.status-text {
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.status-text.success {
+    color: #047857;
+}
+
+.status-text.error {
+    color: #b91c1c;
+}
+
+.ai-preview {
+    margin-top: 18px;
+    display: grid;
+    gap: 10px;
+}
+
+.ai-preview h3 {
+    margin: 0;
+    color: #4c1d95;
+}
+
+.preview-question {
+    padding: 10px 12px;
+    border-left: 4px solid #a855f7;
+    background: #faf5ff;
+    border-radius: 6px;
+}
+
+.existing-panel {
+    margin-top: 22px;
+}
+
+.existing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.exam-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    background: #ffffff;
+}
+
+.exam-card h3 {
+    margin: 8px 0;
+    font-size: 1.05rem;
+}
+
+.exam-card p,
+.exam-meta {
+    color: #6b7280;
+}
+
+.exam-actions {
+    justify-content: flex-start;
+    margin-top: 12px;
+}
+
+@media (max-width: 980px) {
+    .tool-grid,
+    .form-grid,
+    .option-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

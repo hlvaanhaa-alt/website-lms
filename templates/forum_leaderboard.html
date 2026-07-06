@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Bảng xếp hạng hỏi đáp{% endblock %}
+
+{% block content %}
+<div class="leaderboard-page">
+    <div class="leaderboard-header">
+        <div>
+            <h1>Bảng xếp hạng tháng</h1>
+            <p>Reset theo tháng: {{ month }}</p>
+        </div>
+        <a href="{{ url_for('forum') }}">Quay lại hỏi đáp</a>
+    </div>
+
+    <section class="top5">
+        {% for user in top5 %}
+        <a class="top-card rank-{{ user.rank }}" href="{{ url_for('forum_profile', user_id=user.user_id) }}">
+            <div class="cup-icon"><i class="fa-solid fa-trophy"></i></div>
+            <div class="top-avatar {{ user.author_frame.css_class if user.author_frame else '' }}">
+                {% if user.author_avatar_url %}
+                <img src="{{ user.author_avatar_url }}" alt="">
+                {% else %}
+                {{ user.username[:1]|upper }}
+                {% endif %}
+            </div>
+            <div class="top-info">
+                <span>Top {{ user.rank }}</span>
+                <h2>{{ user.username }}</h2>
+                {% if user.author_title %}<em>{{ user.author_title.name }}</em>{% endif %}
+                <strong>{{ user.points }} điểm</strong>
+            </div>
+        </a>
+        {% endfor %}
+    </section>
+
+    <section class="rank-table">
+        <h2>Top 20</h2>
+        {% for user in leaderboard %}
+        <a class="rank-row" href="{{ url_for('forum_profile', user_id=user.user_id) }}">
+            <span class="rank-number">{{ user.rank }}</span>
+            <div class="rank-user">
+                <div class="rank-avatar {{ user.author_frame.css_class if user.author_frame else '' }}">
+                    {% if user.author_avatar_url %}
+                    <img src="{{ user.author_avatar_url }}" alt="">
+                    {% else %}
+                    {{ user.username[:1]|upper }}
+                    {% endif %}
+                </div>
+                <div>
+                    <strong>{{ user.username }}</strong>
+                    {% if user.author_title %}<small>{{ user.author_title.name }}</small>{% endif %}
+                </div>
+            </div>
+            <em>{{ user.role_label }}</em>
+            <b><i class="fa-solid fa-trophy"></i> {{ user.points }}</b>
+        </a>
+        {% else %}
+        <p>Chưa có dữ liệu xếp hạng tháng này.</p>
+        {% endfor %}
+    </section>
+</div>
+
+<style>
+body { background: #eef1f4; }
+.leaderboard-page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 28px 16px 56px;
+}
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.leaderboard-header h1 { margin: 0; }
+.leaderboard-header p { color: #64748b; }
+.leaderboard-header a { color: #2b7bbb; font-weight: 800; text-decoration: none; }
+.top5 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+.top-card,
+.rank-table {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    padding: 18px;
+}
+.top-card {
+    color: #111827;
+    display: grid;
+    grid-template-columns: 42px 58px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    min-height: 128px;
+    position: relative;
+    text-decoration: none;
+}
+.top-card:hover {
+    border-color: #2b7bbb;
+    box-shadow: 0 12px 26px rgba(43, 123, 187, .14);
+}
+.cup-icon {
+    align-items: center;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 50%;
+    color: #d97706;
+    display: flex;
+    height: 42px;
+    justify-content: center;
+    width: 42px;
+}
+.rank-1 .cup-icon {
+    background: #fff7d6;
+    border-color: #f5c542;
+    color: #b77900;
+}
+.top-avatar,
+.rank-avatar {
+    align-items: center;
+    background: #eef2f7;
+    border-radius: 50%;
+    color: #2b7bbb;
+    display: flex;
+    font-weight: 900;
+    justify-content: center;
+    overflow: hidden;
+}
+.top-avatar {
+    height: 58px;
+    width: 58px;
+}
+.rank-avatar {
+    height: 38px;
+    width: 38px;
+}
+.top-avatar img,
+.rank-avatar img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+.top-info {
+    min-width: 0;
+}
+.top-info span { color: #2b7bbb; font-weight: 900; }
+.top-info h2 {
+    margin: 6px 0 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.top-info em {
+    color: #64748b;
+    display: block;
+    font-size: .84rem;
+    font-style: normal;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.top-info strong { color: #111827; }
+.rank-row {
+    display: grid;
+    grid-template-columns: 50px minmax(0, 1fr) 120px 100px;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid #e5e7eb;
+    color: #111827;
+    text-decoration: none;
+    align-items: center;
+}
+.rank-row:hover {
+    background: #f8fbff;
+}
+.rank-number,
+.rank-row b { color: #2b7bbb; font-weight: 900; }
+.rank-user {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    min-width: 0;
+}
+.rank-user strong,
+.rank-user small {
+    display: block;
+}
+.rank-user strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.rank-user small {
+    color: #64748b;
+    font-size: .82rem;
+    margin-top: 2px;
+}
+.rank-row em { color: #64748b; font-style: normal; }
+@media (max-width: 700px) {
+    .top-card {
+        grid-template-columns: 38px 50px minmax(0, 1fr);
+    }
+    .top-avatar {
+        height: 50px;
+        width: 50px;
+    }
+    .rank-row {
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+    }
+    .rank-row em {
+        display: none;
+    }
+}
+</style>
+{% endblock %}
