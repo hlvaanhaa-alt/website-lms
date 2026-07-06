@@ -32,5 +32,16 @@
     "teacher_id": "1",
     "created_at": "2026-07-06T10:56:24.924010",
     "updated_at": "2026-07-06T10:56:48.294731"
+  },
+  {
+    "id": "doc_4",
+    "title": "Khai thác nhiên liệu hóa thạch nguồn carbon - KHTN lớp 9",
+    "grade": "9",
+    "doc_type": "document",
+    "link_type": "drive",
+    "url": "https://docs.google.com/document/d/1gD6ezB1Um6k64K_0ZNdsQy8_6_2sfzxz/edit?usp=sharing&ouid=109101983789710259633&rtpof=true&sd=true",
+    "description": "Khai thác nhiên liệu hóa thạch nguồn carbon là bài học quan trọng trong chương trình KHTN 9. Trong bài này,  sẽ giúp các em tìm hiểu tất cả các kiến thức trọng tâm nhất bài học. Từ đó, các em sẽ giải các dạng bài tập từ cơ bản nhất đến nâng cao. Các em chú ý theo dõi bài học nhé !",
+    "teacher_id": "1",
+    "created_at": "2026-07-06T11:00:25.509048"
   }
 ]
