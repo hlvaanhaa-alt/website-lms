@@ -1,0 +1,246 @@
+{
+  "bai_1": [
+    {
+      "question": "Kết quả của phép tính 5/6 + 2/3 là gì?",
+      "options": ["1", "1 1/2", "1 1/3", "1 2/3"],
+      "answer": "1 1/2",
+      "difficulty": 1
+    },
+    {
+      "question": "Số đối của -7 là số nào?",
+      "options": ["7", "-7", "0", "14"],
+      "answer": "7",
+      "difficulty": 1
+    },
+    {
+      "question": "Giá trị của biểu thức 3x - 5 khi x = 4 là:",
+      "options": ["7", "12", "15", "19"],
+      "answer": "7",
+      "difficulty": 1
+    },
+    {
+      "question": "Chu vi hình tròn bán kính 5 cm là bao nhiêu? (lấy π = 3,14)",
+      "options": ["15,7 cm", "31,4 cm", "78,5 cm", "25 cm"],
+      "answer": "31,4 cm",
+      "difficulty": 2
+    },
+    {
+      "question": "Phân số nào bằng với 0,75?",
+      "options": ["3/4", "2/3", "4/5", "1/2"],
+      "answer": "3/4",
+      "difficulty": 1
+    },
+    {
+      "question": "Nếu a = 2 và b = -3 thì a² + b² bằng:",
+      "options": ["5", "10", "13", "-5"],
+      "answer": "13",
+      "difficulty": 2
+    },
+    {
+      "question": "Trong tam giác vuông, cạnh đối diện góc vuông gọi là gì?",
+      "options": ["Cạnh huyền", "Cạnh góc vuông", "Đường cao", "Đường trung tuyến"],
+      "answer": "Cạnh huyền",
+      "difficulty": 1
+    },
+    {
+      "question": "Kết quả của phép tính -4 × (-5) là:",
+      "options": ["-20", "20", "-9", "9"],
+      "answer": "20",
+      "difficulty": 1
+    },
+    {
+      "question": "Tìm x biết 2x + 5 = 11.",
+      "options": ["x = 3", "x = 8", "x = 6", "x = -3"],
+      "answer": "x = 3",
+      "difficulty": 1
+    },
+    {
+      "question": "Một hình chữ nhật có chiều dài 12 cm và chiều rộng 8 cm. Diện tích của nó là:",
+      "options": ["96 cm²", "20 cm²", "48 cm²", "100 cm²"],
+      "answer": "96 cm²",
+      "difficulty": 1
+    },
+    {
+      "question": "Giá trị của 2/5 : (3/10) là:",
+      "options": ["4/3", "2/3", "3/4", "1/4"],
+      "answer": "4/3",
+      "difficulty": 2
+    },
+    {
+      "question": "Kết quả của 2^4 × 2^3 là:",
+      "options": ["2^7", "2^12", "2^1", "2^8"],
+      "answer": "2^7",
+      "difficulty": 2
+    },
+    {
+      "question": "Số 0,272727... viết dưới dạng phân số tối giản là:",
+      "options": ["3/11", "6/11", "27/99", "27/100"],
+      "answer": "3/11",
+      "difficulty": 2
+    },
+    {
+      "question": "Một hình lập phương có cạnh 4 cm. Thể tích của nó là:",
+      "options": ["16 cm³", "64 cm³", "32 cm³", "48 cm³"],
+      "answer": "64 cm³",
+      "difficulty": 1
+    },
+    {
+      "question": "Giải bất phương trình: 3x - 4 > 5",
+      "options": ["x > 3", "x > 2", "x < 3", "x < 2"],
+      "answer": "x > 3",
+      "difficulty": 3
+    },
+    {
+      "question": "Tìm giá trị lớn nhất của biểu thức P = 2x + 3y khi x + y = 10 và x, y ≥ 0.",
+      "options": ["30", "26", "28", "25"],
+      "answer": "30",
+      "difficulty": 3
+    },
+    {
+      "question": "Đường chéo của hình vuông cạnh a có độ dài là:",
+      "options": ["a√2", "a²", "2a", "a/2"],
+      "answer": "a√2",
+      "difficulty": 3
+    },
+    {
+      "question": "Giải phương trình: 2x² - 8 = 0",
+      "options": ["x = 2 hoặc x = -2", "x = 4", "x = -4", "x = 0"],
+      "answer": "x = 2 hoặc x = -2",
+      "difficulty": 3
+    },
+    {
+      "question": "Một cửa hàng giảm giá 20% cho một sản phẩm giá 500.000 đồng. Giá sau giảm là:",
+      "options": ["400.000 đồng", "450.000 đồng", "350.000 đồng", "300.000 đồng"],
+      "answer": "400.000 đồng",
+      "difficulty": 3
+    },
+    {
+      "question": "Một hình trụ có bán kính đáy 3 cm, chiều cao 10 cm. Thể tích là: (π = 3,14)",
+      "options": ["282,6 cm³", "94,2 cm³", "471 cm³", "300 cm³"],
+      "answer": "282,6 cm³",
+      "difficulty": 3
+    }
+  ],
+  "bai_2": [
+    {
+      "question": "Khi bạn thân buồn, bạn nên làm gì?",
+      "options": ["Lắng nghe và an ủi", "Bỏ mặc", "Chỉ trích", "Cười nhạo"],
+      "answer": "Lắng nghe và an ủi",
+      "difficulty": 1
+    },
+    {
+      "question": "Điều gì quan trọng nhất để giữ tình bạn lâu bền?",
+      "options": ["Tin tưởng và tôn trọng", "Tặng quà thường xuyên", "Đi chơi mỗi ngày", "Luôn đồng ý với bạn"],
+      "answer": "Tin tưởng và tôn trọng",
+      "difficulty": 1
+    },
+    {
+      "question": "Nếu bạn của bạn mắc lỗi, bạn nên:",
+      "options": ["Khuyên nhủ nhẹ nhàng", "Kể xấu sau lưng", "Tránh xa bạn", "La mắng trước đám đông"],
+      "answer": "Khuyên nhủ nhẹ nhàng",
+      "difficulty": 1
+    },
+    {
+      "question": "Một người bạn tốt sẽ:",
+      "options": ["Giúp đỡ khi khó khăn", "Chỉ quan tâm khi bạn có tiền", "Thường xuyên ganh tị", "Bỏ rơi khi bạn gặp vấn đề"],
+      "answer": "Giúp đỡ khi khó khăn",
+      "difficulty": 1
+    },
+    {
+      "question": "Bạn thân chia sẻ bí mật với bạn. Bạn nên làm gì?",
+      "options": ["Giữ bí mật", "Kể cho mọi người biết", "Đăng lên mạng", "Trêu chọc bạn"],
+      "answer": "Giữ bí mật",
+      "difficulty": 1
+    },
+    {
+      "question": "Khi có mâu thuẫn với bạn, cách xử lý tốt nhất là:",
+      "options": ["Nói chuyện thẳng thắn", "Giận dỗi lâu dài", "Không bao giờ nói chuyện nữa", "Tìm cách trả thù"],
+      "answer": "Nói chuyện thẳng thắn",
+      "difficulty": 2
+    },
+    {
+      "question": "Một tình bạn đẹp thường dựa trên:",
+      "options": ["Sự chân thành", "Vẻ bề ngoài", "Lợi ích vật chất", "Sự ghen tị"],
+      "answer": "Sự chân thành",
+      "difficulty": 1
+    },
+    {
+      "question": "Bạn nên làm gì để kết bạn mới?",
+      "options": ["Chủ động chào hỏi và làm quen", "Chờ người khác đến bắt chuyện", "Tỏ ra lạnh lùng", "Không giao tiếp"],
+      "answer": "Chủ động chào hỏi và làm quen",
+      "difficulty": 1
+    },
+    {
+      "question": "Nếu bạn thấy bạn thân bị bắt nạt, bạn nên:",
+      "options": ["Bảo vệ và tìm sự giúp đỡ", "Giả vờ không thấy", "Cười theo nhóm bắt nạt", "Quay video và đăng mạng"],
+      "answer": "Bảo vệ và tìm sự giúp đỡ",
+      "difficulty": 2
+    },
+    {
+      "question": "Trong nhóm bạn, khi chơi trò chơi, bạn nên:",
+      "options": ["Chia sẻ cơ hội cho mọi người", "Chỉ chọn người mình thích", "Chơi một mình", "Loại bỏ người yếu hơn"],
+      "answer": "Chia sẻ cơ hội cho mọi người",
+      "difficulty": 1
+    },
+    {
+      "question": "Nếu bạn và bạn thân cùng thích một món đồ, bạn nên:",
+      "options": ["Nhường bạn", "Giành bằng mọi giá", "Nói xấu bạn", "Không chơi nữa"],
+      "answer": "Nhường bạn",
+      "difficulty": 2
+    },
+    {
+      "question": "Bạn sẽ làm gì để thể hiện sự quan tâm tới bạn bè?",
+      "options": ["Hỏi thăm và giúp đỡ khi cần", "Chỉ nhắn tin khi cần giúp", "Không bao giờ hỏi thăm", "Luôn yêu cầu bạn giúp mình"],
+      "answer": "Hỏi thăm và giúp đỡ khi cần",
+      "difficulty": 2
+    },
+    {
+      "question": "Tại sao nên tôn trọng sự khác biệt của bạn bè?",
+      "options": ["Vì điều đó giúp tình bạn bền chặt hơn", "Vì sẽ được bạn khen", "Vì tránh bị phạt", "Vì muốn nổi tiếng"],
+      "answer": "Vì điều đó giúp tình bạn bền chặt hơn",
+      "difficulty": 2
+    },
+    {
+      "question": "Nếu bạn bị hiểu lầm, bạn nên:",
+      "options": ["Giải thích rõ ràng", "Giận dữ", "Cắt đứt quan hệ", "Đổ lỗi cho người khác"],
+      "answer": "Giải thích rõ ràng",
+      "difficulty": 2
+    },
+    {
+      "question": "Khi làm việc nhóm với bạn thân, yếu tố quan trọng là:",
+      "options": ["Phối hợp và lắng nghe", "Chỉ làm theo ý mình", "Không tham gia", "Bỏ mặc nhóm"],
+      "answer": "Phối hợp và lắng nghe",
+      "difficulty": 3
+    },
+    {
+      "question": "Bạn thân vô tình làm mất đồ của bạn. Cách ứng xử đúng là:",
+      "options": ["Thông cảm và tìm cách giải quyết", "Giận dữ và mắng", "Đòi bồi thường quá mức", "Không nói chuyện nữa"],
+      "answer": "Thông cảm và tìm cách giải quyết",
+      "difficulty": 3
+    },
+    {
+      "question": "Khi bạn thân thành công, bạn nên:",
+      "options": ["Chúc mừng và ủng hộ", "Ghen tị", "Phớt lờ", "Chê bai"],
+      "answer": "Chúc mừng và ủng hộ",
+      "difficulty": 3
+    },
+    {
+      "question": "Nếu bạn biết bạn thân đang gặp khó khăn nhưng không nói ra, bạn nên:",
+      "options": ["Chủ động hỏi han và giúp đỡ", "Đợi bạn nói", "Bỏ qua", "Kể cho người khác"],
+      "answer": "Chủ động hỏi han và giúp đỡ",
+      "difficulty": 3
+    },
+    {
+      "question": "Để duy trì tình bạn khi xa nhau, bạn nên:",
+      "options": ["Liên lạc thường xuyên", "Không cần liên lạc", "Chỉ liên lạc khi cần", "Quên luôn"],
+      "answer": "Liên lạc thường xuyên",
+      "difficulty": 3
+    },
+    {
+      "question": "Nếu có người nói xấu bạn thân, bạn nên:",
+      "options": ["Bảo vệ và tìm hiểu sự thật", "Tin ngay", "Nói xấu lại", "Không quan tâm"],
+      "answer": "Bảo vệ và tìm hiểu sự thật",
+      "difficulty": 3
+    }
+  ]
+}
