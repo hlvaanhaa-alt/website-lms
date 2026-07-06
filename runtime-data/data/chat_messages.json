@@ -1,0 +1,578 @@
+[
+  {
+    "id": "msg_000001",
+    "content": "hi",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T11:44:01.043504",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000002",
+    "content": "hi",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T11:44:22.295388",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000003",
+    "content": "bạn vẽ cho tôi hình tam giác nội tiếp đường tròn tâm k được không",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T11:45:02.036471",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000004",
+    "content": "vẽ mạch điện nối tiếp",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T11:53:15.919300",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000005",
+    "content": "vẽ tôi mạch điện song song",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T11:54:41.668816",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000006",
+    "content": "công thức toán học căn thức và phân thức",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T11:55:35.584394",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000007",
+    "content": "vẽ  thiết kế ngôi nhà cấp 4- môn công nghệ",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T11:56:53.005114",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000008",
+    "content": "vẽ cho tôi sơ đồ mạch điện",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T12:12:40.088622",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000009",
+    "content": "hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T15:21:51.480666",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000010",
+    "content": "Vẽ tam giác vuông có cạnh góc vuông 3cm và 4cm",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T15:48:11.383160",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000011",
+    "content": "phương trình hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T15:49:34.989609",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000012",
+    "content": "phương trình hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T15:57:56.405705",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000013",
+    "content": "phương trình hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T15:58:13.968888",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000014",
+    "content": "phương trình và hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:01:22.399693",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000015",
+    "content": "hi",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:14:38.656708",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000016",
+    "content": "phương trình và hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:15:16.595530",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000017",
+    "content": "phương trình và hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:19:33.483823",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000018",
+    "content": "phương trình là gì",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:23:45.608230",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000019",
+    "content": "phương trình 2 ẩn",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:31:28.152668",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000020",
+    "content": "giải hệ phương trình sau x+ 2y-1=0",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:38:37.101082",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000021",
+    "content": "phương trình hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:44:13.507009",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000022",
+    "content": "phương trình hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:45:11.069680",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000023",
+    "content": "phương trình hệ phương trình",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:45:39.540473",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000024",
+    "content": "hi",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:46:18.483984",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000025",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:46:25.954686",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000026",
+    "content": "Giải thích công thức động năng",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:51:39.042621",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000027",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:51:54.246105",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000028",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T16:58:07.309300",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000029",
+    "content": "Giải thích công thức động năng",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:01:53.132071",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000030",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:03:19.335404",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000031",
+    "content": "Giải thích công thức động năng",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:10:06.281185",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000032",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:10:18.770222",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000033",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:12:20.842277",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000034",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:42:10.430505",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000035",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:42:48.994408",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000036",
+    "content": "hi",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:46:42.181068",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000037",
+    "content": "hi",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:47:43.704969",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000038",
+    "content": "hi",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:48:53.701638",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000039",
+    "content": "hi\\",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:49:30.792119",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000040",
+    "content": "Giải thích công thức động năng",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:50:26.074510",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000041",
+    "content": "Giải thích công thức động năng",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:50:42.115818",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000042",
+    "content": "hi",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:52:13.365842",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000043",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:52:20.877165",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000044",
+    "content": "Giải thích công thức động năng",
+    "author_id": "4",
+    "author_name": "tuan",
+    "author_role": "student",
+    "created_at": "2025-12-08T17:52:34.423726",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000045",
+    "content": "vẽ sơ đồ tư duy bài việt bắc",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T18:32:20.688599",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000046",
+    "content": "vẽ tôi sơ đồ bài việt bắc",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T18:48:01.976417",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000047",
+    "content": "vẽ tôi sơ đồ góc ở tâm góc nội tiếp toán lớp 9 có ảnh minh họa nữa nha",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T18:52:28.638095",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000048",
+    "content": "ý là vẽ cho tôi 1 sơ đồ tư duy bài góc nội tiếp góc ở tâm á",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T18:53:19.710686",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000049",
+    "content": "hi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T19:23:37.718812",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000050",
+    "content": "hi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T19:24:29.253716",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000051",
+    "content": "con gì",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T19:25:04.558950",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000052",
+    "content": "Vẽ mạch điện nối tiếp có 2 bóng đèn và pin 6V",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T19:25:51.637120",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000053",
+    "content": "hi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T22:12:12.121616",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000054",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T22:37:04.139094",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000055",
+    "content": "hi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-08T22:41:08.107074",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000056",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-09T09:18:36.883297",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000057",
+    "content": "hi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-09T09:21:26.488752",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000058",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-09T09:21:33.916089",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000059",
+    "content": "chào bạn",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2025-12-09T15:27:36.950392",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000060",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T22:00:11.127775",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000061",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T22:01:05.726833",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000062",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T22:04:09.660093",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000063",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T22:15:25.738034",
+    "reply_to": null
+  },
+  {
+    "id": "msg_000064",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-03-27T15:50:27.222298",
+    "reply_to": null
+  }
+]
