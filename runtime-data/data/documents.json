@@ -54,5 +54,16 @@
     "description": "Viết bài văn nghị luận phân tích tác phẩm văn học là bài học quan trọng trong chương trình Ngữ Văn 8. Trong bài này,  sẽ giúp các em tìm hiểu tất cả các kiến thức trọng tâm nhất bài học. Từ đó, các em sẽ giải các dạng bài tập từ cơ bản nhất đến nâng cao. Các em chú ý theo dõi bài học nhé !",
     "teacher_id": "1",
     "created_at": "2026-07-06T11:02:22.818478"
+  },
+  {
+    "id": "doc_6",
+    "title": "Kiến thức cần nhớ - Toán lớp 7",
+    "grade": "7",
+    "doc_type": "document",
+    "link_type": "drive",
+    "url": "https://docs.google.com/document/d/1VnC0jgVBB_sicdEKiOZAMVoZz5QNdPst-cUnPr-VdVM/edit?usp=sharing",
+    "description": "",
+    "teacher_id": "1",
+    "created_at": "2026-07-06T11:08:52.238486"
   }
 ]
