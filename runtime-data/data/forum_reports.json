@@ -44,5 +44,19 @@
     "reporter_name": "Kimchi",
     "status": "pending",
     "created_at": "2026-07-06T23:06:48.443000"
+  },
+  {
+    "id": "fr_000004",
+    "target_type": "question",
+    "target_id": "post_0001",
+    "post_id": "post_0001",
+    "reason": "spam",
+    "detail": "spam",
+    "reported_user_id": "4",
+    "reported_username": "tuan",
+    "reporter_id": "6",
+    "reporter_name": "Kimchi",
+    "status": "pending",
+    "created_at": "2026-07-06T23:06:49.386733"
   }
 ]
