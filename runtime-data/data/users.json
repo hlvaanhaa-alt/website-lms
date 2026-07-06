@@ -38,5 +38,13 @@
     "email": "dmkasnfoa@gmail.com",
     "role": "student",
     "created_at": "2025-10-23T11:04:27.985261"
+  },
+  {
+    "id": "6",
+    "username": "Kimchi",
+    "password": "scrypt:32768:8:1$EgSC2zydZcLqXFA8$8df4743df9a46896246c62055c6ed11948bd5a3ec8ed17ce4997c20a04580ce0a0d8149139626d1f7c919c10b6cfca12d612d1e43503cec30c7b920bc2e4c1d3",
+    "email": "kimchi@gmail.com",
+    "role": "student",
+    "created_at": "2026-07-06T22:58:16.664659"
   }
 ]
