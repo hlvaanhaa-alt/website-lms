@@ -1,17 +1,17 @@
-import json
 import os
 from datetime import datetime
+from utils.storage import read_json, writable_data_file, write_json
 
 class Database:
     def __init__(self):
-        self.courses_file = 'data/courses.json'
-        self.exercises_file = 'data/exercises.json'
-        self.progress_file = 'data/progress.json'
-        self.documents_file = 'data/documents.json'
-        self.submissions_file = 'data/submissions.json'
-        self.forum_posts_file = 'data/forum_posts.json'
-        self.forum_comments_file = 'data/forum_comments.json'
-        self.chat_messages_file = 'data/chat_messages.json'
+        self.courses_file = writable_data_file('courses.json')
+        self.exercises_file = writable_data_file('exercises.json')
+        self.progress_file = writable_data_file('progress.json')
+        self.documents_file = writable_data_file('documents.json')
+        self.submissions_file = writable_data_file('submissions.json')
+        self.forum_posts_file = writable_data_file('forum_posts.json')
+        self.forum_comments_file = writable_data_file('forum_comments.json')
+        self.chat_messages_file = writable_data_file('chat_messages.json')
         self._init_files()
     
     def _init_files(self):
@@ -26,20 +26,15 @@ class Database:
             self.chat_messages_file
         ]
         for file in files:
+            os.makedirs(os.path.dirname(file), exist_ok=True)
             if not os.path.exists(file):
-                with open(file, 'w', encoding='utf-8') as f:
-                    json.dump([], f)
+                write_json(file, [])
     
     def _load_json(self, filename):
-        try:
-            with open(filename, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except (json.JSONDecodeError, FileNotFoundError):
-            return []
+        return read_json(filename, [])
     
     def _save_json(self, filename, data):
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+        write_json(filename, data)
 
     def get_all_courses(self):
         return self._load_json(self.courses_file)

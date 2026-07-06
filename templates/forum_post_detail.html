@@ -392,16 +392,17 @@ body {
                 <h5>File đính kèm:</h5>
                 <div class="row">
                     {% for attachment in post.attachments %}
+                        {% set attachment_url = attachment.url|default(url_for('static', filename=attachment.path.replace('static/', ''))) %}
                         {% if attachment.type == 'image' %}
                         <div class="col-md-4 mb-3">
-                            <img src="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                            <img src="{{ attachment_url }}" 
                                  class="img-fluid attachment-image" 
                                  alt="{{ attachment.filename }}">
                             <small class="d-block text-muted mt-2">{{ attachment.filename }}</small>
                         </div>
                         {% else %}
                         <div class="col-md-6 mb-2">
-                            <a href="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                            <a href="{{ attachment_url }}" 
                                class="btn-download" download>
                                 {{ attachment.filename }}
                                 ({{ (attachment.size / 1024) | round(1) }} KB)
@@ -460,12 +461,13 @@ body {
                     {% if comment.attachments %}
                     <div class="mt-2">
                         {% for attachment in comment.attachments %}
+                            {% set attachment_url = attachment.url|default(url_for('static', filename=attachment.path.replace('static/', ''))) %}
                             {% if attachment.type == 'image' %}
-                            <img src="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                            <img src="{{ attachment_url }}" 
                                  class="comment-attachment img-thumbnail" 
                                  alt="{{ attachment.filename }}">
                             {% else %}
-                            <a href="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                            <a href="{{ attachment_url }}" 
                                class="btn-download-small" download>
                                 {{ attachment.filename }}
                             </a>

@@ -389,9 +389,10 @@ textarea.form-control-custom {
                         <label class="attachments-label">File đã đính kèm:</label>
                         <div class="attachments-grid">
                             {% for attachment in post.attachments %}
+                                {% set attachment_url = attachment.url|default(url_for('static', filename=attachment.path.replace('static/', ''))) %}
                                 {% if attachment.type == 'image' %}
                                 <div class="attachment-item">
-                                    <img src="{{ url_for('static', filename=attachment.path.replace('static/', '')) }}" 
+                                    <img src="{{ attachment_url }}" 
                                          class="attachment-image" alt="{{ attachment.filename }}">
                                     <small class="attachment-filename">{{ attachment.filename }}</small>
                                 </div>

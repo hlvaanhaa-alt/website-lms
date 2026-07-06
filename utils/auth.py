@@ -1,21 +1,16 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-import json
-import os
 from datetime import datetime
+from utils.storage import read_json, writable_data_file, write_json
 
-USERS_FILE = 'data/users.json'
+USERS_FILE = writable_data_file('users.json')
 
 def load_users():
     """Load users từ file JSON"""
-    if not os.path.exists(USERS_FILE):
-        return []
-    with open(USERS_FILE, 'r', encoding='utf-8') as f:
-        return json.load(f)
+    return read_json(USERS_FILE, [])
 
 def save_users(users):
     """Lưu users vào file JSON"""
-    with open(USERS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(users, f, ensure_ascii=False, indent=2)
+    write_json(USERS_FILE, users)
 
 def register_user(username, password, email, role='student'):
     """

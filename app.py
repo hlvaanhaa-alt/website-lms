@@ -7,6 +7,7 @@ from flask import (
     session,
     jsonify,
     flash,
+    send_from_directory,
 )
 from functools import wraps
 import os
@@ -17,11 +18,24 @@ from utils.auth import register_user, login_user, get_user_by_id
 from utils.database import Database
 from utils.gemini_api import chat_with_gemini, process_response
 from utils.gemini_api import grade_essay_with_ai  ############
+from utils.storage import (
+    FORUM_UPLOAD_DIR,
+    attachment_storage_path,
+    ensure_file_from_remote,
+    forum_upload_path,
+    forum_upload_url,
+    read_json,
+    readable_data_file,
+    sync_file_to_remote,
+    writable_data_file,
+    writable_state_file,
+    write_json,
+)
 import json
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-app.secret_key = "your-secret-key-here-change-in-production"
+app.secret_key = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=2)
 app.config["SESSION_COOKIE_SECURE"] = False  # Đổi thành True nếu dùng HTTPS
 app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -29,6 +43,8 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 
 db = Database()
+QUESTIONS_FILE = writable_state_file("questions.json", {"bai_1": [], "bai_2": []})
+SCORES_FILE = writable_state_file("scores.json", [])
 
 
 def login_required(f):
@@ -512,8 +528,9 @@ def delete_document(doc_id):
         if doc.get("attachments"):
             for attachment in doc.get("attachments", []):
                 try:
-                    if os.path.exists(attachment.get("path", "")):
-                        os.remove(attachment["path"])
+                    attachment_path = attachment_storage_path(attachment)
+                    if attachment_path.exists():
+                        attachment_path.unlink()
                 except:
                     pass
 
@@ -789,7 +806,7 @@ def tracnghiem():
 
         # Đọc đề thi từ TẤT CẢ các môn học (10 môn)
         for subject_code, subject_info in SUBJECTS.items():
-            json_file = f"data/{subject_code}.json"
+            json_file = readable_data_file(f"{subject_code}.json")
             try:
                 with open(json_file, "r", encoding="utf-8") as f:
                     exams_data = json.load(f)
@@ -855,7 +872,7 @@ def lam_bai_tracnghiem(subject, exam_id):
         return redirect(url_for("tracnghiem"))
 
     subject_info = SUBJECTS[subject]
-    json_file = f"data/{subject}.json"
+    json_file = readable_data_file(f"{subject}.json")
 
     try:
         with open(json_file, "r", encoding="utf-8") as f:
@@ -1013,7 +1030,7 @@ def api_check_exam_time(subject, exam_id):
         )
 
     try:
-        json_file = f"data/{subject}.json"
+        json_file = readable_data_file(f"{subject}.json")
         with open(json_file, "r", encoding="utf-8") as f:
             exams_data = json.load(f)
             exams = exams_data.get("exams", [])
@@ -1117,7 +1134,7 @@ def nop_bai_tracnghiem():
             return jsonify({"success": False, "message": "⚠️ Session đã hết hạn"}), 403
 
         # Load đề thi
-        json_file = f"data/{subject}.json"
+        json_file = readable_data_file(f"{subject}.json")
         with open(json_file, "r", encoding="utf-8") as f:
             exams_data = json.load(f)
             exam = next(
@@ -1392,14 +1409,9 @@ def nop_bai_tracnghiem():
             print("⚠️ Không có câu sai, bỏ qua phân tích AI")
 
         # ========== LƯU KẾT QUẢ ==========
-        results_file = "data/exam_results.json"
-        os.makedirs("data", exist_ok=True)
+        results_file = writable_data_file("exam_results.json")
 
-        try:
-            with open(results_file, "r", encoding="utf-8") as f:
-                all_results = json.load(f)
-        except:
-            all_results = []
+        all_results = read_json(results_file, [])
 
         subject_info = SUBJECTS.get(subject, {})
 
@@ -1419,8 +1431,7 @@ def nop_bai_tracnghiem():
             }
         )
 
-        with open(results_file, "w", encoding="utf-8") as f:
-            json.dump(all_results, f, ensure_ascii=False, indent=2)
+        write_json(results_file, all_results)
 
         return jsonify(
             {"success": True, "result": result, "message": "Nộp bài thành công"}
@@ -1447,16 +1458,9 @@ def lich_su_tracnghiem():
     """
     try:
         user_id = session.get("user_id")
-        results_file = "data/exam_results.json"
+        results_file = writable_data_file("exam_results.json")
 
-        try:
-            with open(results_file, "r", encoding="utf-8") as f:
-                all_results = json.load(f)
-        except FileNotFoundError:
-            all_results = []
-        except json.JSONDecodeError:
-            print("ERROR: exam_results.json bị lỗi định dạng")
-            all_results = []
+        all_results = read_json(results_file, [])
 
         user_results = [r for r in all_results if r.get("user_id") == user_id]
         user_results.sort(key=lambda x: x.get("submitted_at", ""), reverse=True)
@@ -1526,12 +1530,10 @@ def ket_qua_tracnghiem(subject, exam_id):
             return redirect(url_for("tracnghiem"))
 
         user_id = session.get("user_id")
-        results_file = "data/exam_results.json"
+        results_file = writable_data_file("exam_results.json")
 
-        try:
-            with open(results_file, "r", encoding="utf-8") as f:
-                all_results = json.load(f)
-        except FileNotFoundError:
+        all_results = read_json(results_file, [])
+        if not all_results:
             flash("Không tìm thấy kết quả bài làm", "warning")
             return redirect(url_for("tracnghiem"))
 
@@ -1609,7 +1611,7 @@ def ket_qua_tracnghiem(subject, exam_id):
 ##############
 
 
-UPLOAD_FOLDER = "static/uploads/forum"
+UPLOAD_FOLDER = str(FORUM_UPLOAD_DIR)
 ALLOWED_EXTENSIONS = {
     "png",
     "jpg",
@@ -1627,6 +1629,13 @@ MAX_FILE_SIZE = 10 * 1024 * 1024
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route("/uploads/forum/<path:filename>")
+@login_required
+def uploaded_forum_file(filename):
+    ensure_file_from_remote(FORUM_UPLOAD_DIR / filename)
+    return send_from_directory(FORUM_UPLOAD_DIR, filename)
 
 
 @app.route("/forum")
@@ -1747,9 +1756,9 @@ def forum_create_post():
                         filename = secure_filename(file.filename)
                         unique_filename = f"{uuid.uuid4().hex[:8]}_{filename}"
 
-                        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-                        file_path = os.path.join(UPLOAD_FOLDER, unique_filename)
+                        file_path = forum_upload_path(unique_filename)
                         file.save(file_path)
+                        sync_file_to_remote(file_path)
 
                         file_size = os.path.getsize(file_path)
 
@@ -1764,7 +1773,9 @@ def forum_create_post():
                             {
                                 "type": file_type,
                                 "filename": filename,
-                                "path": file_path.replace("\\", "/"),
+                                "path": forum_upload_url(unique_filename),
+                                "storage_path": str(file_path),
+                                "url": forum_upload_url(unique_filename),
                                 "size": file_size,
                             }
                         )
@@ -1839,9 +1850,9 @@ def forum_edit_post(post_id):
                         filename = secure_filename(file.filename)
                         unique_filename = f"{uuid.uuid4().hex[:8]}_{filename}"
 
-                        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-                        file_path = os.path.join(UPLOAD_FOLDER, unique_filename)
+                        file_path = forum_upload_path(unique_filename)
                         file.save(file_path)
+                        sync_file_to_remote(file_path)
 
                         file_size = os.path.getsize(file_path)
                         file_ext = filename.rsplit(".", 1)[1].lower()
@@ -1855,7 +1866,9 @@ def forum_edit_post(post_id):
                             {
                                 "type": file_type,
                                 "filename": filename,
-                                "path": file_path.replace("\\", "/"),
+                                "path": forum_upload_url(unique_filename),
+                                "storage_path": str(file_path),
+                                "url": forum_upload_url(unique_filename),
                                 "size": file_size,
                             }
                         )
@@ -1902,8 +1915,9 @@ def forum_delete_post(post_id):
 
     for attachment in post.get("attachments", []):
         try:
-            if os.path.exists(attachment["path"]):
-                os.remove(attachment["path"])
+            attachment_path = attachment_storage_path(attachment)
+            if attachment_path.exists():
+                attachment_path.unlink()
         except:
             pass
 
@@ -1936,9 +1950,9 @@ def forum_add_comment(post_id):
                     filename = secure_filename(file.filename)
                     unique_filename = f"{uuid.uuid4().hex[:8]}_{filename}"
 
-                    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-                    file_path = os.path.join(UPLOAD_FOLDER, unique_filename)
+                    file_path = forum_upload_path(unique_filename)
                     file.save(file_path)
+                    sync_file_to_remote(file_path)
 
                     file_size = os.path.getsize(file_path)
                     file_ext = filename.rsplit(".", 1)[1].lower()
@@ -1950,7 +1964,9 @@ def forum_add_comment(post_id):
                         {
                             "type": file_type,
                             "filename": filename,
-                            "path": file_path.replace("\\", "/"),
+                            "path": forum_upload_url(unique_filename),
+                            "storage_path": str(file_path),
+                            "url": forum_upload_url(unique_filename),
                             "size": file_size,
                         }
                     )
@@ -1996,8 +2012,9 @@ def forum_delete_comment(comment_id):
 
     for attachment in comment.get("attachments", []):
         try:
-            if os.path.exists(attachment["path"]):
-                os.remove(attachment["path"])
+            attachment_path = attachment_storage_path(attachment)
+            if attachment_path.exists():
+                attachment_path.unlink()
         except:
             pass
 
@@ -2110,11 +2127,7 @@ def delete_chat_message(message_id):
 @teacher_required
 def teacher_game_questions():
     """Trang quản lý câu hỏi game cho giáo viên"""
-    try:
-        with open("questions.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except:
-        data = {"bai_1": [], "bai_2": []}
+    data = read_json(QUESTIONS_FILE, {"bai_1": [], "bai_2": []})
     return render_template("teacher_game_questions.html", questions=data)
 
 
@@ -2140,11 +2153,7 @@ def teacher_add_game_question():
             flash("Đáp án đúng phải trùng với một trong 4 lựa chọn", "danger")
             return redirect(url_for("teacher_game_questions"))
 
-        try:
-            with open("questions.json", "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except:
-            data = {}
+        data = read_json(QUESTIONS_FILE, {})
 
         if bai not in data:
             data[bai] = []
@@ -2157,8 +2166,7 @@ def teacher_add_game_question():
         }
         data[bai].append(new_question)
 
-        with open("questions.json", "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+        write_json(QUESTIONS_FILE, data)
 
         flash("Thêm câu hỏi thành công!", "success")
         return redirect(url_for("teacher_game_questions"))
@@ -2177,13 +2185,11 @@ def teacher_delete_game_question():
         bai = request.form.get("bai", "bai_1")
         index = int(request.form.get("index", -1))
 
-        with open("questions.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+        data = read_json(QUESTIONS_FILE, {"bai_1": [], "bai_2": []})
 
         if bai in data and 0 <= index < len(data[bai]):
             data[bai].pop(index)
-            with open("questions.json", "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+            write_json(QUESTIONS_FILE, data)
             flash("Đã xóa câu hỏi!", "success")
         else:
             flash("Không tìm thấy câu hỏi cần xóa", "danger")
@@ -2221,8 +2227,7 @@ def game():
 @app.route("/get_questions")
 def get_questions():
     bai = session.get("bai", "bai_1")
-    with open("questions.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
+    data = read_json(QUESTIONS_FILE, {"bai_1": [], "bai_2": []})
     questions = data.get(bai, [])
     random.shuffle(questions)
     for q in questions:
@@ -2241,37 +2246,28 @@ def submit_score():
     if not bai:
         return jsonify({"status": "error", "message": "No bai found"})
 
-    if not os.path.exists("scores.json"):
-        with open("scores.json", "w", encoding="utf-8") as f:
-            json.dump([], f)
+    scores = read_json(SCORES_FILE, [])
+    now = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-    with open("scores.json", "r+", encoding="utf-8") as f:
-        scores = json.load(f)
-        now = datetime.now().strftime("%d/%m/%Y %H:%M")
+    existing = next(
+        (s for s in scores if s["nickname"] == nickname and s.get("bai") == bai),
+        None,
+    )
 
-        existing = next(
-            (s for s in scores if s["nickname"] == nickname and s.get("bai") == bai),
-            None,
-        )
+    if existing:
+        if score > existing["score"]:
+            existing["score"] = score
+            existing["time"] = now
+    else:
+        scores.append({"nickname": nickname, "score": score, "time": now, "bai": bai})
 
-        if existing:
-            if score > existing["score"]:
-                existing["score"] = score
-                existing["time"] = now
-        else:
-            scores.append(
-                {"nickname": nickname, "score": score, "time": now, "bai": bai}
-            )
+    filtered = [s for s in scores if s.get("bai") == bai]
+    top50 = sorted(filtered, key=lambda x: x["score"], reverse=True)[:50]
 
-        filtered = [s for s in scores if s.get("bai") == bai]
-        top50 = sorted(filtered, key=lambda x: x["score"], reverse=True)[:50]
+    others = [s for s in scores if s.get("bai") != bai]
+    final_scores = others + top50
 
-        others = [s for s in scores if s.get("bai") != bai]
-        final_scores = others + top50
-
-        f.seek(0)
-        json.dump(final_scores, f, ensure_ascii=False, indent=2)
-        f.truncate()
+    write_json(SCORES_FILE, final_scores)
 
     return jsonify({"status": "ok"})
 
@@ -2283,14 +2279,9 @@ def leaderboard():
     if not bai:
         bai = "bai_1"
 
-    if not os.path.exists("scores.json"):
-        top5 = []
-    else:
-        with open("scores.json", "r", encoding="utf-8") as f:
-            scores = json.load(f)
-
-        filtered = [s for s in scores if s.get("bai") == bai]
-        top5 = sorted(filtered, key=lambda x: x["score"], reverse=True)[:5]
+    scores = read_json(SCORES_FILE, [])
+    filtered = [s for s in scores if s.get("bai") == bai]
+    top5 = sorted(filtered, key=lambda x: x["score"], reverse=True)[:5]
 
     return render_template("leaderboard.html", players=top5, bai=bai)
 
