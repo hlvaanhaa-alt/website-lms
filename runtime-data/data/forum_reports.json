@@ -30,5 +30,19 @@
     "reviewed_at": "2026-07-07T01:26:40.402672",
     "created_at": "2026-07-06T18:26:40.402672",
     "demo_seed": true
+  },
+  {
+    "id": "fr_000003",
+    "target_type": "question",
+    "target_id": "post_0001",
+    "post_id": "post_0001",
+    "reason": "spam",
+    "detail": "spam",
+    "reported_user_id": "4",
+    "reported_username": "tuan",
+    "reporter_id": "6",
+    "reporter_name": "Kimchi",
+    "status": "pending",
+    "created_at": "2026-07-06T23:06:48.443000"
   }
 ]
