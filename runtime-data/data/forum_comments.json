@@ -25,7 +25,12 @@
     "points_awarded": 20,
     "best_bonus_awarded": 0,
     "is_best_answer": false,
-    "demo_seed": true
+    "demo_seed": true,
+    "is_verified_answer": true,
+    "verified_at": "2026-07-07T06:37:14.782779",
+    "verified_by_id": "1",
+    "verified_by_name": "admin",
+    "verified_by_role": "teacher"
   },
   {
     "id": "comment_0003",
