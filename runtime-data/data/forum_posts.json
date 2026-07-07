@@ -144,5 +144,41 @@
     "is_first_question": false,
     "question_type": "question",
     "demo_seed": true
+  },
+  {
+    "id": "post_0007",
+    "title": "Góp ý bài văn",
+    "content": "em có bài văn về giới thiệu về sách Mưa Đỏ của nhà văn Chu Lai, mn góp ý cho em",
+    "author_id": "6",
+    "author_name": "Kimchi",
+    "author_role": "student",
+    "created_at": "2026-07-07T05:44:37.615663",
+    "updated_at": null,
+    "attachments": [
+      {
+        "type": "file",
+        "filename": "Gioi_thieu_cuon_sach_Mua_o_-_Chu_Lai_1.pdf",
+        "path": "/uploads/forum/107dc6fe_Gioi_thieu_cuon_sach_Mua_o_-_Chu_Lai_1.pdf",
+        "storage_path": "/opt/render/project/src/.runtime_data/uploads/forum/107dc6fe_Gioi_thieu_cuon_sach_Mua_o_-_Chu_Lai_1.pdf",
+        "url": "/uploads/forum/107dc6fe_Gioi_thieu_cuon_sach_Mua_o_-_Chu_Lai_1.pdf",
+        "thumb_url": "",
+        "thumb_storage_path": "",
+        "size": 4207797,
+        "thumb_size": 0
+      }
+    ],
+    "tags": [
+      "Ngữ Văn",
+      "Lớp 8"
+    ],
+    "views": 0,
+    "comments_count": 0,
+    "subject": "Ngữ Văn",
+    "grade": "Lớp 8",
+    "reward_points": 30,
+    "status": "open",
+    "accepted_answer_id": null,
+    "is_first_question": true,
+    "question_type": "discussion"
   }
 ]
