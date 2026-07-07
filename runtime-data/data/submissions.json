@@ -231,5 +231,16 @@
       "0": "C. x³+3xy"
     },
     "submitted_at": "2025-11-14T22:33:24.389034"
+  },
+  {
+    "id": "sub_23",
+    "user_id": "6",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "Nguyễn Dữ",
+      "1": "Người vợ độc ác, cấm đoán chồng"
+    },
+    "submitted_at": "2026-07-07T09:00:55.134991"
   }
 ]
