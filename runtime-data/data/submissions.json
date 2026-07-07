@@ -253,5 +253,16 @@
       "1": "Người vợ độc ác, cấm đoán chồng"
     },
     "submitted_at": "2026-07-07T09:00:56.565770"
+  },
+  {
+    "id": "sub_25",
+    "user_id": "6",
+    "course_id": "course_1",
+    "exercise_id": "1",
+    "answers": {
+      "0": "Nguyễn Dữ",
+      "1": "Người vợ độc ác, cấm đoán chồng"
+    },
+    "submitted_at": "2026-07-07T09:01:12.656858"
   }
 ]
