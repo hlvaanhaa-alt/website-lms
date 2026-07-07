@@ -195,6 +195,54 @@ body {
     font-size: .86rem;
     white-space: nowrap;
 }
+.hero-process {
+    display: grid;
+    gap: 9px;
+    margin-top: 16px;
+}
+.process-step {
+    align-items: center;
+    background: linear-gradient(90deg, #f5f4ff 0%, #f8fbff 100%);
+    border: 1px solid #e4e7fb;
+    border-left: 4px solid #5f63c7;
+    border-radius: 7px;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 12px;
+    min-height: 52px;
+    padding: 10px 12px;
+}
+.process-step b {
+    align-items: center;
+    background: linear-gradient(135deg, #5f63c7, #8c58d6);
+    border-radius: 999px;
+    color: #fff;
+    display: inline-flex;
+    font-size: .86rem;
+    font-weight: 900;
+    height: 30px;
+    justify-content: center;
+    width: 30px;
+}
+.process-step strong {
+    color: #102033;
+    display: block;
+    font-size: .95rem;
+}
+.process-step span {
+    color: #657589;
+    display: block;
+    font-size: .82rem;
+    line-height: 1.35;
+    margin-top: 2px;
+}
+.process-arrow {
+    color: #7a8797;
+    font-size: 1rem;
+    font-weight: 900;
+    line-height: 1;
+    text-align: center;
+}
 .progress-box {
     background: #102033;
     border-radius: 7px;
@@ -717,31 +765,36 @@ body {
                 </div>
             </div>
 
-            <aside class="hero-panel" aria-label="Bảng học tập hôm nay">
+            <aside class="hero-panel" aria-label="Quy trình học tập">
                 <div class="panel-head">
-                    <h2>Học tập hôm nay</h2>
-                    <span>AI sẵn sàng</span>
+                    <h2>Quy trình học tập</h2>
+                    <span>Bắt đầu nhanh</span>
                 </div>
-                <div class="today-list">
-                    <div class="today-item">
-                        <div class="item-icon"><i class="fa-solid fa-square-root-variable"></i></div>
-                        <div><strong>{{ home_stats.latest_course_title }}</strong><span>{{ home_stats.latest_course_lessons }} bài học trong khóa mới nhất</span></div>
-                        <b>{{ home_stats.courses }} khóa</b>
+                <div class="hero-process">
+                    <div class="process-step">
+                        <b>1</b>
+                        <div><strong>Đăng ký tài khoản</strong><span>Tạo hồ sơ học tập và nhận kim cương khởi đầu.</span></div>
                     </div>
-                    <div class="today-item">
-                        <div class="item-icon"><i class="fa-solid fa-comments"></i></div>
-                        <div><strong>Diễn đàn hỏi đáp</strong><span>{{ home_stats.forum_answers }} câu trả lời đã ghi nhận</span></div>
-                        <b>{{ home_stats.forum_posts }} câu hỏi</b>
+                    <div class="process-arrow">↓</div>
+                    <div class="process-step">
+                        <b>2</b>
+                        <div><strong>Chọn khóa học phù hợp</strong><span>Vào bài học, tài liệu hoặc đề luyện theo lớp.</span></div>
                     </div>
-                    <div class="today-item">
-                        <div class="item-icon"><i class="fa-solid fa-robot"></i></div>
-                        <div><strong>Kho trắc nghiệm</strong><span>{{ home_stats.exam_attempts }} lượt làm bài đã lưu</span></div>
-                        <b>{{ home_stats.exams }} đề</b>
+                    <div class="process-arrow">↓</div>
+                    <div class="process-step">
+                        <b>3</b>
+                        <div><strong>Học và làm bài tập</strong><span>Làm trắc nghiệm, lưu điểm và theo dõi tiến bộ.</span></div>
                     </div>
-                </div>
-                <div class="progress-box">
-                    <div class="progress-title"><span>Tiến độ bài học</span><span>{{ home_stats.progress_percent }}%</span></div>
-                    <div class="progress-track"><i style="width: {{ home_stats.progress_percent }}%"></i></div>
+                    <div class="process-arrow">↓</div>
+                    <div class="process-step">
+                        <b>4</b>
+                        <div><strong>Diễn đàn hỏi đáp</strong><span>Đặt câu hỏi, trả lời tốt và nhận kim cương.</span></div>
+                    </div>
+                    <div class="process-arrow">↓</div>
+                    <div class="process-step">
+                        <b>5</b>
+                        <div><strong>Nhận phản hồi từ AI</strong><span>Hỏi bài, tạo quiz nhanh và ôn lại phần còn yếu.</span></div>
+                    </div>
                 </div>
             </aside>
         </div>
