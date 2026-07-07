@@ -574,5 +574,23 @@
     "author_role": "teacher",
     "created_at": "2026-03-27T15:50:27.222298",
     "reply_to": null
+  },
+  {
+    "id": "msg_000065",
+    "content": "Giải hệ phương trình: 2x + y = 7 và x - y = 2",
+    "author_id": "11",
+    "author_name": "Gia Vinh",
+    "author_role": "student",
+    "created_at": "2026-07-07T09:12:00.157550",
+    "reply_to": null,
+    "response": "Ta có hệ phương trình:\n\n$$\n\\begin{cases}\n2x + y = 7 \\\\\nx - y = 2\n\\end{cases}\n$$\n\nCộng hai phương trình vế theo vế, ta được:\n\n$$\n(2x + y) + (x - y) = 7 + 2\n$$\n\n$$\n3x = 9\n$$\n\n$$\nx = \\frac{9}{3}\n$$\n\n$$\nx = 3\n$$\n\nThay $x = 3$ vào phương trình thứ hai $x - y = 2$, ta được:\n\n$$\n3 - y = 2\n$$\n\n$$\n-y = 2 - 3\n$$\n\n$$\n-y = -1\n$$\n\n$$\ny = 1\n$$\n\nVậy nghiệm của hệ phương trình là:\n\n$$\n\\begin{cases}\nx = 3 \\\\\ny = 1\n\\end{cases}\n$$\n",
+    "processed": {
+      "text": "Ta có hệ phương trình:\n\n$$\n\\begin{cases}\n2x + y = 7 \\\\\nx - y = 2\n\\end{cases}\n$$\n\nCộng hai phương trình vế theo vế, ta được:\n\n$$\n(2x + y) + (x - y) = 7 + 2\n$$\n\n$$\n3x = 9\n$$\n\n$$\nx = \\frac{9}{3}\n$$\n\n$$\nx = 3\n$$\n\nThay $x = 3$ vào phương trình thứ hai $x - y = 2$, ta được:\n\n$$\n3 - y = 2\n$$\n\n$$\n-y = 2 - 3\n$$\n\n$$\n-y = -1\n$$\n\n$$\ny = 1\n$$\n\nVậy nghiệm của hệ phương trình là:\n\n$$\n\\begin{cases}\nx = 3 \\\\\ny = 1\n\\end{cases}\n$$",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
   }
 ]
