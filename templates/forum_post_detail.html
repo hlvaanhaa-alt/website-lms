@@ -28,7 +28,7 @@
 
         <div class="author-line profile-author">
             <a class="mini-avatar {{ post.author_frame.css_class if post.author_frame else '' }}" href="{{ url_for('forum_profile', user_id=post.author_id) }}">
-                {% if post.author_avatar_url %}<img src="{{ post.author_avatar_url }}" alt="">{% else %}{{ post.author_name[:1]|upper }}{% endif %}
+                {% if post.author_avatar_url %}<img src="{{ post.author_avatar_url }}" alt="" loading="lazy" decoding="async" width="42" height="42">{% else %}{{ post.author_name[:1]|upper }}{% endif %}
             </a>
             <a href="{{ url_for('forum_profile', user_id=post.author_id) }}">{{ post.author_name }}</a>
             <span>{{ post.role_label }}</span>
@@ -43,7 +43,8 @@
             {% for attachment in post.attachments %}
                 {% set attachment_url = attachment.url|default(url_for('static', filename=attachment.path.replace('static/', ''))) %}
                 {% if attachment.type == 'image' %}
-                <a href="{{ attachment_url }}" target="_blank"><img src="{{ attachment_url }}" alt="{{ attachment.filename }}"></a>
+                {% set attachment_thumb_url = attachment.thumb_url|default(attachment_url, true) %}
+                <a href="{{ attachment_url }}" target="_blank"><img src="{{ attachment_thumb_url }}" alt="{{ attachment.filename }}" loading="lazy" decoding="async"></a>
                 {% else %}
                 <a class="file-chip" href="{{ attachment_url }}" download>{{ attachment.filename }}</a>
                 {% endif %}
@@ -66,7 +67,7 @@
             <div class="answer-head">
                 <div>
                     <a class="mini-avatar {{ comment.author_frame.css_class if comment.author_frame else '' }}" href="{{ url_for('forum_profile', user_id=comment.author_id) }}">
-                        {% if comment.author_avatar_url %}<img src="{{ comment.author_avatar_url }}" alt="">{% else %}{{ comment.author_name[:1]|upper }}{% endif %}
+                        {% if comment.author_avatar_url %}<img src="{{ comment.author_avatar_url }}" alt="" loading="lazy" decoding="async" width="42" height="42">{% else %}{{ comment.author_name[:1]|upper }}{% endif %}
                     </a>
                     <a class="answer-author" href="{{ url_for('forum_profile', user_id=comment.author_id) }}">{{ comment.author_name }}</a>
                     <span>{{ comment.role_label }}</span>
@@ -84,7 +85,8 @@
                 {% for attachment in comment.attachments %}
                     {% set attachment_url = attachment.url|default(url_for('static', filename=attachment.path.replace('static/', ''))) %}
                     {% if attachment.type == 'image' %}
-                    <a href="{{ attachment_url }}" target="_blank"><img src="{{ attachment_url }}" alt="{{ attachment.filename }}"></a>
+                    {% set attachment_thumb_url = attachment.thumb_url|default(attachment_url, true) %}
+                    <a href="{{ attachment_url }}" target="_blank"><img src="{{ attachment_thumb_url }}" alt="{{ attachment.filename }}" loading="lazy" decoding="async"></a>
                     {% else %}
                     <a class="file-chip" href="{{ attachment_url }}" download>{{ attachment.filename }}</a>
                     {% endif %}

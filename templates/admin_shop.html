@@ -103,7 +103,7 @@
             <article class="item-row">
                 <div class="item-icon {{ item.css_class }}">
                     {% if item.image_url %}
-                    <img src="{{ item.image_url }}" alt="">
+                    <img src="{{ item.image_url }}" alt="" loading="lazy" decoding="async">
                     {% else %}
                     {{ item.icon }}
                     {% endif %}

@@ -18,7 +18,7 @@
             <div class="cup-icon"><i class="fa-solid fa-trophy"></i></div>
             <div class="top-avatar {{ user.author_frame.css_class if user.author_frame else '' }}">
                 {% if user.author_avatar_url %}
-                <img src="{{ user.author_avatar_url }}" alt="">
+                <img src="{{ user.author_avatar_url }}" alt="" loading="lazy" decoding="async" width="58" height="58">
                 {% else %}
                 {{ user.username[:1]|upper }}
                 {% endif %}
@@ -41,7 +41,7 @@
             <div class="rank-user">
                 <div class="rank-avatar {{ user.author_frame.css_class if user.author_frame else '' }}">
                     {% if user.author_avatar_url %}
-                    <img src="{{ user.author_avatar_url }}" alt="">
+                    <img src="{{ user.author_avatar_url }}" alt="" loading="lazy" decoding="async" width="42" height="42">
                     {% else %}
                     {{ user.username[:1]|upper }}
                     {% endif %}

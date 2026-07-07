@@ -9,7 +9,7 @@
             <div class="avatar-column">
                 <div class="avatar-box {{ equipped.frame.css_class if equipped.frame else '' }}" aria-hidden="true">
                     {% if customization.avatar_url %}
-                    <img src="{{ customization.avatar_url }}" alt="">
+                    <img src="{{ customization.avatar_url }}" alt="" loading="lazy" decoding="async" width="142" height="142">
                     {% else %}
                     <div class="avatar-head"></div>
                     <div class="avatar-body"></div>
@@ -217,7 +217,7 @@
                 {% for record in inventory %}
                 <article class="inventory-card">
                     <div class="inventory-icon {{ record.item.css_class }}">
-                        {% if record.item.image_url %}<img src="{{ record.item.image_url }}" alt="">{% else %}{{ record.item.icon }}{% endif %}
+                        {% if record.item.image_url %}<img src="{{ record.item.image_url }}" alt="" loading="lazy" decoding="async" width="44" height="44">{% else %}{{ record.item.icon }}{% endif %}
                     </div>
                     <div>
                         <strong>{{ record.item.name }}</strong>

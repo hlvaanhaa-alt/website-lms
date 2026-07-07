@@ -14,6 +14,7 @@ import os
 import random
 from werkzeug.utils import secure_filename
 import uuid
+from PIL import Image, UnidentifiedImageError
 from utils.auth import register_user, login_user, get_user_by_id, load_users, save_users
 from utils.database import Database
 from utils.gemini_api import (
@@ -1923,6 +1924,7 @@ ALLOWED_EXTENSIONS = {
     "jpg",
     "jpeg",
     "gif",
+    "webp",
     "pdf",
     "doc",
     "docx",
@@ -1935,6 +1937,32 @@ MAX_FILE_SIZE = 10 * 1024 * 1024
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def optimized_image_payload(source_path, suffix, max_size=(720, 720), quality=82):
+    source_path = os.fspath(source_path)
+    source = os.path.abspath(source_path)
+    stem = os.path.splitext(os.path.basename(source))[0]
+    optimized_name = f"{stem}_{suffix}.webp"
+    optimized_path = forum_upload_path(optimized_name)
+
+    try:
+        with Image.open(source) as image:
+            image.seek(0)
+            image.thumbnail(max_size, Image.Resampling.LANCZOS)
+            has_alpha = image.mode in ("RGBA", "LA") or "transparency" in image.info
+            if image.mode not in ("RGB", "RGBA"):
+                image = image.convert("RGBA" if has_alpha else "RGB")
+            image.save(optimized_path, "WEBP", quality=quality, method=6)
+    except (UnidentifiedImageError, OSError, ValueError):
+        return None
+
+    sync_file_to_remote(optimized_path)
+    return {
+        "url": forum_upload_url(optimized_name),
+        "storage_path": str(optimized_path),
+        "size": os.path.getsize(optimized_path),
+    }
 
 
 @app.route("/uploads/forum/<path:filename>")
@@ -2050,6 +2078,8 @@ def normalize_shop_item(item):
     item["css_class"] = item.get("css_class") or ""
     item["image_url"] = item.get("image_url") or ""
     item["image_storage_path"] = item.get("image_storage_path") or ""
+    item["original_image_url"] = item.get("original_image_url") or item["image_url"]
+    item["optimized_storage_path"] = item.get("optimized_storage_path") or ""
     item["active"] = bool(item.get("active", True))
     return item
 
@@ -2233,9 +2263,12 @@ def avatar_file_payload(file):
     file_path = forum_upload_path(unique_filename)
     file.save(file_path)
     sync_file_to_remote(file_path)
+    optimized = optimized_image_payload(file_path, "avatar", max_size=(360, 360), quality=84)
     return {
-        "url": forum_upload_url(unique_filename),
+        "url": optimized["url"] if optimized else forum_upload_url(unique_filename),
         "storage_path": str(file_path),
+        "original_url": forum_upload_url(unique_filename),
+        "optimized_storage_path": optimized["storage_path"] if optimized else "",
     }
 
 
@@ -2255,9 +2288,12 @@ def shop_asset_file_payload(file, item_type):
     file_path = forum_upload_path(unique_filename)
     file.save(file_path)
     sync_file_to_remote(file_path)
+    optimized = optimized_image_payload(file_path, "thumb", max_size=(360, 360), quality=82)
     return {
-        "url": forum_upload_url(unique_filename),
+        "url": optimized["url"] if optimized else forum_upload_url(unique_filename),
         "storage_path": str(file_path),
+        "original_url": forum_upload_url(unique_filename),
+        "optimized_storage_path": optimized["storage_path"] if optimized else "",
     }
 
 
@@ -2628,14 +2664,22 @@ def forum_attachment_payload(file):
 
     file_size = os.path.getsize(file_path)
     file_ext = filename.rsplit(".", 1)[1].lower()
-    file_type = "image" if file_ext in {"png", "jpg", "jpeg", "gif"} else "file"
+    file_type = "image" if file_ext in {"png", "jpg", "jpeg", "gif", "webp"} else "file"
+    optimized = (
+        optimized_image_payload(file_path, "display", max_size=(960, 960), quality=82)
+        if file_type == "image"
+        else None
+    )
     return {
         "type": file_type,
         "filename": filename,
         "path": forum_upload_url(unique_filename),
         "storage_path": str(file_path),
         "url": forum_upload_url(unique_filename),
+        "thumb_url": optimized["url"] if optimized else "",
+        "thumb_storage_path": optimized["storage_path"] if optimized else "",
         "size": file_size,
+        "thumb_size": optimized["size"] if optimized else 0,
     }
 
 
@@ -3247,6 +3291,8 @@ def update_profile_avatar():
             {
                 "avatar_url": payload["url"],
                 "avatar_storage_path": payload["storage_path"],
+                "avatar_original_url": payload.get("original_url", payload["url"]),
+                "avatar_optimized_storage_path": payload.get("optimized_storage_path", ""),
                 "equipped_avatar_item_id": "",
             },
         )
@@ -3441,9 +3487,14 @@ def admin_shop():
                 image_payload = shop_asset_file_payload(image_file, item_type)
                 image_url = image_payload["url"]
                 image_storage_path = image_payload["storage_path"]
+                original_image_url = image_payload.get("original_url", image_url)
+                optimized_storage_path = image_payload.get("optimized_storage_path", "")
             except ValueError as exc:
                 flash(str(exc), "danger")
                 return redirect(url_for("admin_shop"))
+        else:
+            original_image_url = image_url
+            optimized_storage_path = ""
 
         if item_type in {"avatar", "sticker"} and not image_url:
             flash("Avatar hoặc sticker cần có ảnh upload hoặc URL ảnh", "warning")
@@ -3460,6 +3511,8 @@ def admin_shop():
             "css_class": css_class,
             "image_url": image_url,
             "image_storage_path": image_storage_path,
+            "original_image_url": original_image_url,
+            "optimized_storage_path": optimized_storage_path,
             "active": True,
             "created_by": session["user_id"],
             "created_at": datetime.now().isoformat(),

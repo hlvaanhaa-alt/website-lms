@@ -20,7 +20,7 @@
         {% for item in items %}
         <article class="shop-card">
             <div class="item-icon {{ item.css_class }}">
-                {% if item.image_url %}<img src="{{ item.image_url }}" alt="">{% else %}{{ item.icon }}{% endif %}
+                {% if item.image_url %}<img src="{{ item.image_url }}" alt="" loading="lazy" decoding="async" width="62" height="62">{% else %}{{ item.icon }}{% endif %}
             </div>
             <div class="item-main">
                 <div class="item-top">
