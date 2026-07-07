@@ -81,10 +81,11 @@
   },
   {
     "id": "11",
-    "username": "Gia Vinh",
+    "username": "Harrymath",
     "password": "scrypt:32768:8:1$ZNEBRysaRIDgiSsu$d720d562d2bac5499307502b78b6ecc56a6e8edb17ac9a84e039acf3b0ad75e9897c3668e01fbb8247b71c74a5d370e196438eabfff9e79c83ed9b75a37b2512",
     "email": "harrymath2807@gmail.com",
     "role": "student",
-    "created_at": "2026-07-07T08:33:29.211376"
+    "created_at": "2026-07-07T08:33:29.211376",
+    "full_name": "Đặng Gia Vinh"
   }
 ]
