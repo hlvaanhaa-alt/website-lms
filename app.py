@@ -2537,7 +2537,7 @@ def forum_user_stats(user_id):
         "warnings_count": len([report for report in reports if report.get("reported_user_id") == user_id]),
         "thanks_count": 0,
         "five_star_count": 0,
-        "verified_count": 0,
+        "verified_count": len([comment for comment in comments if comment.get("author_id") == user_id and comment.get("is_verified_answer")]),
         "helped_count": len({comment.get("post_id") for comment in comments if comment.get("author_id") == user_id}),
         "helped_subjects": helped_subjects,
     }
@@ -2573,6 +2573,9 @@ def forum_user_activity(user_id, limit=6):
                 "created_at": comment.get("created_at", ""),
                 "time_ago": forum_time_ago(comment.get("created_at", "")),
                 "is_best_answer": bool(comment.get("is_best_answer")),
+                "is_verified_answer": bool(comment.get("is_verified_answer")),
+                "verified_at": comment.get("verified_at", ""),
+                "verified_by_name": comment.get("verified_by_name", ""),
                 "points_total": points_total,
             }
         )
@@ -2593,6 +2596,7 @@ def forum_user_activity(user_id, limit=6):
         "questions": user_questions[:limit],
         "answers": user_answers[:limit],
         "best_answers": [answer for answer in user_answers if answer.get("is_best_answer")][:limit],
+        "verified_answers": [answer for answer in user_answers if answer.get("is_verified_answer")][:limit],
         "point_history": user_point_history[:limit],
     }
 
@@ -2955,12 +2959,14 @@ def forum_post_detail(post_id):
         comment["points_awarded"] = int(comment.get("points_awarded") or 0)
 
     is_author = post["author_id"] == session["user_id"]
+    can_verify_answers = session.get("role") in {"teacher", "admin"}
 
     return render_template(
         "forum_post_detail.html",
         post=post,
         comments=comments,
         is_author=is_author,
+        can_verify_answers=can_verify_answers,
         user_stats=forum_user_stats(post.get("author_id")),
         username=session.get("username"),
     )
@@ -3315,6 +3321,38 @@ def forum_accept_answer(comment_id):
     return jsonify({"success": True, "message": "Đã chọn câu trả lời hay nhất", "points_awarded": bonus_points})
 
 
+@app.route("/forum/verify-answer/<comment_id>", methods=["POST"])
+@login_required
+@staff_required
+def forum_verify_answer(comment_id):
+    comments = db._load_json(db.forum_comments_file)
+    answer = next((c for c in comments if c.get("id") == comment_id), None)
+    if not answer:
+        return jsonify({"success": False, "message": "Không tìm thấy câu trả lời"}), 404
+
+    post = db.get_forum_post_by_id(answer.get("post_id"))
+    if not post:
+        return jsonify({"success": False, "message": "Không tìm thấy câu hỏi"}), 404
+    if answer.get("is_verified_answer"):
+        return jsonify({"success": False, "message": "Câu trả lời này đã được đánh giá"}), 400
+    if answer.get("author_id") == session.get("user_id"):
+        return jsonify({"success": False, "message": "Không thể tự xác thực câu trả lời của chính mình"}), 400
+
+    now = datetime.now().isoformat()
+    verifier = get_user_by_id(session["user_id"])
+    for comment in comments:
+        if comment.get("id") == comment_id:
+            comment["is_verified_answer"] = True
+            comment["verified_at"] = now
+            comment["verified_by_id"] = session["user_id"]
+            comment["verified_by_name"] = session.get("username", "Unknown")
+            comment["verified_by_role"] = verifier.get("role", session.get("role", "teacher")) if verifier else session.get("role", "teacher")
+            break
+
+    write_json(db.forum_comments_file, comments)
+    return jsonify({"success": True, "message": "Đã xác thực câu trả lời"})
+
+
 @app.route("/forum/report", methods=["POST"])
 @login_required
 def forum_report():
@@ -3455,6 +3493,23 @@ def forum_profile(user_id):
         equipped=equipped,
         age_days=age_days,
         role_label=forum_role_label(user.get("role", "student")),
+        username=session.get("username"),
+    )
+
+
+@app.route("/profile/<user_id>/verified")
+@login_required
+def forum_profile_verified_answers(user_id):
+    user = get_user_by_id(user_id)
+    if not user:
+        flash("Không tìm thấy tài khoản", "warning")
+        return redirect(url_for("forum"))
+
+    activity = forum_user_activity(user_id, limit=200)
+    return render_template(
+        "forum_verified_answers.html",
+        profile_user=user,
+        verified_answers=activity["verified_answers"],
         username=session.get("username"),
     )
 

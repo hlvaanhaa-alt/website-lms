@@ -64,7 +64,9 @@
                     </div>
                     <div class="stat-item">
                         <span>Xác thực</span>
-                        <strong><em class="icon-teal">✿</em> {{ stats.verified_count }}</strong>
+                        <a class="stat-link" href="{{ url_for('forum_profile_verified_answers', user_id=profile_user.id) }}">
+                            <strong><em class="icon-teal">✿</em> {{ stats.verified_count }}</strong>
+                        </a>
                     </div>
                     <div class="stat-item">
                         <span>Đã giúp</span>
@@ -195,6 +197,18 @@
                     </a>
                     {% else %}
                     <p class="empty-note">Chưa có câu trả lời hay nhất.</p>
+                    {% endfor %}
+                </article>
+
+                <article class="activity-panel verified-panel">
+                    <h3>Câu trả lời xác thực</h3>
+                    {% for answer in activity.verified_answers %}
+                    <a class="activity-item" href="{{ url_for('forum_post_detail', post_id=answer.post_id) }}">
+                        <strong>{{ answer.post_title }}</strong>
+                        <span>{{ answer.subject }}{% if answer.grade %} · {{ answer.grade }}{% endif %} · Đã đánh giá bởi {{ answer.verified_by_name or 'giáo viên' }}</span>
+                    </a>
+                    {% else %}
+                    <p class="empty-note">Chưa có câu trả lời được xác thực.</p>
                     {% endfor %}
                 </article>
 
@@ -411,6 +425,13 @@ body { background: #eef1f4; }
 .stat-item strong {
     color: #111827;
     font-size: 1rem;
+}
+.stat-link {
+    display: inline-block;
+    text-decoration: none;
+}
+.stat-link:hover strong {
+    color: #4387b9;
 }
 .stat-item em {
     font-style: normal;

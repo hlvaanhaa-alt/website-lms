@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Câu trả lời xác thực - {{ profile_user.username }}{% endblock %}
+
+{% block content %}
+<div class="verified-page">
+    <header class="verified-header">
+        <div>
+            <h1>{{ profile_user.username }} - Danh sách câu trả lời xác thực</h1>
+            <p>Những câu trả lời đã được giáo viên hoặc quản trị viên đánh giá là tốt.</p>
+        </div>
+        <a href="{{ url_for('forum_profile', user_id=profile_user.id) }}">Quay lại hồ sơ</a>
+    </header>
+
+    <section class="verified-list">
+        {% for answer in verified_answers %}
+        <article class="verified-card">
+            <div class="verified-card-head">
+                <div>
+                    <h2>{{ answer.post_title }}</h2>
+                    <span>{{ answer.subject }}{% if answer.grade %} · {{ answer.grade }}{% endif %} · {{ answer.time_ago }}</span>
+                </div>
+                <em>Đã đánh giá</em>
+            </div>
+            <p>{{ answer.content }}</p>
+            <div class="verified-meta">
+                <span>Xác thực bởi {{ answer.verified_by_name or 'giáo viên' }}</span>
+                <a href="{{ url_for('forum_post_detail', post_id=answer.post_id) }}">Xem câu hỏi</a>
+            </div>
+        </article>
+        {% else %}
+        <div class="verified-empty">
+            <h2>Chưa có câu trả lời xác thực</h2>
+            <p>Khi giáo viên hoặc quản trị viên đánh giá câu trả lời hay, nội dung sẽ xuất hiện tại đây.</p>
+        </div>
+        {% endfor %}
+    </section>
+</div>
+
+<style>
+.verified-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 56px;
+}
+.verified-header,
+.verified-card,
+.verified-empty {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+}
+.verified-header {
+    align-items: center;
+    display: flex;
+    gap: 18px;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 20px 22px;
+}
+.verified-header h1 {
+    color: #111827;
+    font-size: 1.35rem;
+    margin: 0 0 6px;
+}
+.verified-header p {
+    color: #64748b;
+    margin: 0;
+}
+.verified-header a,
+.verified-meta a {
+    color: #4387b9;
+    font-weight: 800;
+    text-decoration: none;
+}
+.verified-header a {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    padding: 9px 12px;
+    white-space: nowrap;
+}
+.verified-list {
+    display: grid;
+    gap: 12px;
+}
+.verified-card,
+.verified-empty {
+    padding: 18px;
+}
+.verified-card {
+    border-left: 4px solid #14b8a6;
+}
+.verified-card-head {
+    align-items: flex-start;
+    display: flex;
+    gap: 14px;
+    justify-content: space-between;
+}
+.verified-card h2,
+.verified-empty h2 {
+    color: #111827;
+    font-size: 1.05rem;
+    margin: 0 0 6px;
+}
+.verified-card span,
+.verified-empty p {
+    color: #64748b;
+}
+.verified-card em {
+    background: #ecfdf5;
+    border: 1px solid #99f6e4;
+    border-radius: 999px;
+    color: #0f766e;
+    font-size: .78rem;
+    font-style: normal;
+    font-weight: 900;
+    padding: 5px 9px;
+    white-space: nowrap;
+}
+.verified-card p {
+    color: #334155;
+    line-height: 1.7;
+    margin: 14px 0;
+    white-space: pre-wrap;
+}
+.verified-meta {
+    align-items: center;
+    border-top: 1px solid #edf2f7;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    padding-top: 12px;
+}
+@media (max-width: 640px) {
+    .verified-header,
+    .verified-card-head,
+    .verified-meta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

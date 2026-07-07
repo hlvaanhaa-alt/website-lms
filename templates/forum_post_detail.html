@@ -63,7 +63,7 @@
     <section class="answers-card">
         <h2>Câu trả lời ({{ comments|length }})</h2>
         {% for comment in comments %}
-        <article class="answer-item {% if comment.is_best_answer %}best-answer{% endif %}">
+        <article class="answer-item {% if comment.is_best_answer %}best-answer{% endif %} {% if comment.is_verified_answer %}verified-answer{% endif %}">
             <div class="answer-head">
                 <div>
                     <a class="mini-avatar {{ comment.author_frame.css_class if comment.author_frame else '' }}" href="{{ url_for('forum_profile', user_id=comment.author_id) }}">
@@ -75,9 +75,15 @@
                     <span>{{ comment.time_ago }}</span>
                     {% if comment.points_awarded %}<span class="points-chip">+{{ comment.points_awarded }}đ</span>{% endif %}
                     {% if comment.is_best_answer %}<span class="best-chip">Hay nhất</span>{% endif %}
+                    {% if comment.is_verified_answer %}<span class="verified-chip">Đã đánh giá</span>{% endif %}
                 </div>
                 <button class="menu-btn" onclick="openReport('answer', '{{ comment.id }}')">☰</button>
             </div>
+            {% if comment.is_verified_answer %}
+            <div class="verified-note">
+                Xác thực bởi {{ comment.verified_by_name or 'giáo viên' }}{% if comment.verified_at %} · {{ comment.verified_at[:10] }}{% endif %}
+            </div>
+            {% endif %}
             <div class="answer-content math-content">{{ comment.content }}</div>
 
             {% if comment.attachments %}
@@ -97,6 +103,9 @@
             <div class="answer-actions">
                 {% if is_author and post.status != 'resolved' and comment.author_id != session.user_id %}
                 <button onclick="acceptAnswer('{{ comment.id }}')">Chọn hay nhất</button>
+                {% endif %}
+                {% if can_verify_answers and not comment.is_verified_answer and comment.author_id != session.user_id %}
+                <button onclick="verifyAnswer('{{ comment.id }}')">Xác thực</button>
                 {% endif %}
                 {% if comment.author_id == session.user_id %}
                 <button onclick="deleteComment('{{ comment.id }}')">Xóa</button>
@@ -162,6 +171,14 @@ document.getElementById('commentForm').addEventListener('submit', async function
 async function acceptAnswer(commentId) {
     if (!confirm('Chọn câu trả lời này là hay nhất? Người trả lời sẽ nhận đủ 100% điểm thưởng.')) return;
     const response = await fetch(`/forum/accept-answer/${commentId}`, {method: 'POST'});
+    const result = await response.json();
+    alert(result.message || 'Đã xử lý');
+    if (result.success) location.reload();
+}
+
+async function verifyAnswer(commentId) {
+    if (!confirm('Xác thực câu trả lời này là câu trả lời hay?')) return;
+    const response = await fetch(`/forum/verify-answer/${commentId}`, {method: 'POST'});
     const result = await response.json();
     alert(result.message || 'Đã xử lý');
     if (result.success) location.reload();
@@ -369,6 +386,23 @@ body { background: #eef1f4; }
     border-radius: 6px;
     padding: 18px;
     margin: 12px 0;
+}
+.verified-answer {
+    border-left: 4px solid #14b8a6;
+}
+.verified-chip {
+    background: #ecfdf5;
+    border: 1px solid #99f6e4;
+    border-radius: 999px;
+    color: #0f766e;
+    font-weight: 900;
+    padding: 2px 8px;
+}
+.verified-note {
+    color: #0f766e;
+    font-size: .88rem;
+    font-weight: 800;
+    margin-top: 10px;
 }
 .points-chip,
 .best-chip {
