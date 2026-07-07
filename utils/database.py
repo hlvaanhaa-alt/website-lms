@@ -312,7 +312,14 @@ class Database:
             'attachments': comment_data.get('attachments', [])
         }
 
-        for field in ['points_awarded', 'best_bonus_awarded', 'is_best_answer']:
+        for field in [
+            'points_awarded',
+            'best_bonus_awarded',
+            'is_best_answer',
+            'thank_user_ids',
+            'ratings',
+            'discussions',
+        ]:
             if field in comment_data:
                 new_comment[field] = comment_data[field]
         

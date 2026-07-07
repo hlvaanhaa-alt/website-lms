@@ -100,6 +100,57 @@
             </div>
             {% endif %}
 
+            <div class="answer-feedback" id="feedback-{{ comment.id }}">
+                <div class="rating-block">
+                    <span class="rating-hint">Hãy giúp mọi người biết câu trả lời này thế nào?</span>
+                    <div class="star-vote" data-current="{{ comment.feedback.current_user_rating }}">
+                        {% for star in range(1, 6) %}
+                        <button
+                            type="button"
+                            class="{% if comment.feedback.current_user_rating >= star %}active{% endif %}"
+                            onclick="rateAnswer('{{ comment.id }}', {{ star }})"
+                            {% if comment.author_id == session.user_id %}disabled title="Không thể tự chấm sao"{% endif %}
+                            aria-label="Chấm {{ star }} sao"
+                        >★</button>
+                        {% endfor %}
+                    </div>
+                    <strong class="rating-score">{{ comment.feedback.average_rating }}</strong>
+                    <span class="rating-count">{{ comment.feedback.ratings_count }} vote</span>
+                </div>
+
+                <div class="feedback-actions">
+                    <button
+                        type="button"
+                        class="thank-btn {% if comment.feedback.current_user_thanked %}active{% endif %}"
+                        onclick="thankAnswer('{{ comment.id }}')"
+                        {% if comment.author_id == session.user_id %}disabled title="Không thể tự cảm ơn"{% endif %}
+                    >♥ Cảm ơn <span>{{ comment.feedback.thanks_count }}</span></button>
+                    <button type="button" onclick="openReport('answer', '{{ comment.id }}')">⚑ Báo vi phạm</button>
+                </div>
+            </div>
+
+            <div class="answer-discussions">
+                {% for discussion in comment.discussions %}
+                <div class="discussion-item">
+                    <a class="mini-avatar {{ discussion.author_frame.css_class if discussion.author_frame else '' }}" href="{{ url_for('forum_profile', user_id=discussion.author_id) }}">
+                        {% if discussion.author_avatar_url %}<img src="{{ discussion.author_avatar_url }}" alt="" loading="lazy" decoding="async" width="30" height="30">{% else %}{{ discussion.author_name[:1]|upper }}{% endif %}
+                    </a>
+                    <div>
+                        <div class="discussion-meta">
+                            <a href="{{ url_for('forum_profile', user_id=discussion.author_id) }}">{{ discussion.author_name }}</a>
+                            <span>{{ discussion.role_label }}</span>
+                            <span>{{ discussion.time_ago }}</span>
+                        </div>
+                        <div class="discussion-content math-content">{{ discussion.content }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+                <form class="discussion-form" onsubmit="submitDiscussion(event, '{{ comment.id }}')">
+                    <textarea name="content" rows="1" placeholder="Viết bình luận thảo luận..." required></textarea>
+                    <button type="submit">Gửi</button>
+                </form>
+            </div>
+
             <div class="answer-actions">
                 {% if is_author and post.status != 'resolved' and comment.author_id != session.user_id %}
                 <button onclick="acceptAnswer('{{ comment.id }}')">Chọn hay nhất</button>
@@ -228,6 +279,68 @@ async function submitReport() {
     const result = await response.json();
     alert(result.message || 'Đã gửi báo cáo');
     if (result.success) closeReport();
+}
+
+function updateFeedback(commentId, feedback) {
+    const box = document.getElementById(`feedback-${commentId}`);
+    if (!box || !feedback) return;
+    const thankBtn = box.querySelector('.thank-btn');
+    const thankCount = box.querySelector('.thank-btn span');
+    const ratingScore = box.querySelector('.rating-score');
+    const ratingCount = box.querySelector('.rating-count');
+    const stars = box.querySelectorAll('.star-vote button');
+
+    if (thankCount) thankCount.textContent = feedback.thanks_count;
+    if (thankBtn) thankBtn.classList.toggle('active', Boolean(feedback.current_user_thanked));
+    if (ratingScore) ratingScore.textContent = feedback.average_rating;
+    if (ratingCount) ratingCount.textContent = `${feedback.ratings_count} vote`;
+    stars.forEach((star, index) => {
+        star.classList.toggle('active', index + 1 <= feedback.current_user_rating);
+    });
+}
+
+async function thankAnswer(commentId) {
+    const response = await fetch(`/forum/answer/${commentId}/thank`, {method: 'POST'});
+    const result = await response.json();
+    if (!result.success) {
+        alert(result.message || 'Không thể cảm ơn câu trả lời này');
+        return;
+    }
+    updateFeedback(commentId, result.feedback);
+}
+
+async function rateAnswer(commentId, rating) {
+    const response = await fetch(`/forum/answer/${commentId}/rate`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({rating})
+    });
+    const result = await response.json();
+    if (!result.success) {
+        alert(result.message || 'Không thể chấm sao câu trả lời này');
+        return;
+    }
+    updateFeedback(commentId, result.feedback);
+}
+
+async function submitDiscussion(event, commentId) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    try {
+        const response = await fetch(`/forum/answer/${commentId}/discussion`, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (!result.success) throw new Error(result.message || 'Không gửi được bình luận');
+        location.reload();
+    } catch (error) {
+        alert(error.message);
+        submitBtn.disabled = false;
+    }
 }
 
 function renderMath() {
@@ -425,6 +538,128 @@ body { background: #eef1f4; }
     font: inherit;
 }
 .empty-answer { color: #64748b; }
+.answer-feedback {
+    border-top: 1px solid #edf1f5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding-top: 14px;
+}
+.rating-block,
+.feedback-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.rating-hint {
+    color: #94a3b8;
+    font-weight: 700;
+    margin-right: 4px;
+}
+.star-vote {
+    display: inline-flex;
+    gap: 2px;
+}
+.star-vote button {
+    background: transparent;
+    border: 0;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-size: 1.75rem;
+    line-height: 1;
+    padding: 0 1px;
+}
+.star-vote button.active,
+.star-vote button:hover,
+.star-vote button:hover ~ button {
+    color: #f4b740;
+}
+.star-vote button:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+}
+.rating-score {
+    color: #102033;
+}
+.rating-count {
+    color: #94a3b8;
+    font-weight: 800;
+}
+.feedback-actions button {
+    background: transparent;
+    border: 0;
+    color: #6b94b8;
+    cursor: pointer;
+    font-weight: 900;
+    padding: 6px 4px;
+}
+.feedback-actions .thank-btn {
+    color: #d68aa0;
+}
+.feedback-actions .thank-btn.active {
+    color: #d33f68;
+}
+.feedback-actions button:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+.answer-discussions {
+    background: #f5f8fb;
+    border-radius: 8px;
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 12px;
+}
+.discussion-item {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 9px;
+}
+.discussion-meta {
+    align-items: center;
+    color: #64748b;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: .86rem;
+    gap: 6px;
+}
+.discussion-meta a {
+    color: #2b7bbb;
+    font-weight: 900;
+    text-decoration: none;
+}
+.discussion-meta span::before { content: "· "; color: #94a3b8; }
+.discussion-content {
+    color: #1f2937;
+    line-height: 1.55;
+    margin-top: 2px;
+    white-space: pre-wrap;
+}
+.discussion-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+}
+.discussion-form textarea {
+    border: 1px solid #cdd5dd;
+    border-radius: 6px;
+    font: inherit;
+    min-height: 42px;
+    padding: 10px 12px;
+    resize: vertical;
+}
+.discussion-form button {
+    background: #2b7bbb;
+    border: 1px solid #2b7bbb;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 900;
+    padding: 0 16px;
+}
 .report-modal {
     display: none;
     position: fixed;

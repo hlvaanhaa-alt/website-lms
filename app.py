@@ -2798,6 +2798,48 @@ def decorate_forum_author(payload, user_id):
     return payload
 
 
+def normalize_answer_feedback(answer):
+    thank_user_ids = answer.get("thank_user_ids") or answer.get("thanks") or []
+    if not isinstance(thank_user_ids, list):
+        thank_user_ids = []
+    answer["thank_user_ids"] = list(dict.fromkeys(str(user_id) for user_id in thank_user_ids if user_id))
+
+    ratings = answer.get("ratings") or {}
+    if not isinstance(ratings, dict):
+        ratings = {}
+    normalized_ratings = {}
+    for user_id, value in ratings.items():
+        try:
+            rating = int(value)
+        except (TypeError, ValueError):
+            continue
+        if 1 <= rating <= 5:
+            normalized_ratings[str(user_id)] = rating
+    answer["ratings"] = normalized_ratings
+
+    discussions = answer.get("discussions") or []
+    if not isinstance(discussions, list):
+        discussions = []
+    answer["discussions"] = discussions
+    return answer
+
+
+def answer_feedback_summary(answer, viewer_id=None):
+    answer = normalize_answer_feedback(answer)
+    ratings = answer.get("ratings", {})
+    rating_values = list(ratings.values())
+    average_rating = round(sum(rating_values) / len(rating_values), 1) if rating_values else 0
+    viewer_key = str(viewer_id) if viewer_id else ""
+    return {
+        "thanks_count": len(answer.get("thank_user_ids", [])),
+        "ratings_count": len(rating_values),
+        "average_rating": average_rating,
+        "five_star_count": len([rating for rating in rating_values if rating == 5]),
+        "current_user_thanked": viewer_key in answer.get("thank_user_ids", []),
+        "current_user_rating": ratings.get(viewer_key, 0),
+    }
+
+
 def avatar_file_payload(file):
     filename = secure_filename(file.filename)
     ext = filename.rsplit(".", 1)[1].lower() if "." in filename else ""
@@ -2892,6 +2934,10 @@ def forum_user_stats(user_id):
         for label, value in helped_subject_groups.items()
     ]
 
+    user_answers = [comment for comment in comments if comment.get("author_id") == user_id]
+    for comment in user_answers:
+        normalize_answer_feedback(comment)
+
     return {
         "points": sum(int(event.get("points", 0)) for event in user_points),
         "monthly_points": sum(
@@ -2900,13 +2946,16 @@ def forum_user_stats(user_id):
             if event.get("month") == month and int(event.get("points", 0)) > 0
         ),
         "questions_count": len([post for post in posts if post.get("author_id") == user_id]),
-        "answers_count": len([comment for comment in comments if comment.get("author_id") == user_id]),
-        "best_answers_count": len([comment for comment in comments if comment.get("author_id") == user_id and comment.get("is_best_answer")]),
+        "answers_count": len(user_answers),
+        "best_answers_count": len([comment for comment in user_answers if comment.get("is_best_answer")]),
         "warnings_count": len([report for report in reports if report.get("reported_user_id") == user_id]),
-        "thanks_count": 0,
-        "five_star_count": 0,
-        "verified_count": len([comment for comment in comments if comment.get("author_id") == user_id and comment.get("is_verified_answer")]),
-        "helped_count": len({comment.get("post_id") for comment in comments if comment.get("author_id") == user_id}),
+        "thanks_count": sum(len(comment.get("thank_user_ids", [])) for comment in user_answers),
+        "five_star_count": sum(
+            len([rating for rating in comment.get("ratings", {}).values() if rating == 5])
+            for comment in user_answers
+        ),
+        "verified_count": len([comment for comment in user_answers if comment.get("is_verified_answer")]),
+        "helped_count": len({comment.get("post_id") for comment in user_answers}),
         "helped_subjects": helped_subjects,
     }
 
@@ -3325,6 +3374,12 @@ def forum_post_detail(post_id):
         comment["time_ago"] = forum_time_ago(comment.get("created_at", ""))
         comment["role_label"] = forum_role_label(comment.get("author_role", "student"))
         comment["points_awarded"] = int(comment.get("points_awarded") or 0)
+        normalize_answer_feedback(comment)
+        comment["feedback"] = answer_feedback_summary(comment, session["user_id"])
+        for discussion in comment.get("discussions", []):
+            decorate_forum_author(discussion, discussion.get("author_id"))
+            discussion["time_ago"] = forum_time_ago(discussion.get("created_at", ""))
+            discussion["role_label"] = forum_role_label(discussion.get("author_role", "student"))
 
     is_author = post["author_id"] == session["user_id"]
     can_verify_answers = session.get("role") in {"teacher", "admin"}
@@ -3541,6 +3596,98 @@ def forum_delete_post(post_id):
     return jsonify({"success": True, "message": "Xóa bài viết thành công"})
 
 
+def forum_answer_by_id(comment_id):
+    comments = db._load_json(db.forum_comments_file)
+    answer = next((comment for comment in comments if comment.get("id") == comment_id), None)
+    return comments, answer
+
+
+@app.route("/forum/answer/<comment_id>/thank", methods=["POST"])
+@login_required
+def forum_thank_answer(comment_id):
+    comments, answer = forum_answer_by_id(comment_id)
+    if not answer:
+        return jsonify({"success": False, "message": "Không tìm thấy câu trả lời"}), 404
+    if answer.get("author_id") == session["user_id"]:
+        return jsonify({"success": False, "message": "Không thể tự cảm ơn câu trả lời của mình"}), 400
+
+    normalize_answer_feedback(answer)
+    viewer_id = str(session["user_id"])
+    if viewer_id not in answer["thank_user_ids"]:
+        answer["thank_user_ids"].append(viewer_id)
+        write_json(db.forum_comments_file, comments)
+
+    return jsonify(
+        {
+            "success": True,
+            "message": "Đã cảm ơn câu trả lời",
+            "feedback": answer_feedback_summary(answer, session["user_id"]),
+        }
+    )
+
+
+@app.route("/forum/answer/<comment_id>/rate", methods=["POST"])
+@login_required
+def forum_rate_answer(comment_id):
+    comments, answer = forum_answer_by_id(comment_id)
+    if not answer:
+        return jsonify({"success": False, "message": "Không tìm thấy câu trả lời"}), 404
+    if answer.get("author_id") == session["user_id"]:
+        return jsonify({"success": False, "message": "Không thể tự chấm sao câu trả lời của mình"}), 400
+
+    payload = request.get_json() or {}
+    try:
+        rating = int(payload.get("rating"))
+    except (TypeError, ValueError):
+        rating = 0
+    if rating < 1 or rating > 5:
+        return jsonify({"success": False, "message": "Số sao phải từ 1 đến 5"}), 400
+
+    normalize_answer_feedback(answer)
+    answer["ratings"][str(session["user_id"])] = rating
+    write_json(db.forum_comments_file, comments)
+
+    return jsonify(
+        {
+            "success": True,
+            "message": f"Đã chấm {rating} sao",
+            "feedback": answer_feedback_summary(answer, session["user_id"]),
+        }
+    )
+
+
+@app.route("/forum/answer/<comment_id>/discussion", methods=["POST"])
+@login_required
+def forum_add_answer_discussion(comment_id):
+    blocked_response = forum_ban_json_response()
+    if blocked_response:
+        return blocked_response
+
+    comments, answer = forum_answer_by_id(comment_id)
+    if not answer:
+        return jsonify({"success": False, "message": "Không tìm thấy câu trả lời"}), 404
+
+    content = request.form.get("content", "").strip()
+    if not content:
+        return jsonify({"success": False, "message": "Vui lòng nhập bình luận"}), 400
+
+    user = get_user_by_id(session["user_id"])
+    normalize_answer_feedback(answer)
+    answer["discussions"].append(
+        {
+            "id": f"discussion_{uuid.uuid4().hex[:10]}",
+            "author_id": session["user_id"],
+            "author_name": session.get("username", "Unknown"),
+            "author_role": user.get("role", session.get("role", "student")) if user else session.get("role", "student"),
+            "content": content,
+            "created_at": datetime.now().isoformat(),
+        }
+    )
+    write_json(db.forum_comments_file, comments)
+
+    return jsonify({"success": True, "message": "Đã gửi bình luận thảo luận"})
+
+
 @app.route("/forum/comment/<post_id>", methods=["POST"])
 @login_required
 def forum_add_comment(post_id):
@@ -3586,6 +3733,9 @@ def forum_add_comment(post_id):
             "points_awarded": points_awarded,
             "best_bonus_awarded": 0,
             "is_best_answer": False,
+            "thank_user_ids": [],
+            "ratings": {},
+            "discussions": [],
         }
 
         comment_id = db.add_comment(comment_data)
