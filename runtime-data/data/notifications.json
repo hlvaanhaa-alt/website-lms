@@ -14,5 +14,19 @@
     "recipient_id": "11",
     "recipient_name": "Harrymath",
     "recipient_count": 1
+  },
+  {
+    "id": "notice_00002_6e7524",
+    "title": "Nghỉ học vào chiều ngày 7/7/2026",
+    "content": "Do ngày 7/7/2026 có mưa lớn nên các bạn được nghỉ",
+    "sender_id": "1",
+    "sender_name": "admin",
+    "sender_role": "teacher",
+    "created_at": "2026-07-07T09:53:13.393935",
+    "read_by": [],
+    "audience": "student",
+    "recipient_id": "6",
+    "recipient_name": "Kimchi",
+    "recipient_count": 1
   }
 ]
