@@ -254,7 +254,9 @@
         <section class="profile-section info-grid">
             <div>
                 <p>Ngày tham gia: {{ profile_user.created_at[:10] if profile_user.created_at else '-' }}</p>
-                <a class="more-link" href="#profileAllQuestions">Xem thêm thông tin</a>
+                <button class="more-link" type="button" id="profileMoreToggle" aria-expanded="false" aria-controls="profileAllQuestions">
+                    Xem thêm thông tin
+                </button>
             </div>
             <div>
                 <p>Số câu trả lời: <strong>{{ stats.answers_count }}</strong></p>
@@ -264,7 +266,7 @@
             </div>
         </section>
 
-        <section class="profile-section all-questions-section" id="profileAllQuestions">
+        <section class="profile-section all-questions-section" id="profileAllQuestions" hidden>
             <div class="section-title-row">
                 <h2>Tất cả câu hỏi đã đặt</h2>
                 <span>{{ activity.all_questions|length }} câu hỏi</span>
@@ -764,9 +766,17 @@ body { background: #eef1f4; }
     margin: 0 0 9px;
 }
 .more-link {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
     display: inline-block;
+    font: inherit;
     margin-top: 20px;
+    padding: 0;
     text-decoration: none;
+}
+.more-link:hover {
+    text-decoration: underline;
 }
 .all-questions-section .section-title-row span {
     color: #64748b;
@@ -850,9 +860,20 @@ body { background: #eef1f4; }
     }
 }
 </style>
-{% if session.user_id == profile_user.id %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    const moreToggle = document.getElementById('profileMoreToggle');
+    const allQuestions = document.getElementById('profileAllQuestions');
+    if (moreToggle && allQuestions) {
+        moreToggle.addEventListener('click', () => {
+            const willOpen = allQuestions.hidden;
+            allQuestions.hidden = !willOpen;
+            moreToggle.setAttribute('aria-expanded', String(willOpen));
+            moreToggle.textContent = willOpen ? 'Ẩn bớt thông tin' : 'Xem thêm thông tin';
+            if (willOpen) allQuestions.scrollIntoView({behavior: 'smooth', block: 'start'});
+        });
+    }
+
     const toggle = document.getElementById('profileEditToggle');
     const panel = document.getElementById('profileEditPanel');
     if (!toggle || !panel) return;
@@ -868,5 +889,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
-{% endif %}
 {% endblock %}
