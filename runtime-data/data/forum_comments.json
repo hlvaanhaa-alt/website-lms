@@ -82,6 +82,11 @@
     "points_awarded": 25,
     "best_bonus_awarded": 0,
     "is_best_answer": false,
-    "demo_seed": true
+    "demo_seed": true,
+    "is_verified_answer": true,
+    "verified_at": "2026-07-07T10:53:38.082883",
+    "verified_by_id": "1",
+    "verified_by_name": "admin",
+    "verified_by_role": "teacher"
   }
 ]
