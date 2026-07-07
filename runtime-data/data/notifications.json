@@ -23,7 +23,9 @@
     "sender_name": "admin",
     "sender_role": "teacher",
     "created_at": "2026-07-07T09:53:13.393935",
-    "read_by": [],
+    "read_by": [
+      "6"
+    ],
     "audience": "student",
     "recipient_id": "6",
     "recipient_name": "Kimchi",
