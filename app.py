@@ -52,7 +52,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 
 db = Database()
-QUESTIONS_FILE = writable_state_file("questions.json", {"bai_1": [], "bai_2": []})
+QUESTIONS_FILE = writable_state_file("questions.json", {"topics": []})
 SCORES_FILE = writable_state_file("scores.json", [])
 FORUM_POINTS_FILE = writable_data_file("forum_points.json", [])
 FORUM_REPORTS_FILE = writable_data_file("forum_reports.json", [])
@@ -4597,13 +4597,79 @@ def delete_chat_message(message_id):
 # ============ QUẢN LÝ CÂU HỎI GAME (GIÁO VIÊN) ============
 
 
+def normalize_game_bank(raw=None):
+    raw = raw if raw is not None else read_json(QUESTIONS_FILE, {"topics": []})
+    if isinstance(raw, dict) and isinstance(raw.get("topics"), list):
+        topics = raw.get("topics", [])
+    else:
+        topics = []
+
+    normalized_topics = []
+    for index, topic in enumerate(topics, 1):
+        if not isinstance(topic, dict):
+            continue
+        title = (topic.get("title") or "").strip()
+        grade = (topic.get("grade") or "").strip()
+        topic_id = (topic.get("id") or f"topic_{index:04d}").strip()
+        questions = []
+        for question in topic.get("questions", []):
+            if not isinstance(question, dict):
+                continue
+            options = question.get("options") or []
+            if not isinstance(options, list):
+                continue
+            answer = question.get("answer")
+            question_text = (question.get("question") or "").strip()
+            if question_text and len(options) >= 2 and answer in options:
+                questions.append(
+                    {
+                        "question": question_text,
+                        "options": [str(option) for option in options[:4]],
+                        "answer": str(answer),
+                        "difficulty": int(question.get("difficulty") or 1),
+                    }
+                )
+        if topic_id and title and grade:
+            normalized_topics.append(
+                {
+                    "id": topic_id,
+                    "title": title,
+                    "grade": grade,
+                    "created_by": topic.get("created_by", ""),
+                    "created_by_name": topic.get("created_by_name", ""),
+                    "created_at": topic.get("created_at", datetime.now().isoformat()),
+                    "questions": questions,
+                }
+            )
+    return {"topics": normalized_topics}
+
+
+def save_game_bank(bank):
+    write_json(QUESTIONS_FILE, normalize_game_bank(bank))
+
+
+def game_topics():
+    return normalize_game_bank().get("topics", [])
+
+
+def find_game_topic(topic_id):
+    return next((topic for topic in game_topics() if topic.get("id") == topic_id), None)
+
+
+def slugify_game_topic(title, grade):
+    base = f"{grade}-{title}".lower()
+    safe = "".join(ch if ch.isalnum() else "-" for ch in base)
+    safe = "-".join(part for part in safe.split("-") if part)
+    return safe[:48] or uuid.uuid4().hex[:10]
+
+
 @app.route("/teacher/game_questions")
 @login_required
 @teacher_required
 def teacher_game_questions():
     """Trang quản lý câu hỏi game cho giáo viên"""
-    data = read_json(QUESTIONS_FILE, {"bai_1": [], "bai_2": []})
-    return render_template("teacher_game_questions.html", questions=data)
+    topics = game_topics()
+    return render_template("teacher_game_questions.html", topics=topics, forum_grades=FORUM_GRADES)
 
 
 @app.route("/teacher/game_questions/add", methods=["POST"])
@@ -4612,26 +4678,50 @@ def teacher_game_questions():
 def teacher_add_game_question():
     """Thêm câu hỏi game mới"""
     try:
+        topic_title = request.form.get("topic_title", "").strip()
+        grade = request.form.get("grade", "").strip()
         question_text = request.form.get("question", "").strip()
         option_a = request.form.get("option_a", "").strip()
         option_b = request.form.get("option_b", "").strip()
         option_c = request.form.get("option_c", "").strip()
         option_d = request.form.get("option_d", "").strip()
         answer = request.form.get("answer", "").strip()
-        bai = request.form.get("bai", "bai_1").strip()
 
-        if not all([question_text, option_a, option_b, option_c, option_d, answer]):
+        if not all([topic_title, grade, question_text, option_a, option_b, option_c, option_d, answer]):
             flash("Vui lòng điền đầy đủ thông tin câu hỏi", "danger")
+            return redirect(url_for("teacher_game_questions"))
+
+        if grade not in FORUM_GRADES:
+            flash("Lớp không hợp lệ. Chỉ hỗ trợ lớp 6, 7, 8, 9", "danger")
             return redirect(url_for("teacher_game_questions"))
 
         if answer not in [option_a, option_b, option_c, option_d]:
             flash("Đáp án đúng phải trùng với một trong 4 lựa chọn", "danger")
             return redirect(url_for("teacher_game_questions"))
 
-        data = read_json(QUESTIONS_FILE, {})
-
-        if bai not in data:
-            data[bai] = []
+        bank = normalize_game_bank()
+        topics = bank["topics"]
+        topic = next(
+            (
+                item
+                for item in topics
+                if item.get("title", "").casefold() == topic_title.casefold()
+                and item.get("grade") == grade
+            ),
+            None,
+        )
+        if not topic:
+            topic_id = f"topic_{slugify_game_topic(topic_title, grade)}_{uuid.uuid4().hex[:6]}"
+            topic = {
+                "id": topic_id,
+                "title": topic_title,
+                "grade": grade,
+                "created_by": session.get("user_id", ""),
+                "created_by_name": session.get("username", "Giáo viên"),
+                "created_at": datetime.now().isoformat(),
+                "questions": [],
+            }
+            topics.append(topic)
 
         new_question = {
             "question": question_text,
@@ -4639,11 +4729,11 @@ def teacher_add_game_question():
             "answer": answer,
             "difficulty": 1,
         }
-        data[bai].append(new_question)
+        topic["questions"].append(new_question)
 
-        write_json(QUESTIONS_FILE, data)
+        save_game_bank(bank)
 
-        flash("Thêm câu hỏi thành công!", "success")
+        flash(f"Đã thêm câu hỏi vào chủ đề {topic_title}", "success")
         return redirect(url_for("teacher_game_questions"))
 
     except Exception as e:
@@ -4657,14 +4747,17 @@ def teacher_add_game_question():
 def teacher_delete_game_question():
     """Xóa câu hỏi game"""
     try:
-        bai = request.form.get("bai", "bai_1")
+        topic_id = request.form.get("topic_id", "")
         index = int(request.form.get("index", -1))
 
-        data = read_json(QUESTIONS_FILE, {"bai_1": [], "bai_2": []})
+        bank = normalize_game_bank()
+        topic = next((item for item in bank["topics"] if item.get("id") == topic_id), None)
 
-        if bai in data and 0 <= index < len(data[bai]):
-            data[bai].pop(index)
-            write_json(QUESTIONS_FILE, data)
+        if topic and 0 <= index < len(topic.get("questions", [])):
+            topic["questions"].pop(index)
+            if not topic["questions"]:
+                bank["topics"] = [item for item in bank["topics"] if item.get("id") != topic_id]
+            save_game_bank(bank)
             flash("Đã xóa câu hỏi!", "success")
         else:
             flash("Không tìm thấy câu hỏi cần xóa", "danger")
@@ -4679,67 +4772,100 @@ def teacher_delete_game_question():
 
 
 @app.route("/enter_nickname")
+@login_required
 def enter_nickname():
-    return render_template("nickname.html")
+    topics = [topic for topic in game_topics() if topic.get("questions")]
+    return render_template("nickname.html", topics=topics, username=session.get("username"))
 
 
 @app.route("/start_game", methods=["POST"])
+@login_required
 def start_game():
-    nickname = request.form["nickname"]
-    bai = request.form["bai"]
-    session["nickname"] = nickname
-    session["bai"] = bai
+    topic_id = request.form.get("topic_id", "").strip()
+    topic = find_game_topic(topic_id)
+    if not topic or not topic.get("questions"):
+        flash("Chủ đề game không tồn tại hoặc chưa có câu hỏi", "warning")
+        return redirect(url_for("enter_nickname"))
+    session["game_topic_id"] = topic_id
     return redirect("/game")
 
 
 @app.route("/game")
+@login_required
 def game():
-    if "nickname" not in session or "bai" not in session:
+    topic = find_game_topic(session.get("game_topic_id", ""))
+    if not topic or not topic.get("questions"):
         return redirect("/enter_nickname")
-    return render_template("game.html")
+    return render_template("game.html", topic=topic, username=session.get("username"))
 
 
 @app.route("/get_questions")
+@login_required
 def get_questions():
-    bai = session.get("bai", "bai_1")
-    data = read_json(QUESTIONS_FILE, {"bai_1": [], "bai_2": []})
-    questions = data.get(bai, [])
+    topic = find_game_topic(session.get("game_topic_id", ""))
+    questions = [dict(question) for question in (topic or {}).get("questions", [])]
     random.shuffle(questions)
     for q in questions:
+        q["options"] = list(q.get("options", []))
         random.shuffle(q["options"])
     return jsonify(questions[:20])
 
 
 @app.route("/submit_score", methods=["POST"])
+@login_required
 def submit_score():
-    nickname = session.get("nickname")
-    bai = session.get("bai")
-    score = request.json["score"]
+    topic_id = session.get("game_topic_id")
+    topic = find_game_topic(topic_id)
+    payload_data = request.get_json(silent=True) or {}
+    try:
+        score = max(0, int(payload_data.get("score") or 0))
+        total = max(0, int(payload_data.get("total") or 0))
+    except (TypeError, ValueError):
+        return jsonify({"status": "error", "message": "Invalid score"}), 400
 
-    if not nickname:
-        return jsonify({"status": "error", "message": "No nickname found"})
-    if not bai:
-        return jsonify({"status": "error", "message": "No bai found"})
+    if not topic:
+        return jsonify({"status": "error", "message": "No topic found"})
 
     scores = read_json(SCORES_FILE, [])
     now = datetime.now().strftime("%d/%m/%Y %H:%M")
 
     existing = next(
-        (s for s in scores if s["nickname"] == nickname and s.get("bai") == bai),
+        (
+            s
+            for s in scores
+            if s.get("user_id") == session["user_id"]
+            and s.get("topic_id") == topic_id
+        ),
         None,
     )
 
+    payload = {
+        "user_id": session["user_id"],
+        "username": session.get("username", "Người chơi"),
+        "score": score,
+        "total": total,
+        "time": now,
+        "topic_id": topic_id,
+        "topic_title": topic.get("title", ""),
+        "grade": topic.get("grade", ""),
+    }
+
     if existing:
-        if score > existing["score"]:
-            existing["score"] = score
-            existing["time"] = now
+        if score > int(existing.get("score", 0)) or (
+            score == int(existing.get("score", 0)) and total > int(existing.get("total", 0))
+        ):
+            existing.update(payload)
     else:
-        scores.append({"nickname": nickname, "score": score, "time": now, "bai": bai})
+        scores.append(payload)
 
-    filtered = [s for s in scores if s.get("bai") == bai]
-    top50 = sorted(filtered, key=lambda x: x["score"], reverse=True)[:50]
+    filtered = [s for s in scores if s.get("topic_id") == topic_id]
+    top50 = sorted(
+        filtered,
+        key=lambda x: (int(x.get("score", 0)), int(x.get("total", 0))),
+        reverse=True,
+    )[:50]
 
-    others = [s for s in scores if s.get("bai") != bai]
+    others = [s for s in scores if s.get("topic_id") != topic_id]
     final_scores = others + top50
 
     write_json(SCORES_FILE, final_scores)
@@ -4748,17 +4874,20 @@ def submit_score():
 
 
 @app.route("/leaderboard")
+@login_required
 def leaderboard():
-    bai = session.get("bai")
-
-    if not bai:
-        bai = "bai_1"
+    topic_id = session.get("game_topic_id", "")
+    topic = find_game_topic(topic_id)
 
     scores = read_json(SCORES_FILE, [])
-    filtered = [s for s in scores if s.get("bai") == bai]
-    top5 = sorted(filtered, key=lambda x: x["score"], reverse=True)[:5]
+    filtered = [s for s in scores if s.get("topic_id") == topic_id]
+    top5 = sorted(
+        filtered,
+        key=lambda x: (int(x.get("score", 0)), int(x.get("total", 0))),
+        reverse=True,
+    )[:10]
 
-    return render_template("leaderboard.html", players=top5, bai=bai)
+    return render_template("leaderboard.html", players=top5, topic=topic)
 
 
 # Nếu cần giữ cả hai, đổi tên route

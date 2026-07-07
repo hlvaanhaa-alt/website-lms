@@ -1,90 +1,182 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAME</title>
+    <title>Sảnh game - EduPath</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", sans-serif;
-            height: 100vh;
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #102033;
+            background:
+                linear-gradient(135deg, rgba(30, 86, 130, .88), rgba(75, 57, 162, .86)),
+                radial-gradient(circle at 12% 20%, rgba(255,255,255,.3), transparent 28%),
+                #18324a;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            padding: 28px 16px;
         }
-
-        .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            padding: 40px 30px;
-            max-width: 380px;
+        .lobby {
+            width: min(1060px, 100%);
+            background: rgba(255, 255, 255, .96);
+            border: 1px solid rgba(255,255,255,.72);
+            border-radius: 18px;
+            box-shadow: 0 24px 80px rgba(3, 12, 28, .32);
+            overflow: hidden;
+        }
+        .lobby-head {
+            align-items: center;
+            background: #102033;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 24px 28px;
+        }
+        .lobby-head h1 {
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            margin: 0 0 6px;
+        }
+        .lobby-head p { color: rgba(255,255,255,.72); margin: 0; }
+        .player-chip {
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.22);
+            border-radius: 999px;
+            font-weight: 900;
+            padding: 10px 14px;
+            white-space: nowrap;
+        }
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            padding: 22px;
+        }
+        .topic-card {
+            background: #fff;
+            border: 1px solid #d9e4ef;
+            border-radius: 12px;
+            display: grid;
+            gap: 14px;
+            min-height: 210px;
+            padding: 18px;
+            box-shadow: 0 10px 24px rgba(16, 32, 51, .08);
+        }
+        .topic-meta {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .grade {
+            background: #eaf7f5;
+            border: 1px solid #bee9e2;
+            border-radius: 999px;
+            color: #147d70;
+            font-weight: 900;
+            padding: 5px 9px;
+        }
+        .count {
+            color: #64748b;
+            font-weight: 800;
+        }
+        .topic-card h2 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .topic-card p {
+            color: #64748b;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .topic-card form { margin-top: auto; }
+        .play-btn {
             width: 100%;
-            text-align: center;
-            animation: fadeIn 0.6s ease;
-        }
-
-        h2 {
-            color: #4f46e5;
-            margin-bottom: 25px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 14px;
-            margin-top: 14px;
+            min-height: 44px;
+            border: 0;
             border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        input:focus, select:focus {
-            border-color: #4f46e5;
-            box-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
-        }
-
-        button {
-            width: 100%;
-            margin-top: 22px;
-            padding: 14px;
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
-            color: white;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #1f7ed0, #35c2ff);
+            color: #fff;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-weight: 900;
+            font-size: 1rem;
         }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+        .empty-state {
+            padding: 56px 24px;
+            text-align: center;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+        .empty-state strong {
+            display: block;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        .empty-state p {
+            color: #64748b;
+            margin: 0;
+        }
+        .lobby-actions {
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 22px;
+        }
+        .lobby-actions a {
+            color: #1f5cbb;
+            font-weight: 900;
+            text-decoration: none;
+        }
+        @media (max-width: 900px) {
+            .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 620px) {
+            .lobby-head { align-items: flex-start; flex-direction: column; }
+            .topic-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>🎮 Vào Trận!</h2>
-        <form action="/start_game" method="POST">
-            <input type="text" name="nickname" placeholder="Nhập nickname..." required>
-            <select name="bai" required>
-                <option value="" disabled selected>-- Chọn bài thi --</option>
-                <option value="bai_1">📝 Bài 1: Toán lớp 7</option>
-                <option value="bai_2">📜 Bài 2: Toán lớp 8</option>
-            </select>
-            <button type="submit"> Bắt đầu</button>
-        </form>
-    </div>
+    <main class="lobby">
+        <header class="lobby-head">
+            <div>
+                <h1>Chọn chủ đề game</h1>
+                <p>Hệ thống dùng tài khoản đăng nhập của bạn để lưu điểm và xếp hạng.</p>
+            </div>
+            <div class="player-chip">Người chơi: {{ username }}</div>
+        </header>
+
+        {% if topics %}
+        <section class="topic-grid">
+            {% for topic in topics %}
+            <article class="topic-card">
+                <div class="topic-meta">
+                    <span class="grade">{{ topic.grade }}</span>
+                    <span class="count">{{ topic.questions|length }} câu</span>
+                </div>
+                <h2>{{ topic.title }}</h2>
+                <p>Tạo bởi {{ topic.created_by_name or 'giáo viên' }}. Chọn để bắt đầu thử thách ngay.</p>
+                <form action="{{ url_for('start_game') }}" method="POST">
+                    <input type="hidden" name="topic_id" value="{{ topic.id }}">
+                    <button class="play-btn" type="submit">Vào chơi</button>
+                </form>
+            </article>
+            {% endfor %}
+        </section>
+        {% else %}
+        <section class="empty-state">
+            <strong>Chưa có chủ đề game</strong>
+            <p>Giáo viên cần tạo chủ đề và câu hỏi trước, sau đó học sinh sẽ thấy ở sảnh chờ này.</p>
+        </section>
+        {% endif %}
+
+        <div class="lobby-actions">
+            <a href="{{ url_for('student_dashboard') }}">Về dashboard</a>
+            <a href="{{ url_for('forum') }}">Vào diễn đàn</a>
+        </div>
+    </main>
 </body>
 </html>

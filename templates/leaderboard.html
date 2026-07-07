@@ -1,110 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>Bảng Vinh Danh</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng xếp hạng game</title>
     <style>
         body {
-            background-color: #0d1b2a;
-            color: white;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            text-align: center;
-            padding: 40px;
+            margin: 0;
+            min-height: 100vh;
+            background: #102033;
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            padding: 28px 16px;
         }
-        h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #fca311;
+        .board {
+            width: min(860px, 100%);
+            margin: 0 auto;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.16);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 24px 70px rgba(0,0,0,.32);
         }
-        h3 {
-            font-size: 20px;
-            margin-bottom: 30px;
-            color: #e0e1dd;
+        header {
+            background: linear-gradient(135deg, #1f7ed0, #35c2ff);
+            padding: 24px;
+        }
+        h1 {
+            margin: 0 0 6px;
+        }
+        header p {
+            margin: 0;
+            opacity: .9;
+            font-weight: 800;
         }
         table {
-            margin: auto;
             border-collapse: collapse;
-            width: 80%;
-            background-color: #1b263b;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            width: 100%;
         }
         th, td {
-            padding: 14px;
-            border-bottom: 1px solid #415a77;
-            font-size: 16px;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+            padding: 14px 16px;
+            text-align: left;
         }
         th {
-            background-color: #fca311;
-            color: black;
-            font-weight: bold;
+            color: #9ee8dc;
+            font-size: .86rem;
+            text-transform: uppercase;
         }
-        tr {
-            transition: background-color 0.3s ease;
+        .rank {
+            font-weight: 950;
+            width: 76px;
         }
-        tr:hover {
-            background-color: rgba(252, 163, 17, 0.2);
+        .score {
+            color: #6ee7ff;
+            font-weight: 950;
         }
-        tr.top1 {
-            background-color: rgba(255, 215, 0, 0.15);
+        .empty {
+            color: rgba(255,255,255,.72);
+            padding: 32px;
+            text-align: center;
         }
-        tr.top2 {
-            background-color: rgba(192, 192, 192, 0.15);
+        .actions {
+            display: flex;
+            gap: 10px;
+            padding: 18px 24px;
         }
-        tr.top3 {
-            background-color: rgba(205, 127, 50, 0.15);
-        }
-        td.rank {
-            font-size: 20px;
-        }
-        a {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 20px;
-            background-color: #fca311;
-            color: black;
+        .actions a {
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 999px;
+            color: #fff;
+            font-weight: 900;
+            padding: 10px 16px;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: background-color 0.3s;
         }
-        a:hover {
-            background-color: #ffb347;
+        .actions a.primary {
+            background: #6ee7ff;
+            color: #102033;
         }
     </style>
 </head>
 <body>
-    <h2>🏆 Bảng Vinh Danh</h2>
-    <h3>Đề thi: {{ bai }}</h3>
+    <main class="board">
+        <header>
+            <h1>Bảng xếp hạng</h1>
+            {% if topic %}
+            <p>{{ topic.grade }} · {{ topic.title }}</p>
+            {% else %}
+            <p>Chưa chọn chủ đề</p>
+            {% endif %}
+        </header>
 
-    <table>
-        <tr>
-            <th>Hạng</th>
-            <th>Nickname</th>
-            <th>Điểm</th>
-            <th>Thời gian</th>
-        </tr>
-        {% for player in players %}
-        <tr class="{% if loop.index == 1 %}top1{% elif loop.index == 2 %}top2{% elif loop.index == 3 %}top3{% endif %}">
-            <td class="rank">
-                {% if loop.index == 1 %}
-                    🥇
-                {% elif loop.index == 2 %}
-                    🥈
-                {% elif loop.index == 3 %}
-                    🥉
-                {% else %}
-                    {{ loop.index }}
-                {% endif %}
-            </td>
-            <td>{{ player.nickname }}</td>
-            <td>{{ player.score }}</td>
-            <td>{{ player.time }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        {% if players %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Hạng</th>
+                    <th>Tài khoản</th>
+                    <th>Điểm</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                <tr>
+                    <td class="rank">{% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}</td>
+                    <td>{{ player.username }}</td>
+                    <td class="score">{{ player.score }}/{{ player.total or '?' }}</td>
+                    <td>{{ player.time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty">Chưa có điểm nào cho chủ đề này.</div>
+        {% endif %}
 
-    <a href="/">🔁 Thi lại</a>
+        <div class="actions">
+            <a class="primary" href="{{ url_for('enter_nickname') }}">Chơi tiếp</a>
+            <a href="{{ url_for('student_dashboard') }}">Dashboard</a>
+        </div>
+    </main>
 </body>
 </html>

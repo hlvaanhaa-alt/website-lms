@@ -3,308 +3,221 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Giải Trí - Học Vui THCS</title>
+    <title>{{ topic.title }} - Game EduPath</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        * { box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background:
+                linear-gradient(145deg, rgba(9, 28, 42, .96), rgba(30, 73, 90, .92)),
+                #102033;
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
         }
-
-        /* Thanh menu trên cùng */
         .game-nav {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            padding: 14px 24px;
+            align-items: center;
+            background: rgba(255,255,255,.08);
+            border-bottom: 1px solid rgba(255,255,255,.14);
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            gap: 16px;
+            padding: 14px 22px;
         }
-
-        .game-nav-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #00e5ff;
-            letter-spacing: 1px;
+        .game-nav strong {
+            color: #6ee7ff;
+            letter-spacing: .02em;
         }
-
         .nav-actions {
             display: flex;
             gap: 10px;
         }
-
-        .btn-home {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-home:hover {
-            background: rgba(255, 255, 255, 0.25);
-            color: white;
+        .nav-actions a {
+            border: 1px solid rgba(255,255,255,.26);
+            border-radius: 999px;
+            color: #fff;
+            font-weight: 800;
+            padding: 8px 14px;
             text-decoration: none;
         }
-
-        .btn-restart {
-            background: linear-gradient(135deg, #00e5ff, #0091ea);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .btn-restart:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-
-        /* Khu vực game */
         .game-wrapper {
-            flex: 1;
-            display: flex;
             align-items: center;
+            display: flex;
             justify-content: center;
-            padding: 30px 20px;
+            min-height: calc(100vh - 70px);
+            padding: 28px 16px;
         }
-
         #game-container {
-            max-width: 720px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: min(820px, 100%);
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.16);
+            border-radius: 22px;
+            box-shadow: 0 24px 80px rgba(0,0,0,.34);
+            padding: clamp(22px, 4vw, 38px);
             text-align: center;
         }
-
-        h2 {
+        .topic-kicker {
+            color: #9ee8dc;
+            font-weight: 900;
+            margin: 0 0 8px;
+        }
+        h1 {
+            color: #6ee7ff;
+            font-size: clamp(1.7rem, 4vw, 2.5rem);
+            margin: 0 0 6px;
+        }
+        .player-line {
+            color: rgba(255,255,255,.7);
             margin-bottom: 24px;
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00e5ff, #00b0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-
-        #timer {
-            font-size: 1.2rem;
-            margin-bottom: 16px;
-            color: #ff8a65;
-            font-weight: 700;
-            background: rgba(255, 138, 101, 0.15);
-            display: inline-block;
-            padding: 8px 24px;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 138, 101, 0.3);
+        .timer-row {
+            align-items: center;
+            display: grid;
+            gap: 12px;
+            margin-bottom: 18px;
         }
-
-        #timer.urgent {
-            color: #ff3d00;
-            animation: pulse-timer 0.8s infinite;
-            background: rgba(255, 61, 0, 0.2);
-            border-color: rgba(255, 61, 0, 0.4);
+        #timerText {
+            color: #ffb38a;
+            font-weight: 900;
         }
-
-        @keyframes pulse-timer {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(20, minmax(0, 1fr));
+            gap: 4px;
         }
-
-        .question-box {
-            margin: 24px 0;
+        .time-cell {
+            aspect-ratio: 1;
+            background: rgba(255,255,255,.13);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 4px;
+            transition: background .2s ease, transform .2s ease;
         }
-
+        .time-cell.active {
+            background: linear-gradient(135deg, #4dd7ff, #65f2c2);
+            transform: translateY(-1px);
+        }
+        .time-cell.warning.active {
+            background: linear-gradient(135deg, #ffbf69, #ff6b6b);
+        }
+        .question-number {
+            color: rgba(255,255,255,.62);
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
         .question-text {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: white;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.14);
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            font-size: 1.24rem;
+            font-weight: 800;
+            line-height: 1.55;
+            margin: 0 0 18px;
+            padding: 22px;
         }
-
         .options-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
         }
-
         .option {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 18px 14px;
-            border-radius: 14px;
+            background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.16);
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.25s;
-            line-height: 1.4;
+            font-weight: 850;
+            line-height: 1.35;
+            min-height: 62px;
+            padding: 14px;
+            transition: transform .18s ease, background .18s ease;
         }
-
         .option:hover {
-            background: linear-gradient(135deg, #00b0ff, #0091ea);
-            border-color: transparent;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 176, 255, 0.35);
+            background: rgba(77,215,255,.22);
+            transform: translateY(-2px);
         }
-
-        .option.correct {
-            background: linear-gradient(135deg, #00c853, #64dd17);
-            border-color: transparent;
-        }
-
-        .option.wrong {
-            background: linear-gradient(135deg, #d50000, #ff1744);
-            border-color: transparent;
-        }
-
+        .option.correct { background: #10b981; border-color: #10b981; }
+        .option.wrong { background: #ef4444; border-color: #ef4444; }
         .score {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #00e5ff;
-            margin-top: 20px;
-            padding: 10px 24px;
-            background: rgba(0, 229, 255, 0.1);
-            border-radius: 25px;
-            display: inline-block;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00e5ff, #00b0ff);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        .question-number {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 8px;
-        }
-
-        .result-box {
-            text-align: center;
-        }
-
-        .result-box h3 {
-            font-size: 2rem;
-            color: #00e5ff;
-            margin-bottom: 20px;
-        }
-
-        .result-score-big {
-            font-size: 4rem;
+            background: rgba(77,215,255,.14);
+            border: 1px solid rgba(77,215,255,.28);
+            border-radius: 999px;
+            color: #6ee7ff;
+            display: inline-flex;
             font-weight: 900;
-            background: linear-gradient(135deg, #00e5ff, #00b0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-top: 20px;
+            padding: 10px 18px;
         }
-
+        .result-box h2 {
+            color: #6ee7ff;
+            font-size: 2.2rem;
+            margin: 0 0 12px;
+        }
+        .result-score-big {
+            color: #fff;
+            font-size: 4rem;
+            font-weight: 950;
+        }
         .result-actions {
             display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 24px;
             flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 22px;
         }
-
-        .btn-result {
-            padding: 12px 28px;
-            border-radius: 25px;
+        .result-actions a {
+            border-radius: 999px;
+            color: #102033;
+            background: #6ee7ff;
+            font-weight: 900;
+            padding: 11px 18px;
             text-decoration: none;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
         }
-
-        .btn-leaderboard {
-            background: linear-gradient(135deg, #ffd600, #ff8f00);
-            color: #1a1a1a;
+        .result-actions a.secondary {
+            background: rgba(255,255,255,.14);
+            border: 1px solid rgba(255,255,255,.24);
+            color: #fff;
         }
-
-        .btn-replay {
-            background: linear-gradient(135deg, #00e5ff, #0091ea);
-            color: white;
-        }
-
-        .btn-gohome {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-result:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        @media (max-width: 600px) {
+        @media (max-width: 620px) {
             .options-container { grid-template-columns: 1fr; }
-            h2 { font-size: 1.5rem; }
-            #game-container { padding: 24px 20px; }
-            .result-score-big { font-size: 3rem; }
+            .game-nav { align-items: flex-start; flex-direction: column; }
+            .time-grid { gap: 3px; }
         }
     </style>
 </head>
 <body>
-    <!-- Menu điều hướng -->
     <nav class="game-nav">
-        <span class="game-nav-title">🎮 Game Giải Trí</span>
+        <strong>🎮 EduPath Game</strong>
         <div class="nav-actions">
-            <a href="/student/dashboard" class="btn-home">🏠 Trang chủ</a>
-            <a href="/enter_nickname" class="btn-restart">🔁 Chơi lại</a>
+            <a href="{{ url_for('enter_nickname') }}">Sảnh game</a>
+            <a href="{{ url_for('student_dashboard') }}">Dashboard</a>
         </div>
     </nav>
 
-    <div class="game-wrapper">
-        <div id="game-container">
-            <h2>Game Giải Trí</h2>
-            <div id="timer">⏱ Thời gian: 20s</div>
-            <div id="question-box">
-                <div class="question-text">Đang tải câu hỏi...</div>
+    <main class="game-wrapper">
+        <section id="game-container">
+            <p class="topic-kicker">{{ topic.grade }}</p>
+            <h1>{{ topic.title }}</h1>
+            <div class="player-line">Người chơi: {{ username }}</div>
+            <div class="timer-row">
+                <div id="timerText">20 giây</div>
+                <div class="time-grid" id="timeGrid"></div>
             </div>
-            <div class="score" id="score-box">⭐ Điểm: 0</div>
-        </div>
-    </div>
+            <div id="question-box">
+                <p class="question-text">Đang tải câu hỏi...</p>
+            </div>
+            <div class="score" id="score-box">Điểm: 0</div>
+        </section>
+    </main>
 
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)'], ['$', '$']],
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                processEscapes: true
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         let questions = [];
         let currentIndex = 0;
@@ -312,126 +225,151 @@
         let countdown;
         let timeLeft = 20;
         let answered = false;
+        const maxTime = 20;
+        const topicGrade = {{ topic.grade|tojson }};
+        const topicTitle = {{ topic.title|tojson }};
+        const playerName = {{ username|tojson }};
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value ?? '';
+            return div.innerHTML;
+        }
+
+        function renderMath(container = document) {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([container]).catch(console.error);
+            }
+        }
+
+        function buildTimeGrid() {
+            const grid = document.getElementById('timeGrid');
+            grid.innerHTML = '';
+            for (let i = 0; i < maxTime; i += 1) {
+                const cell = document.createElement('span');
+                cell.className = 'time-cell active';
+                grid.appendChild(cell);
+            }
+        }
+
+        function updateTimerCells() {
+            const cells = document.querySelectorAll('.time-cell');
+            cells.forEach((cell, index) => {
+                cell.classList.toggle('active', index < timeLeft);
+                cell.classList.toggle('warning', timeLeft <= 5);
+            });
+            document.getElementById('timerText').textContent = `${timeLeft} giây`;
+        }
 
         async function loadQuestions() {
             try {
-                const res = await fetch("/get_questions");
+                const res = await fetch("{{ url_for('get_questions') }}");
                 questions = await res.json();
-
                 if (!questions || questions.length === 0) {
-                    document.getElementById("question-box").innerHTML = "<p class='question-text'>❌ Không có câu hỏi nào.</p>";
+                    document.getElementById("question-box").innerHTML = "<p class='question-text'>Chủ đề này chưa có câu hỏi.</p>";
                     return;
                 }
-
+                buildTimeGrid();
                 showQuestion();
             } catch (err) {
-                document.getElementById("question-box").innerHTML = "<p class='question-text'>❌ Lỗi khi tải câu hỏi.</p>";
+                document.getElementById("question-box").innerHTML = "<p class='question-text'>Lỗi khi tải câu hỏi.</p>";
                 console.error(err);
             }
         }
 
         function startTimer() {
-            timeLeft = 20;
+            timeLeft = maxTime;
             answered = false;
-            const timerEl = document.getElementById("timer");
-            timerEl.className = '';
-            timerEl.textContent = `⏱ Thời gian: ${timeLeft}s`;
-
+            updateTimerCells();
             countdown = setInterval(() => {
-                timeLeft--;
-                timerEl.textContent = `⏱ Thời gian: ${timeLeft}s`;
-
-                if (timeLeft <= 5) {
-                    timerEl.classList.add('urgent');
-                }
-
+                timeLeft -= 1;
+                updateTimerCells();
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     if (!answered) {
-                        // Highlight đáp án đúng khi hết giờ
-                        const q = questions[currentIndex];
-                        document.querySelectorAll('.option').forEach(btn => {
-                            if (btn.textContent === q.answer) btn.classList.add('correct');
-                        });
-                        setTimeout(() => {
-                            currentIndex++;
-                            showQuestion();
-                        }, 1000);
+                        revealAnswer();
+                        setTimeout(nextQuestion, 900);
                     }
                 }
             }, 1000);
         }
 
+        function revealAnswer() {
+            const q = questions[currentIndex];
+            document.querySelectorAll('.option').forEach(btn => {
+                if (btn.dataset.value === q.answer) btn.classList.add('correct');
+            });
+        }
+
+        function nextQuestion() {
+            currentIndex += 1;
+            showQuestion();
+        }
+
+        function finishGame() {
+            clearInterval(countdown);
+            fetch("{{ url_for('submit_score') }}", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({score, total: questions.length})
+            }).finally(() => {
+                const percent = questions.length ? Math.round(score / questions.length * 100) : 0;
+                document.getElementById("game-container").innerHTML = `
+                    <div class="result-box">
+                        <p class="topic-kicker">${escapeHtml(topicGrade)} · ${escapeHtml(topicTitle)}</p>
+                        <h2>Hoàn thành</h2>
+                        <div class="result-score-big">${score}/${questions.length}</div>
+                        <p class="player-line">Độ chính xác: ${percent}% · Người chơi: ${escapeHtml(playerName)}</p>
+                        <div class="result-actions">
+                            <a href="{{ url_for('leaderboard') }}">Bảng xếp hạng</a>
+                            <a href="{{ url_for('enter_nickname') }}" class="secondary">Chơi chủ đề khác</a>
+                            <a href="{{ url_for('student_dashboard') }}" class="secondary">Dashboard</a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         function showQuestion() {
             if (currentIndex >= questions.length) {
-                clearInterval(countdown);
-                fetch("/submit_score", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ score })
-                }).then(() => {
-                    document.getElementById("game-container").innerHTML = `
-                        <div class="result-box">
-                            <h3>🎉 Hoàn Thành!</h3>
-                            <div class="result-score-big">${score}<span style="font-size:2rem; color:rgba(255,255,255,0.6)">/${questions.length}</span></div>
-                            <p style="color:rgba(255,255,255,0.7); margin-top:12px; font-size:1.1rem;">
-                                Chính xác: ${Math.round(score/questions.length*100)}%
-                            </p>
-                            <div class="result-actions">
-                                <a href="/leaderboard" class="btn-result btn-leaderboard">🏆 Bảng vinh danh</a>
-                                <a href="/enter_nickname" class="btn-result btn-replay">🔁 Chơi lại</a>
-                                <a href="/student/dashboard" class="btn-result btn-gohome">🏠 Trang chủ</a>
-                            </div>
-                        </div>
-                    `;
-                });
+                finishGame();
                 return;
             }
-
             clearInterval(countdown);
             startTimer();
 
             const q = questions[currentIndex];
-            const total = questions.length;
-            const progress = Math.round((currentIndex / total) * 100);
-
             const box = document.getElementById("question-box");
             box.innerHTML = `
-                <div class="question-number">Câu ${currentIndex + 1} / ${total}</div>
-                <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
-                <p class="question-text">${q.question}</p>
+                <div class="question-number">Câu ${currentIndex + 1} / ${questions.length}</div>
+                <p class="question-text">${escapeHtml(q.question)}</p>
                 <div class="options-container"></div>
             `;
 
             const optionsContainer = box.querySelector(".options-container");
             q.options.forEach(opt => {
-                const btn = document.createElement("div");
+                const btn = document.createElement("button");
+                btn.type = "button";
                 btn.className = "option";
+                btn.dataset.value = opt;
                 btn.textContent = opt;
                 btn.onclick = () => {
                     if (answered) return;
                     answered = true;
                     clearInterval(countdown);
-
                     if (opt === q.answer) {
-                        score++;
+                        score += 1;
                         btn.classList.add('correct');
-                        document.getElementById("score-box").textContent = `⭐ Điểm: ${score}`;
+                        document.getElementById("score-box").textContent = `Điểm: ${score}`;
                     } else {
                         btn.classList.add('wrong');
-                        // Highlight đáp án đúng
-                        optionsContainer.querySelectorAll('.option').forEach(b => {
-                            if (b.textContent === q.answer) b.classList.add('correct');
-                        });
+                        revealAnswer();
                     }
-
-                    setTimeout(() => {
-                        currentIndex++;
-                        showQuestion();
-                    }, 900);
+                    setTimeout(nextQuestion, 850);
                 };
                 optionsContainer.appendChild(btn);
             });
+            renderMath(box);
         }
 
         loadQuestions();
