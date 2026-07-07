@@ -54,5 +54,13 @@
     "email": "vananh10319@gmail.com",
     "role": "student",
     "created_at": "2026-07-07T06:01:32.629210"
+  },
+  {
+    "id": "8",
+    "username": "Truonghai1507",
+    "password": "scrypt:32768:8:1$YneVleYNthNIWMvv$4d32d067f3a2a94d8d469cbc137706771f59f7f979131ddfcdf00e54d133b428ee8e307d74fd0c39016f7c4cb29960763b6e073d2e68afa9e3624cd979902572",
+    "email": "lemonghoa70@gmail.com",
+    "role": "student",
+    "created_at": "2026-07-07T07:15:29.558848"
   }
 ]
