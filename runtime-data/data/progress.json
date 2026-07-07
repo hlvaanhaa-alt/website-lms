@@ -63,5 +63,13 @@
       "1"
     ],
     "last_updated": "2025-11-14T22:33:24.421982"
+  },
+  {
+    "user_id": "6",
+    "course_id": "course_1",
+    "completed_lessons": [
+      "1"
+    ],
+    "last_updated": "2026-07-07T09:00:53.708320"
   }
 ]
