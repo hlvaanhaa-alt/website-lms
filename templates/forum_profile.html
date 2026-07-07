@@ -76,21 +76,25 @@
 
         {% if session.user_id == profile_user.id %}
         <section class="profile-section profile-edit-section">
-            <div class="section-title-row">
-                <h2>Cập nhật hồ sơ</h2>
-                <span class="edit-hint">Dùng username mới cho lần đăng nhập sau</span>
+            <div class="profile-edit-toggle-row">
+                <button type="button" class="profile-edit-toggle" id="profileEditToggle" aria-expanded="false" aria-controls="profileEditPanel">
+                    Cập nhật hồ sơ
+                </button>
+                <span class="edit-hint">Đổi họ tên thật hoặc username</span>
             </div>
-            <form class="profile-edit-form" method="POST" action="{{ url_for('update_profile_basic') }}">
-                <label>
-                    <span>Họ và tên thật</span>
-                    <input type="text" name="full_name" value="{{ profile_user.full_name or '' }}" maxlength="80" placeholder="Ví dụ: Nguyễn Minh Tuấn">
-                </label>
-                <label>
-                    <span>Username</span>
-                    <input type="text" name="username" value="{{ profile_user.username }}" minlength="3" maxlength="30" required>
-                </label>
-                <button type="submit">Lưu thay đổi</button>
-            </form>
+            <div class="profile-edit-panel" id="profileEditPanel" hidden>
+                <form class="profile-edit-form" method="POST" action="{{ url_for('update_profile_basic') }}">
+                    <label>
+                        <span>Họ và tên thật</span>
+                        <input type="text" name="full_name" value="{{ profile_user.full_name or '' }}" maxlength="80" placeholder="Ví dụ: Nguyễn Minh Tuấn">
+                    </label>
+                    <label>
+                        <span>Username</span>
+                        <input type="text" name="username" value="{{ profile_user.username }}" minlength="3" maxlength="30" required>
+                    </label>
+                    <button type="submit">Lưu thay đổi</button>
+                </form>
+            </div>
         </section>
         {% endif %}
 
@@ -433,10 +437,32 @@ body { background: #eef1f4; }
     border: 1px solid #dbe8f5;
     border-radius: 6px;
     margin-top: 20px;
-    padding: 16px;
+    padding: 14px 16px;
 }
-.profile-edit-section h2 {
-    margin: 0;
+.profile-edit-toggle-row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    justify-content: space-between;
+}
+.profile-edit-toggle {
+    background: #4387b9;
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 900;
+    min-height: 40px;
+    padding: 8px 14px;
+}
+.profile-edit-toggle:hover {
+    background: #2f719f;
+}
+.profile-edit-panel {
+    border-top: 1px solid #dbe8f5;
+    margin-top: 14px;
+    padding-top: 14px;
 }
 .edit-hint {
     color: #64748b;
@@ -746,6 +772,13 @@ body { background: #eef1f4; }
         align-items: flex-start;
         flex-direction: column;
     }
+    .profile-edit-toggle-row {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .profile-edit-toggle {
+        width: 100%;
+    }
     .profile-edit-form {
         grid-template-columns: 1fr;
     }
@@ -754,4 +787,23 @@ body { background: #eef1f4; }
     }
 }
 </style>
+{% if session.user_id == profile_user.id %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('profileEditToggle');
+    const panel = document.getElementById('profileEditPanel');
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener('click', () => {
+        const willOpen = panel.hidden;
+        panel.hidden = !willOpen;
+        toggle.setAttribute('aria-expanded', String(willOpen));
+        if (willOpen) {
+            const firstInput = panel.querySelector('input');
+            if (firstInput) firstInput.focus();
+        }
+    });
+});
+</script>
+{% endif %}
 {% endblock %}
