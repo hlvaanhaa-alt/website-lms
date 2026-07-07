@@ -26,7 +26,7 @@
         <div class="form-section">
             <div class="section-header">
                 <h3> Bài học</h3>
-                <button type="button" onclick="addLesson()" class="btn btn-primary btn-small">
+                <button type="button" id="addLessonBtn" class="btn btn-primary btn-small">
                     + Thêm bài học
                 </button>
             </div>
@@ -51,10 +51,10 @@
     </div>
     
     <div class="toolbar-tabs">
-        <button type="button" class="tab-btn active" onclick="switchTab('math')">Toán</button>
-        <button type="button" class="tab-btn" onclick="switchTab('chemistry')">Hóa</button>
-        <button type="button" class="tab-btn" onclick="switchTab('physics')">Lý</button>
-        <button type="button" class="tab-btn" onclick="switchTab('biology')">Sinh</button>
+        <button type="button" class="tab-btn active" onclick="switchTab(event, 'math')">Toán</button>
+        <button type="button" class="tab-btn" onclick="switchTab(event, 'chemistry')">Hóa</button>
+        <button type="button" class="tab-btn" onclick="switchTab(event, 'physics')">Lý</button>
+        <button type="button" class="tab-btn" onclick="switchTab(event, 'biology')">Sinh</button>
     </div>
     
     <div class="toolbar-content">
@@ -294,6 +294,13 @@
 let lessonCount = 0;
 let currentInputField = null; // Lưu trữ ô input đang được focus
 
+document.addEventListener('DOMContentLoaded', () => {
+    const addLessonBtn = document.getElementById('addLessonBtn');
+    if (addLessonBtn) {
+        addLessonBtn.addEventListener('click', () => addLesson());
+    }
+});
+
 {% if edit_mode and course.lessons %}
 const existingLessons = {{ course.lessons | tojson }};
 existingLessons.forEach(lesson => {
@@ -386,8 +393,7 @@ function addQuestionToContainer(container, existingData = null) {
             <label>Nội dung câu hỏi:</label>
             <div class="input-with-toolbar">
                 <input type="text" class="question-text" placeholder="Nhập câu hỏi..." required
-                    value="${existingData ? existingData.question || '' : ''}"
-                    onfocus="showToolbar(this)">
+                    value="${existingData ? existingData.question || '' : ''}">
                 <button type="button" class="btn-show-symbols" onclick="showToolbar(this.previousElementSibling)">Σ Ký hiệu</button>
             </div>
         </div>
@@ -404,7 +410,7 @@ function addQuestionToContainer(container, existingData = null) {
             <div class="form-group">
                 <label>Các lựa chọn (mỗi dòng 1 lựa chọn):</label>
                 <div class="input-with-toolbar">
-                    <textarea class="question-options" rows="4" placeholder="A. Lựa chọn 1&#10;B. Lựa chọn 2&#10;C. Lựa chọn 3&#10;D. Lựa chọn 4" onfocus="showToolbar(this)">${existingData && existingData.options ? existingData.options.join('\n') : ''}</textarea>
+                    <textarea class="question-options" rows="4" placeholder="A. Lựa chọn 1&#10;B. Lựa chọn 2&#10;C. Lựa chọn 3&#10;D. Lựa chọn 4">${existingData && existingData.options ? existingData.options.join('\n') : ''}</textarea>
                     <button type="button" class="btn-show-symbols" onclick="showToolbar(this.previousElementSibling)">Σ Ký hiệu</button>
                 </div>
             </div>
@@ -414,8 +420,7 @@ function addQuestionToContainer(container, existingData = null) {
             <label>Đáp án đúng: <span class="required">*</span></label>
             <div class="input-with-toolbar">
                 <input type="text" class="question-answer" placeholder="Nhập đáp án đúng (VD: A hoặc câu trả lời)" required
-                    value="${existingData ? existingData.correct_answer || '' : ''}"
-                    onfocus="showToolbar(this)">
+                    value="${existingData ? existingData.correct_answer || '' : ''}">
                 <button type="button" class="btn-show-symbols" onclick="showToolbar(this.previousElementSibling)">Σ Ký hiệu</button>
             </div>
             <small class="form-hint">Với trắc nghiệm: nhập A, B, C hoặc D. Với tự luận: nhập câu trả lời mẫu</small>
@@ -447,9 +452,6 @@ function showToolbar(inputElement) {
     currentInputField = inputElement;
     const toolbar = document.getElementById('symbolToolbar');
     toolbar.style.display = 'block';
-    
-    // Scroll đến toolbar
-    toolbar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // Hàm đóng toolbar
@@ -459,7 +461,7 @@ function closeToolbar() {
 }
 
 // Hàm chuyển tab
-function switchTab(tabName) {
+function switchTab(event, tabName) {
     // Ẩn tất cả tab
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -469,8 +471,9 @@ function switchTab(tabName) {
     });
     
     // Hiện tab được chọn
-    document.getElementById('tab-' + tabName).classList.add('active');
-    event.target.classList.add('active');
+    const tab = document.getElementById('tab-' + tabName);
+    if (tab) tab.classList.add('active');
+    if (event && event.currentTarget) event.currentTarget.classList.add('active');
 }
 
 // Hàm chèn ký hiệu vào vị trí con trỏ
