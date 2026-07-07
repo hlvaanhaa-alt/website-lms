@@ -62,6 +62,7 @@ SHOP_ORDERS_FILE = writable_data_file("shop_orders.json", [])
 USER_INVENTORY_FILE = writable_data_file("user_inventory.json", [])
 USER_PROFILES_FILE = writable_data_file("user_profiles.json", [])
 NOTIFICATIONS_FILE = writable_data_file("notifications.json", [])
+GIFT_EVENTS_FILE = writable_data_file("gift_events.json", [])
 
 FORUM_SUBJECTS = [
     "Toán",
@@ -92,6 +93,56 @@ FORUM_REPORT_STATUSES = {
 FORUM_REWARD_LEVELS = [10, 20, 30, 40, 50, 60]
 ONLINE_USERS = {}
 ONLINE_WINDOW_SECONDS = 300
+GIFT_CHECKIN_POINTS = 5
+GIFT_BOX_REWARDS = {
+    "blue": {"name": "Hộp xanh", "threshold": 5, "points": 8},
+    "gold": {"name": "Hộp vàng", "threshold": 10, "points": 15},
+    "red": {"name": "Hộp đỏ", "threshold": 15, "points": 25},
+}
+DAILY_MATH_QUESTIONS = [
+    {
+        "id": "math_01",
+        "question": "Tính giá trị của biểu thức: 3(2x - 1) khi x = 4.",
+        "options": ["18", "21", "23", "24"],
+        "answer": 1,
+        "explanation": "Thay x = 4, ta có 3(8 - 1) = 21.",
+    },
+    {
+        "id": "math_02",
+        "question": "Cho tam giác có hai góc 55° và 65°. Góc còn lại bằng bao nhiêu?",
+        "options": ["50°", "55°", "60°", "65°"],
+        "answer": 2,
+        "explanation": "Tổng ba góc tam giác là 180°, nên góc còn lại là 180° - 55° - 65° = 60°.",
+    },
+    {
+        "id": "math_03",
+        "question": "Giải phương trình: 2x + 7 = 19.",
+        "options": ["x = 5", "x = 6", "x = 7", "x = 8"],
+        "answer": 1,
+        "explanation": "2x = 12 nên x = 6.",
+    },
+    {
+        "id": "math_04",
+        "question": "Rút gọn phân số 24/36 được kết quả nào?",
+        "options": ["1/2", "2/3", "3/4", "4/5"],
+        "answer": 1,
+        "explanation": "Chia cả tử và mẫu cho 12, ta được 2/3.",
+    },
+    {
+        "id": "math_05",
+        "question": "Nếu hình vuông có cạnh 7 cm thì diện tích là bao nhiêu?",
+        "options": ["14 cm²", "28 cm²", "49 cm²", "56 cm²"],
+        "answer": 2,
+        "explanation": "Diện tích hình vuông bằng cạnh nhân cạnh: 7 x 7 = 49 cm².",
+    },
+    {
+        "id": "math_06",
+        "question": "Số nào là nghiệm của bất phương trình x - 3 > 4?",
+        "options": ["6", "7", "8", "4"],
+        "answer": 2,
+        "explanation": "x - 3 > 4 nên x > 7. Trong các đáp án, 8 phù hợp.",
+    },
+]
 
 
 @app.after_request
@@ -236,6 +287,93 @@ def inject_admin_state():
 
 def next_notification_id(records):
     return f"notice_{len(records) + 1:05d}_{uuid.uuid4().hex[:6]}"
+
+
+def gift_events():
+    records = read_json(GIFT_EVENTS_FILE, [])
+    return records if isinstance(records, list) else []
+
+
+def save_gift_events(records):
+    write_json(GIFT_EVENTS_FILE, records)
+
+
+def gift_date_key(dt=None):
+    return (dt or datetime.now()).strftime("%Y-%m-%d")
+
+
+def gift_month_key(dt=None):
+    return (dt or datetime.now()).strftime("%Y-%m")
+
+
+def daily_math_question_for(user_id, date_key=None):
+    date_key = date_key or gift_date_key()
+    seed = sum(ord(ch) for ch in f"{user_id}:{date_key}")
+    question = DAILY_MATH_QUESTIONS[seed % len(DAILY_MATH_QUESTIONS)]
+    return {
+        "id": question["id"],
+        "question": question["question"],
+        "options": question["options"],
+    }
+
+
+def gift_user_events(user_id):
+    return [record for record in gift_events() if record.get("user_id") == user_id]
+
+
+def gift_status_payload(user_id):
+    date_key = gift_date_key()
+    month_key = gift_month_key()
+    user_events = gift_user_events(user_id)
+    today_checkin = next(
+        (event for event in user_events if event.get("type") == "attendance" and event.get("date") == date_key),
+        None,
+    )
+    today_question = next(
+        (event for event in user_events if event.get("type") == "daily_question" and event.get("date") == date_key),
+        None,
+    )
+    month_checkins = [
+        event
+        for event in user_events
+        if event.get("type") == "attendance" and event.get("month") == month_key
+    ]
+    attendance_count = len(month_checkins)
+    opened_counts = {
+        box_type: len(
+            [
+                event
+                for event in user_events
+                if event.get("type") == "gift_box"
+                and event.get("month") == month_key
+                and event.get("box_type") == box_type
+            ]
+        )
+        for box_type in GIFT_BOX_REWARDS
+    }
+    boxes = []
+    for box_type, config in GIFT_BOX_REWARDS.items():
+        earned = attendance_count // config["threshold"]
+        boxes.append(
+            {
+                "type": box_type,
+                "name": config["name"],
+                "points": config["points"],
+                "count": max(0, earned - opened_counts.get(box_type, 0)),
+            }
+        )
+    return {
+        "date": date_key,
+        "question": daily_math_question_for(user_id, date_key),
+        "question_answered": bool(today_question),
+        "question_correct": bool(today_question.get("is_correct")) if today_question else False,
+        "question_points": int(today_question.get("points", 0)) if today_question else 0,
+        "attendance_claimed": bool(today_checkin),
+        "attendance_points": GIFT_CHECKIN_POINTS,
+        "attendance_count": attendance_count,
+        "attendance_days": [{"day": day, "claimed": day <= min(attendance_count, 15)} for day in range(1, 16)],
+        "boxes": boxes,
+    }
 
 
 @app.before_request
@@ -468,6 +606,133 @@ def send_notification():
         sent_notifications=sent_notifications[:20],
         username=session.get("username"),
     )
+
+
+@app.route("/api/gift/status")
+@login_required
+def gift_status():
+    return jsonify({"success": True, **gift_status_payload(session["user_id"])})
+
+
+@app.route("/api/gift/checkin", methods=["POST"])
+@login_required
+def gift_checkin():
+    user_id = session["user_id"]
+    date_key = gift_date_key()
+    events = gift_events()
+    if any(event.get("user_id") == user_id and event.get("type") == "attendance" and event.get("date") == date_key for event in events):
+        return jsonify({"success": False, "message": "Hôm nay bạn đã điểm danh rồi"})
+
+    user = get_user_by_id(user_id)
+    add_forum_points(
+        user_id,
+        session.get("username", "Unknown"),
+        user.get("role", session.get("role", "student")) if user else session.get("role", "student"),
+        GIFT_CHECKIN_POINTS,
+        "daily_attendance",
+    )
+    events.append(
+        {
+            "id": f"gift_{len(events) + 1:06d}",
+            "type": "attendance",
+            "user_id": user_id,
+            "username": session.get("username", "Unknown"),
+            "date": date_key,
+            "month": gift_month_key(),
+            "points": GIFT_CHECKIN_POINTS,
+            "created_at": datetime.now().isoformat(),
+        }
+    )
+    save_gift_events(events)
+    return jsonify({"success": True, "message": f"Điểm danh thành công, bạn nhận {GIFT_CHECKIN_POINTS} kim cương", **gift_status_payload(user_id)})
+
+
+@app.route("/api/gift/question", methods=["POST"])
+@login_required
+def gift_question_submit():
+    user_id = session["user_id"]
+    date_key = gift_date_key()
+    events = gift_events()
+    if any(event.get("user_id") == user_id and event.get("type") == "daily_question" and event.get("date") == date_key for event in events):
+        return jsonify({"success": False, "message": "Bạn đã trả lời câu hỏi vui hôm nay rồi"})
+
+    payload = request.get_json(silent=True) or {}
+    try:
+        selected = int(payload.get("answer"))
+    except (TypeError, ValueError):
+        selected = -1
+
+    public_question = daily_math_question_for(user_id, date_key)
+    question = next(item for item in DAILY_MATH_QUESTIONS if item["id"] == public_question["id"])
+    is_correct = selected == int(question["answer"])
+    points = random.randint(5, 10) if is_correct else 0
+    user = get_user_by_id(user_id)
+    if points:
+        add_forum_points(
+            user_id,
+            session.get("username", "Unknown"),
+            user.get("role", session.get("role", "student")) if user else session.get("role", "student"),
+            points,
+            "daily_math_question",
+        )
+    events.append(
+        {
+            "id": f"gift_{len(events) + 1:06d}",
+            "type": "daily_question",
+            "user_id": user_id,
+            "username": session.get("username", "Unknown"),
+            "date": date_key,
+            "month": gift_month_key(),
+            "question_id": question["id"],
+            "selected_answer": selected,
+            "is_correct": is_correct,
+            "points": points,
+            "created_at": datetime.now().isoformat(),
+        }
+    )
+    save_gift_events(events)
+    message = f"Chính xác! Bạn nhận {points} kim cương." if is_correct else f"Chưa đúng. {question['explanation']}"
+    return jsonify({"success": True, "correct": is_correct, "points": points, "message": message, "explanation": question["explanation"], **gift_status_payload(user_id)})
+
+
+@app.route("/api/gift/open", methods=["POST"])
+@login_required
+def gift_open_box():
+    payload = request.get_json(silent=True) or {}
+    box_type = (payload.get("box_type") or "").strip()
+    if box_type not in GIFT_BOX_REWARDS:
+        return jsonify({"success": False, "message": "Hộp quà không hợp lệ"}), 400
+
+    status = gift_status_payload(session["user_id"])
+    box = next((item for item in status["boxes"] if item["type"] == box_type), None)
+    if not box or int(box.get("count", 0)) <= 0:
+        return jsonify({"success": False, "message": "Bạn chưa có hộp quà này để mở"})
+
+    points = int(GIFT_BOX_REWARDS[box_type]["points"])
+    user = get_user_by_id(session["user_id"])
+    add_forum_points(
+        session["user_id"],
+        session.get("username", "Unknown"),
+        user.get("role", session.get("role", "student")) if user else session.get("role", "student"),
+        points,
+        "gift_box_open",
+    )
+    events = gift_events()
+    events.append(
+        {
+            "id": f"gift_{len(events) + 1:06d}",
+            "type": "gift_box",
+            "box_type": box_type,
+            "user_id": session["user_id"],
+            "username": session.get("username", "Unknown"),
+            "date": gift_date_key(),
+            "month": gift_month_key(),
+            "points": points,
+            "created_at": datetime.now().isoformat(),
+        }
+    )
+    save_gift_events(events)
+    return jsonify({"success": True, "message": f"Bạn mở {GIFT_BOX_REWARDS[box_type]['name']} và nhận {points} kim cương", **gift_status_payload(session["user_id"])})
 
 
 @app.route("/student/dashboard")

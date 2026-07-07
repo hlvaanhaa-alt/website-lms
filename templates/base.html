@@ -283,6 +283,350 @@
             z-index: 2;
         }
 
+        .gift-float-btn {
+            align-items: center;
+            background: #dff6f1;
+            border: 1px solid rgba(67, 135, 185, .22);
+            border-radius: 50%;
+            bottom: 28px;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, .16);
+            color: #4387b9;
+            cursor: pointer;
+            display: flex;
+            font-size: 1.45rem;
+            height: 66px;
+            justify-content: center;
+            position: fixed;
+            right: 28px;
+            transition: transform .2s ease, box-shadow .2s ease;
+            width: 66px;
+            z-index: 1100;
+        }
+
+        .gift-float-btn:hover {
+            box-shadow: 0 14px 34px rgba(15, 23, 42, .22);
+            transform: translateY(-2px);
+        }
+
+        .gift-modal-overlay {
+            align-items: center;
+            background: rgba(0, 0, 0, .55);
+            bottom: 0;
+            display: none;
+            justify-content: center;
+            left: 0;
+            padding: 18px;
+            position: fixed;
+            right: 0;
+            top: 0;
+            z-index: 2000;
+        }
+
+        .gift-modal-overlay.active {
+            display: flex;
+        }
+
+        .gift-modal {
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 24px 80px rgba(15, 23, 42, .35);
+            max-height: min(86vh, 720px);
+            max-width: 780px;
+            overflow: auto;
+            position: relative;
+            width: min(100%, 780px);
+        }
+
+        .gift-close {
+            background: transparent;
+            border: 0;
+            color: #111827;
+            cursor: pointer;
+            font-size: 1.6rem;
+            line-height: 1;
+            position: absolute;
+            right: 13px;
+            top: 12px;
+            z-index: 2;
+        }
+
+        .gift-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 22px 28px 0;
+        }
+
+        .gift-tab {
+            background: #fff;
+            border: 0;
+            border-bottom: 4px solid transparent;
+            color: #111827;
+            cursor: pointer;
+            font-weight: 800;
+            padding: 10px 8px 12px;
+        }
+
+        .gift-tab.active {
+            border-bottom-color: #e5b800;
+        }
+
+        .gift-panel {
+            display: none;
+            padding: 24px 28px 28px;
+        }
+
+        .gift-panel.active {
+            display: block;
+        }
+
+        .gift-tip {
+            color: #111827;
+            font-style: italic;
+            margin: 0 0 18px;
+        }
+
+        .gift-tip strong {
+            font-style: normal;
+        }
+
+        .gift-rules {
+            display: grid;
+            gap: 12px;
+            margin: 0 0 24px;
+            padding: 0;
+        }
+
+        .gift-rules li {
+            color: #334155;
+            list-style: none;
+        }
+
+        .gift-rules li::before {
+            color: #8bc34a;
+            content: "•";
+            font-size: 1.45rem;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .gift-question-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            display: grid;
+            gap: 12px;
+            margin: 0 auto;
+            max-width: 560px;
+            padding: 16px;
+        }
+
+        .gift-question-box h3 {
+            color: #111827;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .gift-answer-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .gift-answer-grid label {
+            align-items: center;
+            border: 1px solid #dce2e8;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            gap: 10px;
+            padding: 10px 12px;
+        }
+
+        .gift-action-btn {
+            background: #5a95ad;
+            border: 0;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 900;
+            justify-self: center;
+            padding: 9px 18px;
+        }
+
+        .gift-action-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .gift-status-text {
+            color: #8a8f98;
+            font-weight: 700;
+            margin: 18px 0 10px;
+            text-align: center;
+        }
+
+        .attendance-grid {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(5, minmax(74px, 1fr));
+            margin-top: 12px;
+        }
+
+        .attendance-day {
+            align-items: center;
+            background: #e9eef6;
+            border-radius: 5px;
+            color: #000;
+            display: flex;
+            font-size: 1.35rem;
+            font-weight: 900;
+            justify-content: center;
+            min-height: 86px;
+            position: relative;
+        }
+
+        .attendance-day.claimed {
+            background: #8bc34a;
+            color: #fff;
+        }
+
+        .attendance-gift {
+            align-items: center;
+            background: #f0c400;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            bottom: -8px;
+            color: #4387b9;
+            display: flex;
+            font-size: 1rem;
+            height: 38px;
+            justify-content: center;
+            position: absolute;
+            right: -8px;
+            width: 38px;
+        }
+
+        .gift-shop-note {
+            border-left: 2px solid #d1d5db;
+            color: #111827;
+            font-style: italic;
+            line-height: 1.65;
+            margin: 0 0 22px;
+            padding-left: 10px;
+        }
+
+        .gift-box-row {
+            display: grid;
+            gap: 28px;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 8px 18px 10px;
+        }
+
+        .gift-box-card {
+            align-items: center;
+            display: grid;
+            gap: 10px;
+            justify-items: center;
+            text-align: center;
+        }
+
+        .gift-box-art {
+            height: 118px;
+            position: relative;
+            width: 128px;
+        }
+
+        .gift-cube {
+            border-radius: 8px 8px 12px 12px;
+            bottom: 0;
+            height: 72px;
+            left: 18px;
+            overflow: hidden;
+            position: absolute;
+            width: 92px;
+        }
+
+        .gift-cube::before,
+        .gift-cube::after {
+            content: "";
+            position: absolute;
+        }
+
+        .gift-cube::before {
+            background: rgba(255, 255, 255, .24);
+            height: 100%;
+            left: 39px;
+            width: 14px;
+        }
+
+        .gift-cube::after {
+            background: rgba(255, 255, 255, .18);
+            height: 14px;
+            left: 0;
+            top: 18px;
+            width: 100%;
+        }
+
+        .gift-ribbon-left,
+        .gift-ribbon-right {
+            border: 14px solid;
+            border-radius: 50% 50% 50% 0;
+            height: 54px;
+            position: absolute;
+            top: 6px;
+            width: 42px;
+        }
+
+        .gift-ribbon-left {
+            left: 25px;
+            transform: rotate(35deg);
+        }
+
+        .gift-ribbon-right {
+            right: 25px;
+            transform: rotate(135deg);
+        }
+
+        .gift-box-card.blue .gift-cube { background: linear-gradient(135deg, #67e8f9, #0891b2); }
+        .gift-box-card.blue .gift-ribbon-left,
+        .gift-box-card.blue .gift-ribbon-right { border-color: #3b82f6; }
+        .gift-box-card.gold .gift-cube { background: linear-gradient(135deg, #facc15, #d97706); }
+        .gift-box-card.gold .gift-ribbon-left,
+        .gift-box-card.gold .gift-ribbon-right { border-color: #a3e635; }
+        .gift-box-card.red .gift-cube { background: linear-gradient(135deg, #f97316, #dc2626); }
+        .gift-box-card.red .gift-ribbon-left,
+        .gift-box-card.red .gift-ribbon-right { border-color: #f59e0b; }
+
+        .gift-count {
+            align-items: center;
+            background: #eac300;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            bottom: 4px;
+            color: #fff;
+            display: flex;
+            font-weight: 900;
+            height: 36px;
+            justify-content: center;
+            position: absolute;
+            right: 2px;
+            width: 36px;
+        }
+
+        .gift-box-card button {
+            background: #e5b800;
+            border: 0;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 900;
+            padding: 8px 12px;
+        }
+
+        .gift-box-card button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
         .btn-logout,
         .btn-register,
         .btn-login {
@@ -533,6 +877,29 @@
             .logo {
                 font-size: 1.5rem;
             }
+
+            .gift-tabs {
+                gap: 6px;
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .gift-panel {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .attendance-grid,
+            .gift-box-row {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .gift-float-btn {
+                bottom: 18px;
+                height: 58px;
+                right: 18px;
+                width: 58px;
+            }
         }
 
         .menu-overlay {
@@ -639,6 +1006,55 @@
         {% block content %}{% endblock %}
     </main>
 
+    {% if session.user_id %}
+    <button class="gift-float-btn" id="giftFloatBtn" type="button" aria-label="Mở hộp quà">
+        <i class="fa-solid fa-gift"></i>
+    </button>
+
+    <div class="gift-modal-overlay" id="giftModalOverlay" aria-hidden="true">
+        <div class="gift-modal" role="dialog" aria-modal="true" aria-label="Hộp quà">
+            <button class="gift-close" id="giftCloseBtn" type="button" aria-label="Đóng">×</button>
+            <div class="gift-tabs">
+                <button class="gift-tab active" type="button" data-gift-tab="question">Câu hỏi vui</button>
+                <button class="gift-tab" type="button" data-gift-tab="attendance">Điểm danh</button>
+                <button class="gift-tab" type="button" data-gift-tab="store">Kho quà</button>
+            </div>
+
+            <section class="gift-panel active" data-gift-panel="question">
+                <p class="gift-tip"><strong>💡 Bạn có biết:</strong> Trả lời đầy đủ đáp án và các bước giải để nhận được xác thực hơn.</p>
+                <ul class="gift-rules">
+                    <li>Mỗi ngày có thể tham gia trả lời câu hỏi vui 1 lần.</li>
+                    <li>Bạn có 15 giây để đọc và trả lời câu hỏi.</li>
+                    <li>Bạn sẽ nhận ngẫu nhiên từ 5 đến 10 kim cương nếu trả lời đúng.</li>
+                    <li>Trả lời sai không bị mất điểm.</li>
+                </ul>
+                <div id="giftQuestionArea"></div>
+            </section>
+
+            <section class="gift-panel" data-gift-panel="attendance">
+                <p class="gift-tip"><strong>Điểm danh mỗi ngày</strong> để nhận kim cương và mở khóa hộp quà theo mốc 5, 10, 15 ngày.</p>
+                <div class="gift-status-text" id="giftAttendanceText">Đang tải...</div>
+                <div style="text-align:center; margin-bottom: 14px;">
+                    <button class="gift-action-btn" id="giftCheckinBtn" type="button">Điểm danh nhận kim cương</button>
+                </div>
+                <div class="attendance-grid" id="giftAttendanceGrid"></div>
+            </section>
+
+            <section class="gift-panel" data-gift-panel="store">
+                <p class="gift-tip"><strong>💡 Bạn có biết:</strong> Trả lời đầy đủ đáp án và các bước giải để nhận được xác thực hơn.</p>
+                <div class="gift-shop-note">
+                    - Mở quà có cơ hội nhận được kim cương từ các mốc điểm danh.<br>
+                    - Hộp xanh mở khóa mỗi 5 ngày, hộp vàng mỗi 10 ngày, hộp đỏ mỗi 15 ngày.
+                </div>
+                <div class="gift-box-row" id="giftBoxRow"></div>
+                <div style="text-align:right; margin-top: 18px;">
+                    <strong>Lịch sử mở quà</strong>
+                </div>
+            </section>
+        </div>
+    </div>
+    {% endif %}
+
     <footer class="footer">
         <div class="container">
             <p>&copy; EduPath – Hành trình học tập thông minh</p>
@@ -680,6 +1096,176 @@
                 document.body.style.overflow = '';
             }
         });
+
+        const giftFloatBtn = document.getElementById('giftFloatBtn');
+        const giftModalOverlay = document.getElementById('giftModalOverlay');
+        const giftCloseBtn = document.getElementById('giftCloseBtn');
+        const giftQuestionArea = document.getElementById('giftQuestionArea');
+        const giftAttendanceText = document.getElementById('giftAttendanceText');
+        const giftAttendanceGrid = document.getElementById('giftAttendanceGrid');
+        const giftCheckinBtn = document.getElementById('giftCheckinBtn');
+        const giftBoxRow = document.getElementById('giftBoxRow');
+        let giftState = null;
+
+        function giftEscape(text) {
+            return String(text ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[char]));
+        }
+
+        function setGiftTab(tabName) {
+            document.querySelectorAll('[data-gift-tab]').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.giftTab === tabName);
+            });
+            document.querySelectorAll('[data-gift-panel]').forEach(panel => {
+                panel.classList.toggle('active', panel.dataset.giftPanel === tabName);
+            });
+        }
+
+        async function loadGiftStatus() {
+            if (!giftModalOverlay) return;
+            const response = await fetch('/api/gift/status');
+            const data = await response.json();
+            if (!data.success) return;
+            giftState = data;
+            renderGiftQuestion();
+            renderGiftAttendance();
+            renderGiftBoxes();
+        }
+
+        function renderGiftQuestion() {
+            if (!giftQuestionArea || !giftState) return;
+            if (giftState.question_answered) {
+                giftQuestionArea.innerHTML = `
+                    <div class="gift-status-text">
+                        ${giftState.question_correct
+                            ? `Bạn đã trả lời đúng hôm nay và nhận ${giftState.question_points} kim cương.`
+                            : 'Bạn đã trả lời câu hỏi hôm nay.'}
+                    </div>
+                `;
+                return;
+            }
+
+            const question = giftState.question;
+            giftQuestionArea.innerHTML = `
+                <div class="gift-status-text">Bạn chưa trả lời câu hỏi hôm nay</div>
+                <form class="gift-question-box" id="giftQuestionForm">
+                    <h3>${giftEscape(question.question)}</h3>
+                    <div class="gift-answer-grid">
+                        ${question.options.map((option, index) => `
+                            <label>
+                                <input type="radio" name="answer" value="${index}" required>
+                                <span>${giftEscape(option)}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <button class="gift-action-btn" type="submit">Trả lời ngay</button>
+                </form>
+            `;
+
+            document.getElementById('giftQuestionForm').addEventListener('submit', async event => {
+                event.preventDefault();
+                const selected = new FormData(event.currentTarget).get('answer');
+                const response = await fetch('/api/gift/question', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({answer: selected})
+                });
+                const data = await response.json();
+                alert(data.message || 'Đã xử lý');
+                if (data.success) {
+                    giftState = data;
+                    renderGiftQuestion();
+                    renderGiftAttendance();
+                    renderGiftBoxes();
+                }
+            });
+        }
+
+        function renderGiftAttendance() {
+            if (!giftAttendanceText || !giftAttendanceGrid || !giftCheckinBtn || !giftState) return;
+            giftAttendanceText.textContent = giftState.attendance_claimed
+                ? `Bạn đã điểm danh hôm nay. Tháng này đã điểm danh ${giftState.attendance_count} ngày.`
+                : `Điểm danh hôm nay để nhận ${giftState.attendance_points} kim cương.`;
+            giftCheckinBtn.disabled = giftState.attendance_claimed;
+            giftCheckinBtn.textContent = giftState.attendance_claimed ? 'Đã điểm danh hôm nay' : 'Điểm danh nhận kim cương';
+            giftAttendanceGrid.innerHTML = giftState.attendance_days.map(item => `
+                <div class="attendance-day ${item.claimed ? 'claimed' : ''}">
+                    ${item.day}
+                    ${[5, 10, 15].includes(item.day) ? '<span class="attendance-gift"><i class="fa-solid fa-gift"></i></span>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderGiftBoxes() {
+            if (!giftBoxRow || !giftState) return;
+            giftBoxRow.innerHTML = giftState.boxes.map(box => `
+                <div class="gift-box-card ${box.type}">
+                    <div class="gift-box-art">
+                        <span class="gift-ribbon-left"></span>
+                        <span class="gift-ribbon-right"></span>
+                        <span class="gift-cube"></span>
+                        <span class="gift-count">${box.count}</span>
+                    </div>
+                    <button type="button" data-open-box="${box.type}" ${box.count <= 0 ? 'disabled' : ''}>
+                        ${box.count > 0 ? `Mở +${box.points}` : 'Chưa có'}
+                    </button>
+                </div>
+            `).join('');
+            giftBoxRow.querySelectorAll('[data-open-box]').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const response = await fetch('/api/gift/open', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({box_type: button.dataset.openBox})
+                    });
+                    const data = await response.json();
+                    alert(data.message || 'Đã xử lý');
+                    if (data.success) {
+                        giftState = data;
+                        renderGiftAttendance();
+                        renderGiftBoxes();
+                    }
+                });
+            });
+        }
+
+        if (giftFloatBtn && giftModalOverlay && giftCloseBtn) {
+            giftFloatBtn.addEventListener('click', async () => {
+                giftModalOverlay.classList.add('active');
+                giftModalOverlay.setAttribute('aria-hidden', 'false');
+                await loadGiftStatus();
+            });
+            giftCloseBtn.addEventListener('click', () => {
+                giftModalOverlay.classList.remove('active');
+                giftModalOverlay.setAttribute('aria-hidden', 'true');
+            });
+            giftModalOverlay.addEventListener('click', event => {
+                if (event.target === giftModalOverlay) {
+                    giftModalOverlay.classList.remove('active');
+                    giftModalOverlay.setAttribute('aria-hidden', 'true');
+                }
+            });
+            document.querySelectorAll('[data-gift-tab]').forEach(tab => {
+                tab.addEventListener('click', () => setGiftTab(tab.dataset.giftTab));
+            });
+            if (giftCheckinBtn) {
+                giftCheckinBtn.addEventListener('click', async () => {
+                    const response = await fetch('/api/gift/checkin', {method: 'POST'});
+                    const data = await response.json();
+                    alert(data.message || 'Đã xử lý');
+                    if (data.success) {
+                        giftState = data;
+                        renderGiftAttendance();
+                        renderGiftBoxes();
+                    }
+                });
+            }
+        }
     </script>
     
     {% block scripts %}{% endblock %}
