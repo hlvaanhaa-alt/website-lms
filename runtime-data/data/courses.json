@@ -28,5 +28,21 @@
       }
     ],
     "created_at": "2026-07-07T07:10:24.675904"
+  },
+  {
+    "id": "course_2",
+    "teacher_id": "1",
+    "title": "Lập Trình Scratch cơ bản",
+    "description": "Tới khóa học này, các em có thể vận dụng và làm một vài bài tập lập tình scratch cơ bản",
+    "lessons": [
+      {
+        "id": "1",
+        "title": "Scractch là gì?",
+        "video_url": "",
+        "document_url": "https://drive.google.com/drive/folders/1tvFlU5HB8YKldh0lmRdptSNEoqhj2wbe",
+        "questions": []
+      }
+    ],
+    "created_at": "2026-07-07T08:02:36.994666"
   }
 ]
