@@ -221,7 +221,7 @@ body {
     border-radius: inherit;
     display: block;
     height: 100%;
-    width: 68%;
+    width: 0;
 }
 .quick-strip {
     background: #fff;
@@ -473,6 +473,18 @@ body {
     color: #657589;
     font-size: .8rem;
     font-weight: 800;
+    line-height: 1.25;
+    text-align: center;
+}
+.empty-chart {
+    align-items: center;
+    color: #657589;
+    display: flex;
+    font-weight: 800;
+    grid-column: 1 / -1;
+    height: 100%;
+    justify-content: center;
+    text-align: center;
 }
 .insight-grid {
     display: grid;
@@ -699,9 +711,9 @@ body {
                 {% endif %}
 
                 <div class="hero-metrics">
-                    <div class="metric"><strong>500+</strong><span>học viên</span></div>
-                    <div class="metric"><strong>{{ total_courses or 50 }}+</strong><span>khóa học</span></div>
-                    <div class="metric"><strong>{{ total_documents or 100 }}+</strong><span>tài liệu</span></div>
+                    <div class="metric"><strong>{{ home_stats.students }}</strong><span>học sinh</span></div>
+                    <div class="metric"><strong>{{ home_stats.courses }}</strong><span>khóa học</span></div>
+                    <div class="metric"><strong>{{ home_stats.documents }}</strong><span>tài liệu</span></div>
                 </div>
             </div>
 
@@ -713,23 +725,23 @@ body {
                 <div class="today-list">
                     <div class="today-item">
                         <div class="item-icon"><i class="fa-solid fa-square-root-variable"></i></div>
-                        <div><strong>Toán 9: Hàm số bậc nhất</strong><span>Bài giảng và bài luyện tập</span></div>
-                        <b>35 phút</b>
+                        <div><strong>{{ home_stats.latest_course_title }}</strong><span>{{ home_stats.latest_course_lessons }} bài học trong khóa mới nhất</span></div>
+                        <b>{{ home_stats.courses }} khóa</b>
                     </div>
                     <div class="today-item">
                         <div class="item-icon"><i class="fa-solid fa-comments"></i></div>
-                        <div><strong>Diễn đàn hỏi đáp</strong><span>Đặt câu hỏi, nhận kim cương</span></div>
-                        <b>Top tháng</b>
+                        <div><strong>Diễn đàn hỏi đáp</strong><span>{{ home_stats.forum_answers }} câu trả lời đã ghi nhận</span></div>
+                        <b>{{ home_stats.forum_posts }} câu hỏi</b>
                     </div>
                     <div class="today-item">
                         <div class="item-icon"><i class="fa-solid fa-robot"></i></div>
-                        <div><strong>Trợ lí AI môn Toán</strong><span>Tạo quiz nhanh trong khung chat</span></div>
-                        <b>24/7</b>
+                        <div><strong>Kho trắc nghiệm</strong><span>{{ home_stats.exam_attempts }} lượt làm bài đã lưu</span></div>
+                        <b>{{ home_stats.exams }} đề</b>
                     </div>
                 </div>
                 <div class="progress-box">
-                    <div class="progress-title"><span>Tiến độ mẫu</span><span>68%</span></div>
-                    <div class="progress-track"><i></i></div>
+                    <div class="progress-title"><span>Tiến độ bài học</span><span>{{ home_stats.progress_percent }}%</span></div>
+                    <div class="progress-track"><i style="width: {{ home_stats.progress_percent }}%"></i></div>
                 </div>
             </aside>
         </div>
@@ -759,7 +771,7 @@ body {
                 <article class="subject-card">
                     <h3>Tài liệu và bài giảng</h3>
                     <p>Giáo viên quản lý nội dung, học sinh theo dõi tiến độ và quay lại bài học nhanh.</p>
-                    <div class="subject-meta"><i class="fa-solid fa-file-lines"></i> {{ total_documents or 100 }}+ tài liệu</div>
+                    <div class="subject-meta"><i class="fa-solid fa-file-lines"></i> {{ home_stats.documents }} tài liệu · {{ home_stats.lessons }} bài học</div>
                 </article>
                 <article class="subject-card">
                     <h3>Cộng đồng hỏi đáp</h3>
@@ -815,18 +827,20 @@ body {
     <section class="section reveal">
         <div class="home-wrap">
             <div class="section-head">
-                <h2>Tiến độ được nhìn bằng biểu đồ</h2>
-                <p>Không cần nhiều chữ: học sinh thấy môn nào đang mạnh, phần nào cần luyện thêm và dùng AI đúng lúc.</p>
+                <h2>Hoạt động được nhìn bằng biểu đồ</h2>
+                <p>Biểu đồ lấy từ câu hỏi thật trong diễn đàn để thấy môn nào đang được học sinh quan tâm nhiều nhất.</p>
             </div>
             <div class="analytics-layout">
                 <div class="chart-panel">
-                    <h3>Mức hoàn thành theo chủ đề</h3>
-                    <div class="bar-chart" aria-label="Biểu đồ tiến độ học Toán">
-                        <div class="bar"><i style="height: 76%"></i><span>Số học</span></div>
-                        <div class="bar"><i style="height: 58%"></i><span>Đại số</span></div>
-                        <div class="bar"><i style="height: 68%"></i><span>Hình</span></div>
-                        <div class="bar"><i style="height: 44%"></i><span>Xác suất</span></div>
-                        <div class="bar"><i style="height: 82%"></i><span>Ôn thi</span></div>
+                    <h3>Câu hỏi diễn đàn theo môn</h3>
+                    <div class="bar-chart" aria-label="Biểu đồ câu hỏi diễn đàn theo môn">
+                        {% if home_stats.chart_items %}
+                            {% for item in home_stats.chart_items %}
+                            <div class="bar"><i style="height: {{ item.percent }}%"></i><span>{{ item.label }} · {{ item.value }}</span></div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-chart">Chưa có dữ liệu diễn đàn.</div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="insight-grid">

@@ -415,6 +415,100 @@ def student_required(f):
     return decorated_function
 
 
+def build_home_stats():
+    users = load_users()
+    courses = db.get_all_courses()
+    documents = [
+        doc
+        for doc in db.get_all_documents()
+        if doc.get("grade") in ALLOWED_GRADE_LEVELS
+    ]
+    forum_posts = db.get_all_forum_posts()
+    forum_comments = db._load_json(db.forum_comments_file)
+    submissions = db.get_all_submissions()
+    progress_rows = db._load_json(db.progress_file)
+    exam_results = [
+        result
+        for result in read_json(readable_data_file("exam_results.json"), [])
+        if str(result.get("grade", "")) in ALLOWED_GRADE_LEVELS
+    ]
+
+    course_by_id = {course.get("id"): course for course in courses}
+    latest_course = max(courses, key=lambda c: c.get("created_at", ""), default=None)
+    total_lessons = sum(len(course.get("lessons", [])) for course in courses)
+
+    completed_lessons = 0
+    tracked_lessons = 0
+    for row in progress_rows:
+        course = course_by_id.get(row.get("course_id"))
+        if not course:
+            continue
+        lesson_count = len(course.get("lessons", []))
+        if lesson_count <= 0:
+            continue
+        tracked_lessons += lesson_count
+        completed_lessons += min(len(row.get("completed_lessons", [])), lesson_count)
+
+    progress_percent = (
+        round((completed_lessons / tracked_lessons) * 100)
+        if tracked_lessons
+        else 0
+    )
+
+    exam_subject_codes = [
+        "toan",
+        "anh",
+        "li",
+        "hoa",
+        "sinh",
+        "su",
+        "dia",
+        "nguvan",
+        "gdcd",
+        "congnghe",
+        "tinhoc",
+    ]
+    total_exams = 0
+    for subject_code in exam_subject_codes:
+        subject_data = read_json(readable_data_file(f"{subject_code}.json"), {"exams": []})
+        total_exams += len(subject_data.get("exams", [])) if isinstance(subject_data, dict) else 0
+
+    subject_counts = {}
+    for post in forum_posts:
+        subject = post.get("subject") or "Khác"
+        subject_counts[subject] = subject_counts.get(subject, 0) + 1
+
+    max_subject_count = max(subject_counts.values(), default=0)
+    chart_items = [
+        {
+            "label": subject,
+            "value": count,
+            "percent": round((count / max_subject_count) * 100) if max_subject_count else 0,
+        }
+        for subject, count in sorted(
+            subject_counts.items(), key=lambda item: item[1], reverse=True
+        )[:5]
+    ]
+
+    return {
+        "students": len([user for user in users if user.get("role") == "student"]),
+        "teachers": len([user for user in users if user.get("role") == "teacher"]),
+        "courses": len(courses),
+        "documents": len(documents),
+        "lessons": total_lessons,
+        "forum_posts": len(forum_posts),
+        "forum_answers": len(forum_comments),
+        "resolved_posts": len([post for post in forum_posts if post.get("status") == "resolved"]),
+        "submissions": len(submissions),
+        "exam_attempts": len(exam_results),
+        "exams": total_exams,
+        "progress_percent": progress_percent,
+        "latest_course_title": latest_course.get("title") if latest_course else "Chưa có khóa học",
+        "latest_course_lessons": len(latest_course.get("lessons", [])) if latest_course else 0,
+        "chart_items": chart_items,
+    }
+
+
 @app.route("/")
 def index():
     if "user_id" in session:
@@ -425,12 +519,9 @@ def index():
         else:
             return redirect(url_for("student_dashboard"))
 
-    total_courses = len(db.get_all_courses())
-    total_documents = len(db.get_all_documents())
+    home_stats = build_home_stats()
 
-    return render_template(
-        "index.html", total_courses=total_courses, total_documents=total_documents
-    )
+    return render_template("index.html", home_stats=home_stats)
 
 
 @app.route("/register", methods=["GET", "POST"])
