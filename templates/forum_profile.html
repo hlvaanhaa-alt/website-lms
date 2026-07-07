@@ -3,6 +3,10 @@
 {% block title %}Hồ sơ {{ profile_user.username }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
 <div class="profile-shell">
     <section class="profile-card">
         <header class="profile-head">
@@ -276,7 +280,7 @@
                 <a class="all-question-item" href="{{ url_for('forum_post_detail', post_id=post.id) }}">
                     <strong>ID câu hỏi: {{ post.id }} · {{ post.created_at_formatted }}</strong>
                     <span>{{ post.subject }}{% if post.grade %} · {{ post.grade }}{% endif %} · {{ post.answers_count }} trả lời · {{ post.time_ago }}</span>
-                    <p>{{ post.content[:220] }}{% if post.content|length > 220 %}...{% endif %}</p>
+                    <p class="math-content">{{ post.content[:220] }}{% if post.content|length > 220 %}...{% endif %}</p>
                 </a>
                 {% else %}
                 <p class="empty-note">Chưa đặt câu hỏi nào.</p>
@@ -861,6 +865,21 @@ body { background: #eef1f4; }
 }
 </style>
 <script>
+function renderProfileMath(root = document.body) {
+    if (typeof renderMathInElement === 'undefined') return;
+    if (root.dataset && root.dataset.mathRendered === 'true') return;
+    renderMathInElement(root, {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError: false
+    });
+    if (root.dataset) root.dataset.mathRendered = 'true';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const moreToggle = document.getElementById('profileMoreToggle');
     const allQuestions = document.getElementById('profileAllQuestions');
@@ -870,7 +889,10 @@ document.addEventListener('DOMContentLoaded', () => {
             allQuestions.hidden = !willOpen;
             moreToggle.setAttribute('aria-expanded', String(willOpen));
             moreToggle.textContent = willOpen ? 'Ẩn bớt thông tin' : 'Xem thêm thông tin';
-            if (willOpen) allQuestions.scrollIntoView({behavior: 'smooth', block: 'start'});
+            if (willOpen) {
+                renderProfileMath(allQuestions);
+                allQuestions.scrollIntoView({behavior: 'smooth', block: 'start'});
+            }
         });
     }
 
