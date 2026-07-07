@@ -214,5 +214,17 @@
     "answer_id": null,
     "month": "2026-07",
     "created_at": "2026-07-07T05:56:26.511923"
+  },
+  {
+    "id": "fp_000018",
+    "user_id": "11",
+    "username": "Gia Vinh",
+    "role": "student",
+    "points": 50,
+    "reason": "welcome_bonus",
+    "post_id": null,
+    "answer_id": null,
+    "month": "2026-07",
+    "created_at": "2026-07-07T08:33:30.383430"
   }
 ]
