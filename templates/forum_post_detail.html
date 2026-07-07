@@ -158,7 +158,7 @@
                 {% if can_verify_answers and not comment.is_verified_answer and comment.author_id != session.user_id %}
                 <button onclick="verifyAnswer('{{ comment.id }}')">Xác thực</button>
                 {% endif %}
-                {% if comment.author_id == session.user_id %}
+                {% if comment.author_id == session.user_id or is_admin_session %}
                 <button onclick="deleteComment('{{ comment.id }}')">Xóa</button>
                 {% endif %}
             </div>

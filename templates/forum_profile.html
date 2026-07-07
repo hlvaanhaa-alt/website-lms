@@ -121,14 +121,6 @@
             </div>
         </section>
 
-        <section class="profile-section shelf-section">
-            <div class="section-title-row">
-                <h2>Kệ sách</h2>
-                <a href="#">Xem tất cả</a>
-            </div>
-            <p>Đọc sách gì hay, chia sẻ ngay cùng cộng đồng <a href="#">Viết chia sẻ</a></p>
-        </section>
-
         <section class="profile-section">
             <h2>Các môn đã giúp đỡ bạn bè</h2>
             <div class="radar-area">
@@ -262,13 +254,31 @@
         <section class="profile-section info-grid">
             <div>
                 <p>Ngày tham gia: {{ profile_user.created_at[:10] if profile_user.created_at else '-' }}</p>
-                <a class="more-link" href="#">Xem thêm thông tin</a>
+                <a class="more-link" href="#profileAllQuestions">Xem thêm thông tin</a>
             </div>
             <div>
                 <p>Số câu trả lời: <strong>{{ stats.answers_count }}</strong></p>
                 <p>Số câu hỏi đã đặt: <strong>{{ stats.questions_count }}</strong></p>
                 <p>Số lượng câu trả lời hay nhất: <strong>{{ stats.best_answers_count }}</strong></p>
                 <p>Số cảnh báo: <strong>{{ stats.warnings_count }}</strong></p>
+            </div>
+        </section>
+
+        <section class="profile-section all-questions-section" id="profileAllQuestions">
+            <div class="section-title-row">
+                <h2>Tất cả câu hỏi đã đặt</h2>
+                <span>{{ activity.all_questions|length }} câu hỏi</span>
+            </div>
+            <div class="all-question-list">
+                {% for post in activity.all_questions %}
+                <a class="all-question-item" href="{{ url_for('forum_post_detail', post_id=post.id) }}">
+                    <strong>ID câu hỏi: {{ post.id }} · {{ post.created_at_formatted }}</strong>
+                    <span>{{ post.subject }}{% if post.grade %} · {{ post.grade }}{% endif %} · {{ post.answers_count }} trả lời · {{ post.time_ago }}</span>
+                    <p>{{ post.content[:220] }}{% if post.content|length > 220 %}...{% endif %}</p>
+                </a>
+                {% else %}
+                <p class="empty-note">Chưa đặt câu hỏi nào.</p>
+                {% endfor %}
             </div>
         </section>
     </section>
@@ -586,14 +596,9 @@ body { background: #eef1f4; }
 }
 .section-title-row h2 { margin-bottom: 0; }
 .section-title-row a,
-.shelf-section a,
 .more-link {
     color: #4387b9;
     font-weight: 800;
-}
-.shelf-section p {
-    color: #64748b;
-    margin: 16px 0 0;
 }
 .radar-area {
     display: grid;
@@ -762,6 +767,43 @@ body { background: #eef1f4; }
     display: inline-block;
     margin-top: 20px;
     text-decoration: none;
+}
+.all-questions-section .section-title-row span {
+    color: #64748b;
+    font-weight: 800;
+}
+.all-question-list {
+    display: grid;
+}
+.all-question-item {
+    border-top: 1px dotted #cfd5dd;
+    color: #111827;
+    display: grid;
+    gap: 7px;
+    padding: 14px 0;
+    text-decoration: none;
+}
+.all-question-item:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+.all-question-item strong {
+    color: #111827;
+    font-size: .94rem;
+}
+.all-question-item span {
+    color: #64748b;
+    font-size: .88rem;
+    font-weight: 700;
+}
+.all-question-item p {
+    color: #374151;
+    line-height: 1.55;
+    margin: 0;
+    white-space: pre-wrap;
+}
+.all-question-item:hover strong {
+    color: #4387b9;
 }
 @media (max-width: 860px) {
     .profile-head,

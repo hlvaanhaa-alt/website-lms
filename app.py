@@ -2970,6 +2970,7 @@ def forum_user_activity(user_id, limit=6):
     for post in user_questions:
         post["created_at_formatted"] = format_datetime(post.get("created_at", ""))
         post["time_ago"] = forum_time_ago(post.get("created_at", ""))
+    user_questions.sort(key=lambda item: item.get("created_at", ""), reverse=True)
 
     user_answers = []
     for comment in comments:
@@ -3011,6 +3012,7 @@ def forum_user_activity(user_id, limit=6):
 
     return {
         "questions": user_questions[:limit],
+        "all_questions": user_questions,
         "answers": user_answers[:limit],
         "best_answers": [answer for answer in user_answers if answer.get("is_best_answer")][:limit],
         "verified_answers": [answer for answer in user_answers if answer.get("is_verified_answer")][:limit],
@@ -3776,9 +3778,9 @@ def forum_delete_comment(comment_id):
     if not comment:
         return jsonify({"success": False, "message": "Bình luận không tồn tại"})
 
-    if comment["author_id"] != session["user_id"]:
+    if comment["author_id"] != session["user_id"] and not is_admin_account():
         return jsonify(
-            {"success": False, "message": "Bạn không có quyền xóa bình luận này"}
+            {"success": False, "message": "Chỉ chủ câu trả lời hoặc admin mới được xóa bình luận này"}
         )
 
     for attachment in comment.get("attachments", []):
