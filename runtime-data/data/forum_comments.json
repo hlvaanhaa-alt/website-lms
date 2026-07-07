@@ -70,20 +70,6 @@
     "demo_seed": true
   },
   {
-    "id": "comment_0006",
-    "post_id": "post_0006",
-    "author_id": "6",
-    "author_name": "giaovien",
-    "author_role": "teacher",
-    "content": "Khi cân bằng nên bắt đầu từ nguyên tố xuất hiện ít chất nhất, sau đó kiểm tra oxy cuối cùng.",
-    "created_at": "2026-07-03T03:11:40.402672",
-    "attachments": [],
-    "points_awarded": 0,
-    "best_bonus_awarded": 0,
-    "is_best_answer": false,
-    "demo_seed": true
-  },
-  {
     "id": "comment_0009",
     "post_id": "post_0006",
     "author_id": "6",
