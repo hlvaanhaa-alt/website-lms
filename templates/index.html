@@ -278,7 +278,7 @@ body {
 }
 .subject-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
 }
 .subject-card {
@@ -751,7 +751,7 @@ body {
         <div class="home-wrap quick-grid">
             <a class="quick-card" href="{{ url_for('courses') }}"><i class="fa-solid fa-layer-group"></i><strong>Khóa học</strong><span>Lộ trình học rõ ràng theo từng môn.</span></a>
             <a class="quick-card" href="{{ url_for('tracnghiem') }}"><i class="fa-solid fa-list-check"></i><strong>Trắc nghiệm</strong><span>Làm bài, nhận điểm và xem lại kết quả.</span></a>
-            <a class="quick-card" href="{{ url_for('chatbot') }}"><i class="fa-solid fa-wand-magic-sparkles"></i><strong>Trợ lí AI</strong><span>Hỏi bài, tạo câu hỏi luyện tập môn Toán.</span></a>
+            <a class="quick-card" href="{{ url_for('chatbot') }}"><i class="fa-solid fa-wand-magic-sparkles"></i><strong>Trợ lí AI</strong><span>Hỏi bài, tạo câu hỏi luyện tập cho nhiều môn THCS.</span></a>
             <a class="quick-card" href="{{ url_for('forum') }}"><i class="fa-solid fa-trophy"></i><strong>Diễn đàn</strong><span>Hỏi đáp, nhận kim cương và vật phẩm.</span></a>
         </div>
     </section>
@@ -760,23 +760,28 @@ body {
         <div class="home-wrap">
             <div class="section-head">
                 <h2>Không gian học tập có tổ chức</h2>
-                <p>Trang chủ tập trung vào các hành động chính: vào học, luyện tập, hỏi AI và tham gia cộng đồng. Người dùng mới không bị ngợp, người dùng cũ vẫn vào việc rất nhanh.</p>
+                <p>Trang chủ tập trung vào các hành động chính: vào học, luyện tập, hỏi AI và tham gia cộng đồng. Nội dung được chia theo nhóm môn để học sinh lớp 6-9 tìm đúng phần cần học.</p>
             </div>
             <div class="subject-grid">
                 <article class="subject-card">
-                    <h3>Toán học</h3>
-                    <p>Ưu tiên hiển thị công thức rõ ràng, bài luyện tập có đáp án và giải thích từng bước.</p>
-                    <div class="subject-meta"><i class="fa-solid fa-calculator"></i> Đại số · Hình học · Xác suất</div>
+                    <h3>Khoa học tự nhiên</h3>
+                    <p>Toán, Vật lý, Hóa học và Sinh học được tổ chức theo chủ đề, công thức, thí nghiệm và bài vận dụng.</p>
+                    <div class="subject-meta"><i class="fa-solid fa-atom"></i> Toán · Lý · Hóa · Sinh</div>
                 </article>
                 <article class="subject-card">
-                    <h3>Tài liệu và bài giảng</h3>
-                    <p>Giáo viên quản lý nội dung, học sinh theo dõi tiến độ và quay lại bài học nhanh.</p>
+                    <h3>Khoa học xã hội</h3>
+                    <p>Ngữ văn, Lịch sử, Địa lý và GDCD có không gian ghi nhớ ý chính, luyện phân tích và thảo luận câu hỏi mở.</p>
+                    <div class="subject-meta"><i class="fa-solid fa-book-open"></i> Văn · Sử · Địa · GDCD</div>
+                </article>
+                <article class="subject-card">
+                    <h3>Ngoại ngữ</h3>
+                    <p>Tiếng Anh tập trung vào từ vựng, ngữ pháp, đọc hiểu, viết đoạn và hệ thống câu hỏi luyện phản xạ.</p>
+                    <div class="subject-meta"><i class="fa-solid fa-language"></i> Vocabulary · Grammar · Reading</div>
+                </article>
+                <article class="subject-card">
+                    <h3>Công nghệ học tập</h3>
+                    <p>Tài liệu, trắc nghiệm, diễn đàn, kim cương và hồ sơ cá nhân liên kết thành một luồng học tập xuyên suốt.</p>
                     <div class="subject-meta"><i class="fa-solid fa-file-lines"></i> {{ home_stats.documents }} tài liệu · {{ home_stats.lessons }} bài học</div>
-                </article>
-                <article class="subject-card">
-                    <h3>Cộng đồng hỏi đáp</h3>
-                    <p>Câu hỏi, trả lời hay nhất, báo cáo vi phạm, bảng xếp hạng và shop kim cương liên kết với profile.</p>
-                    <div class="subject-meta"><i class="fa-solid fa-gem"></i> Kim cương · Huy hiệu · Avatar</div>
                 </article>
             </div>
         </div>
@@ -785,38 +790,54 @@ body {
     <section class="section math-section reveal">
         <div class="home-wrap">
             <div class="section-head">
-                <h2>Sơ đồ nội dung môn Toán</h2>
-                <p>Mỗi chủ đề được chia thành nhánh nhỏ để học sinh nhìn nhanh mình đang ở đâu và cần luyện phần nào tiếp theo.</p>
+                <h2>Bản đồ nội dung THCS</h2>
+                <p>Mỗi nhóm môn có một lối vào riêng: công thức cho môn tự nhiên, ý chính cho môn xã hội, kỹ năng cho ngoại ngữ và thực hành cho công nghệ.</p>
             </div>
             <div class="math-layout">
                 <div class="math-map">
-                    <div class="map-node"><b>01</b><strong>Số học</strong><span>Phân số, lũy thừa, căn bậc hai.</span></div>
-                    <div class="map-node"><b>02</b><strong>Đại số</strong><span>Biểu thức, phương trình, hàm số.</span></div>
-                    <div class="map-node"><b>03</b><strong>Hình học</strong><span>Tam giác, đường tròn, góc và tỉ lệ.</span></div>
-                    <div class="map-node"><b>04</b><strong>Xác suất</strong><span>Biến cố, tổ hợp, bảng thống kê.</span></div>
-                    <div class="map-node"><b>05</b><strong>Ứng dụng</strong><span>Bài toán thực tế, đọc biểu đồ.</span></div>
-                    <div class="map-node"><b>06</b><strong>Ôn thi</strong><span>Đề tổng hợp, lỗi thường gặp.</span></div>
+                    <div class="map-node"><b>01</b><strong>Toán</strong><span>Số học, đại số, hình học, xác suất và bài toán thực tế.</span></div>
+                    <div class="map-node"><b>02</b><strong>Ngữ văn</strong><span>Đọc hiểu, tiếng Việt, nghị luận, kể chuyện và phân tích tác phẩm.</span></div>
+                    <div class="map-node"><b>03</b><strong>Tiếng Anh</strong><span>Từ vựng, ngữ pháp, nghe đọc, viết đoạn và giao tiếp cơ bản.</span></div>
+                    <div class="map-node"><b>04</b><strong>Vật lý</strong><span>Cơ học, điện học, quang học, năng lượng và hiện tượng đời sống.</span></div>
+                    <div class="map-node"><b>05</b><strong>Hóa học</strong><span>Chất, phản ứng, dung dịch, nguyên tố và bài tập cân bằng.</span></div>
+                    <div class="map-node"><b>06</b><strong>Sinh học</strong><span>Cơ thể sống, tế bào, di truyền, sinh thái và sức khỏe.</span></div>
+                    <div class="map-node"><b>07</b><strong>Lịch sử</strong><span>Mốc thời gian, nhân vật, sự kiện và kỹ năng lập timeline.</span></div>
+                    <div class="map-node"><b>08</b><strong>Địa lý</strong><span>Bản đồ, khí hậu, dân cư, kinh tế và đọc biểu đồ số liệu.</span></div>
+                    <div class="map-node"><b>09</b><strong>GDCD</strong><span>Quyền, nghĩa vụ, pháp luật, kỹ năng sống và tình huống.</span></div>
+                    <div class="map-node"><b>10</b><strong>Công nghệ</strong><span>Thiết kế, sản xuất, nông nghiệp, kỹ thuật và ứng dụng.</span></div>
+                    <div class="map-node"><b>11</b><strong>Tin học</strong><span>Dữ liệu, thuật toán, bảng tính, an toàn số và lập trình cơ bản.</span></div>
+                    <div class="map-node"><b>12</b><strong>Ôn tập</strong><span>Đề trắc nghiệm, câu hỏi diễn đàn, bài sai và kế hoạch tuần.</span></div>
                 </div>
                 <aside class="math-board">
                     <div class="board-head">
-                        <h3>Góc công thức</h3>
-                        <span>Công thức trọng tâm</span>
+                        <h3>Góc ghi nhớ liên môn</h3>
+                        <span>Mẫu học nhanh</span>
                     </div>
                     <div class="formula-list">
                         <div class="formula-card">
-                            <div class="formula-tag">Xác suất</div>
+                            <div class="formula-tag">Toán</div>
                             <div class="formula-math">\(P(A)=\dfrac{n(A)}{n(\Omega)}\)</div>
-                            <span>Xác suất của biến cố A.</span>
+                            <span>Xác suất của biến cố A, dùng khi luyện thống kê và tổ hợp.</span>
                         </div>
                         <div class="formula-card">
-                            <div class="formula-tag">Hàm số</div>
-                            <div class="formula-math">\(y=ax+b\)</div>
-                            <span>Hàm số bậc nhất lớp 9.</span>
+                            <div class="formula-tag">Vật lý</div>
+                            <div class="formula-math">\(I=\dfrac{U}{R}\)</div>
+                            <span>Định luật Ôm, nối nhanh giữa điện áp, cường độ dòng điện và điện trở.</span>
                         </div>
                         <div class="formula-card">
-                            <div class="formula-tag">Hình học</div>
-                            <div class="formula-math">\(a^2+b^2=c^2\)</div>
-                            <span>Định lý Pythagore.</span>
+                            <div class="formula-tag">Hóa học</div>
+                            <div class="formula-math">\(2H_2+O_2 \rightarrow 2H_2O\)</div>
+                            <span>Ví dụ cân bằng phương trình phản ứng hóa học.</span>
+                        </div>
+                        <div class="formula-card">
+                            <div class="formula-tag">Tiếng Anh</div>
+                            <div class="formula-math">S + have/has + V3</div>
+                            <span>Cấu trúc hiện tại hoàn thành, dễ nhầm với quá khứ đơn.</span>
+                        </div>
+                        <div class="formula-card">
+                            <div class="formula-tag">Ngữ văn</div>
+                            <div class="formula-math">Luận điểm → Dẫn chứng → Nhận xét</div>
+                            <span>Khung triển khai đoạn nghị luận ngắn, rõ ý và dễ chấm.</span>
                         </div>
                     </div>
                 </aside>
@@ -844,7 +865,7 @@ body {
                     </div>
                 </div>
                 <div class="insight-grid">
-                    <div class="insight-card"><i class="fa-solid fa-bolt"></i><strong>Quiz trong chat</strong><span>Học sinh hỏi một chủ đề, AI tạo bộ câu trắc nghiệm để làm ngay.</span></div>
+                    <div class="insight-card"><i class="fa-solid fa-bolt"></i><strong>Quiz trong chat</strong><span>Học sinh hỏi một chủ đề ở bất kỳ môn nào, AI tạo bộ câu trắc nghiệm để làm ngay.</span></div>
                     <div class="insight-card"><i class="fa-solid fa-chart-line"></i><strong>Lưu kết quả</strong><span>Điểm số và hoạt động được gom lại để theo dõi lâu dài.</span></div>
                     <div class="insight-card"><i class="fa-solid fa-gem"></i><strong>Kim cương</strong><span>Trả lời tốt trong diễn đàn sẽ nhận thưởng và đổi vật phẩm.</span></div>
                     <div class="insight-card"><i class="fa-solid fa-shield-halved"></i><strong>Kiểm duyệt</strong><span>Báo cáo vi phạm giúp cộng đồng học tập sạch hơn.</span></div>
@@ -857,7 +878,7 @@ body {
         <div class="home-wrap">
             <div class="section-head">
                 <h2>Quy trình học gọn hơn</h2>
-                <p>Quy trình được đưa xuống section riêng để first screen thoáng, có điểm nhấn và giống một sản phẩm thật hơn.</p>
+                <p>Quy trình được chia theo hành động học thật: chọn môn, luyện tập, hỏi khi bí và ghi nhận tiến bộ.</p>
             </div>
             <div class="workflow-grid">
                 <div class="workflow-step"><b>01</b><strong>Chọn nội dung</strong><span>Vào khóa học, bài tập hoặc đề trắc nghiệm phù hợp.</span></div>
@@ -877,13 +898,13 @@ body {
             <div class="testimonial-grid">
                 <article class="testimonial-card">
                     <div class="stars">★★★★★</div>
-                    <p>“Em thích phần AI tạo câu hỏi Toán, làm xong biết điểm ngay nên dễ luyện mỗi ngày.”</p>
+                    <p>“Em thích phần AI tạo câu hỏi luyện tập, có thể hỏi Toán, Anh hoặc Lý rồi làm quiz ngay.”</p>
                     <div class="reviewer"><div class="avatar-dot">A</div><div><strong>Anh Minh</strong><span>Học sinh lớp 9</span></div></div>
                 </article>
                 <article class="testimonial-card">
                     <div class="stars">★★★★★</div>
                     <p>“Diễn đàn có điểm thưởng làm học sinh chịu giải thích bài rõ hơn, không chỉ gửi đáp án.”</p>
-                    <div class="reviewer"><div class="avatar-dot">T</div><div><strong>Cô Thảo</strong><span>Giáo viên Toán</span></div></div>
+                    <div class="reviewer"><div class="avatar-dot">T</div><div><strong>Cô Thảo</strong><span>Giáo viên THCS</span></div></div>
                 </article>
                 <article class="testimonial-card">
                     <div class="stars">★★★★☆</div>
