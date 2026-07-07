@@ -41,7 +41,13 @@ def register_user(username, password, email, role='student'):
     users.append(new_user)
     save_users(users)
     
-    return {'success': True, 'message': 'Đăng ký thành công'}
+    return {
+        'success': True,
+        'message': 'Đăng ký thành công',
+        'user_id': user_id,
+        'username': username,
+        'role': role
+    }
 
 def login_user(username, password):
     """Đăng nhập user (hỗ trợ cả hash và plaintext cho bản demo)"""

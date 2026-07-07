@@ -94,6 +94,7 @@ FORUM_REWARD_LEVELS = [10, 20, 30, 40, 50, 60]
 ONLINE_USERS = {}
 ONLINE_WINDOW_SECONDS = 300
 GIFT_CHECKIN_POINTS = 5
+WELCOME_BONUS_POINTS = 50
 GIFT_BOX_REWARDS = {
     "blue": {"name": "Hộp xanh", "threshold": 5, "points": 8},
     "gold": {"name": "Hộp vàng", "threshold": 10, "points": 15},
@@ -448,7 +449,14 @@ def register():
         result = register_user(username, password, email, role="student")
 
         if result["success"]:
-            flash("Đăng ký thành công! Vui lòng đăng nhập", "success")
+            add_forum_points(
+                result["user_id"],
+                result.get("username", username),
+                result.get("role", "student"),
+                WELCOME_BONUS_POINTS,
+                "welcome_bonus",
+            )
+            flash(f"Đăng ký thành công! Bạn được tặng {WELCOME_BONUS_POINTS} kim cương khi bắt đầu.", "success")
             return redirect(url_for("login"))
         else:
             flash(result["message"], "danger")
