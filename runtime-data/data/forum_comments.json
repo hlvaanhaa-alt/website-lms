@@ -11,7 +11,12 @@
     "points_awarded": 30,
     "best_bonus_awarded": 30,
     "is_best_answer": true,
-    "demo_seed": true
+    "demo_seed": true,
+    "thank_user_ids": [
+      "6"
+    ],
+    "ratings": {},
+    "discussions": []
   },
   {
     "id": "comment_0002",
