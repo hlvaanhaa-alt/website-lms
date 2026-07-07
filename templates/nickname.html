@@ -12,9 +12,11 @@
             font-family: "Segoe UI", Arial, sans-serif;
             color: #102033;
             background:
-                linear-gradient(135deg, rgba(30, 86, 130, .88), rgba(75, 57, 162, .86)),
-                radial-gradient(circle at 12% 20%, rgba(255,255,255,.3), transparent 28%),
-                #18324a;
+                linear-gradient(90deg, transparent 0 58px, rgba(240, 100, 150, .58) 58px 60px, transparent 60px),
+                linear-gradient(rgba(239, 96, 145, .28) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(239, 96, 145, .22) 2px, transparent 2px),
+                #fffafd;
+            background-size: auto, 34px 34px, 34px 34px, auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -22,16 +24,20 @@
         }
         .lobby {
             width: min(1060px, 100%);
-            background: rgba(255, 255, 255, .96);
-            border: 1px solid rgba(255,255,255,.72);
-            border-radius: 18px;
-            box-shadow: 0 24px 80px rgba(3, 12, 28, .32);
+            background:
+                linear-gradient(90deg, rgba(240, 100, 150, .34) 0 2px, transparent 2px 100%),
+                rgba(255, 255, 255, .94);
+            background-position: 62px 0, 0 0;
+            border: 1px solid rgba(240, 100, 150, .26);
+            border-radius: 14px;
+            box-shadow: 0 24px 70px rgba(136, 36, 88, .2);
             overflow: hidden;
         }
         .lobby-head {
             align-items: center;
-            background: #102033;
-            color: #fff;
+            background: rgba(255, 255, 255, .9);
+            border-bottom: 2px solid rgba(240, 100, 150, .26);
+            color: #102033;
             display: flex;
             justify-content: space-between;
             gap: 18px;
@@ -41,11 +47,12 @@
             font-size: clamp(1.6rem, 3vw, 2.4rem);
             margin: 0 0 6px;
         }
-        .lobby-head p { color: rgba(255,255,255,.72); margin: 0; }
+        .lobby-head p { color: #687589; margin: 0; }
         .player-chip {
-            background: rgba(255,255,255,.12);
-            border: 1px solid rgba(255,255,255,.22);
+            background: #fff4f9;
+            border: 1px solid rgba(240, 100, 150, .32);
             border-radius: 999px;
+            color: #a3195b;
             font-weight: 900;
             padding: 10px 14px;
             white-space: nowrap;
@@ -57,14 +64,15 @@
             padding: 22px;
         }
         .topic-card {
-            background: #fff;
-            border: 1px solid #d9e4ef;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, .9);
+            border: 1px solid #f3bdd4;
+            border-left: 5px solid #e85d9d;
+            border-radius: 8px;
             display: grid;
             gap: 14px;
             min-height: 210px;
             padding: 18px;
-            box-shadow: 0 10px 24px rgba(16, 32, 51, .08);
+            box-shadow: 0 12px 28px rgba(136, 36, 88, .1);
         }
         .topic-meta {
             align-items: center;
@@ -73,10 +81,10 @@
             gap: 10px;
         }
         .grade {
-            background: #eaf7f5;
-            border: 1px solid #bee9e2;
+            background: #fff4f9;
+            border: 1px solid #f3bdd4;
             border-radius: 999px;
-            color: #147d70;
+            color: #a3195b;
             font-weight: 900;
             padding: 5px 9px;
         }
@@ -99,11 +107,12 @@
             min-height: 44px;
             border: 0;
             border-radius: 8px;
-            background: linear-gradient(135deg, #1f7ed0, #35c2ff);
+            background: linear-gradient(135deg, #e85d9d, #7c5fd6);
             color: #fff;
             cursor: pointer;
             font-weight: 900;
             font-size: 1rem;
+            box-shadow: 0 10px 22px rgba(124, 95, 214, .22);
         }
         .empty-state {
             padding: 56px 24px;
@@ -119,14 +128,15 @@
             margin: 0;
         }
         .lobby-actions {
-            border-top: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, .78);
+            border-top: 2px solid rgba(240, 100, 150, .2);
             display: flex;
             justify-content: space-between;
             gap: 12px;
             padding: 16px 22px;
         }
         .lobby-actions a {
-            color: #1f5cbb;
+            color: #a3195b;
             font-weight: 900;
             text-decoration: none;
         }

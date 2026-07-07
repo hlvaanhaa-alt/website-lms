@@ -1,3 +1,134 @@
 {
-  "topics": []
+  "topics": [
+    {
+      "id": "topic-lop-8-hang-dang-thuc-phan-thuc",
+      "title": "Hằng đẳng thức và phân thức",
+      "grade": "Lớp 8",
+      "created_by": "teacher_seed",
+      "created_by_name": "Giáo viên Toán",
+      "created_at": "2026-07-07T09:00:00",
+      "questions": [
+        {
+          "question": "Khai triển biểu thức \\((x+3)^2\\).",
+          "options": [
+            "\\(x^2+6x+9\\)",
+            "\\(x^2+3x+9\\)",
+            "\\(x^2+9\\)",
+            "\\(x^2-6x+9\\)"
+          ],
+          "answer": "\\(x^2+6x+9\\)",
+          "difficulty": 1
+        },
+        {
+          "question": "Rút gọn phân thức \\(\\dfrac{x^2-9}{x-3}\\) với \\(x \\ne 3\\).",
+          "options": [
+            "\\(x+3\\)",
+            "\\(x-3\\)",
+            "\\(x^2+3\\)",
+            "\\(3-x\\)"
+          ],
+          "answer": "\\(x+3\\)",
+          "difficulty": 1
+        },
+        {
+          "question": "Giá trị của \\((a-b)^2\\) bằng biểu thức nào?",
+          "options": [
+            "\\(a^2-2ab+b^2\\)",
+            "\\(a^2+2ab+b^2\\)",
+            "\\(a^2-b^2\\)",
+            "\\(a^2+ab+b^2\\)"
+          ],
+          "answer": "\\(a^2-2ab+b^2\\)",
+          "difficulty": 1
+        },
+        {
+          "question": "Phân tích đa thức \\(x^2-16\\) thành nhân tử.",
+          "options": [
+            "\\((x-4)(x+4)\\)",
+            "\\((x-8)(x+2)\\)",
+            "\\((x-4)^2\\)",
+            "\\((x+4)^2\\)"
+          ],
+          "answer": "\\((x-4)(x+4)\\)",
+          "difficulty": 1
+        },
+        {
+          "question": "Điều kiện xác định của phân thức \\(\\dfrac{2x+1}{x^2-4}\\) là gì?",
+          "options": [
+            "\\(x \\ne 2, x \\ne -2\\)",
+            "\\(x \\ne 4\\)",
+            "\\(x \\ne 0\\)",
+            "\\(x \\ne -1\\)"
+          ],
+          "answer": "\\(x \\ne 2, x \\ne -2\\)",
+          "difficulty": 1
+        }
+      ]
+    },
+    {
+      "id": "topic-lop-9-can-bac-hai-ham-so-bac-nhat",
+      "title": "Căn bậc hai và hàm số bậc nhất",
+      "grade": "Lớp 9",
+      "created_by": "teacher_seed",
+      "created_by_name": "Giáo viên Toán",
+      "created_at": "2026-07-07T09:10:00",
+      "questions": [
+        {
+          "question": "Rút gọn biểu thức \\(\\sqrt{50}\\).",
+          "options": [
+            "\\(5\\sqrt{2}\\)",
+            "\\(25\\sqrt{2}\\)",
+            "\\(2\\sqrt{5}\\)",
+            "\\(10\\sqrt{5}\\)"
+          ],
+          "answer": "\\(5\\sqrt{2}\\)",
+          "difficulty": 1
+        },
+        {
+          "question": "Nghiệm của phương trình \\(2x-5=0\\) là gì?",
+          "options": [
+            "\\(x=\\dfrac{5}{2}\\)",
+            "\\(x=\\dfrac{2}{5}\\)",
+            "\\(x=-\\dfrac{5}{2}\\)",
+            "\\(x=5\\)"
+          ],
+          "answer": "\\(x=\\dfrac{5}{2}\\)",
+          "difficulty": 1
+        },
+        {
+          "question": "Hàm số \\(y=3x-2\\) có hệ số góc là bao nhiêu?",
+          "options": [
+            "\\(3\\)",
+            "\\(-2\\)",
+            "\\(2\\)",
+            "\\(-3\\)"
+          ],
+          "answer": "\\(3\\)",
+          "difficulty": 1
+        },
+        {
+          "question": "Đường thẳng \\(y=2x+1\\) đi qua điểm nào sau đây?",
+          "options": [
+            "\\((0;1)\\)",
+            "\\((1;0)\\)",
+            "\\((0;2)\\)",
+            "\\((2;1)\\)"
+          ],
+          "answer": "\\((0;1)\\)",
+          "difficulty": 1
+        },
+        {
+          "question": "Tính \\(\\sqrt{9}+\\sqrt{16}\\).",
+          "options": [
+            "\\(7\\)",
+            "\\(5\\)",
+            "\\(25\\)",
+            "\\(\\sqrt{25}\\)"
+          ],
+          "answer": "\\(7\\)",
+          "difficulty": 1
+        }
+      ]
+    }
+  ]
 }
