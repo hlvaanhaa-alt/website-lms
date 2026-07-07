@@ -154,5 +154,17 @@
     "month": "2026-07",
     "created_at": "2026-07-07T03:26:40.402672",
     "demo_seed": true
+  },
+  {
+    "id": "fp_000013",
+    "user_id": "2",
+    "username": "thaydaytoan",
+    "role": "student",
+    "points": 5,
+    "reason": "daily_attendance",
+    "post_id": null,
+    "answer_id": null,
+    "month": "2026-07",
+    "created_at": "2026-07-07T11:38:13.746480"
   }
 ]
