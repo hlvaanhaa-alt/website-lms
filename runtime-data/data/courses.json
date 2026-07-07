@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "course_1",
+    "teacher_id": "1",
+    "title": "Văn - lớp 9",
+    "description": "Tới với khóa học này, các em có thể tự học, nâng cao kiến thức về ngữ văn 9",
+    "lessons": [
+      {
+        "id": "1",
+        "title": "Chuyện người con gái Nam Xương - Nguyễn Dữ",
+        "video_url": "",
+        "document_url": "https://drive.google.com/drive/folders/1tvFlU5HB8YKldh0lmRdptSNEoqhj2wbe",
+        "questions": [
+          {
+            "question": "Tác giả của tác phẩm này là ai?",
+            "correct_answer": "Nguyễn Dữ"
+          },
+          {
+            "question": "Vũ Nương trong mối quan hệ giữa vợ chồng như nào?",
+            "correct_answer": "B",
+            "options": [
+              "Người vợ độc ác, cấm đoán chồng",
+              "Người vợ đoan trang, thủy chung",
+              "Người vợ nhạy cảm, lo toan"
+            ]
+          }
+        ]
+      }
+    ],
+    "created_at": "2026-07-07T07:10:24.675904"
+  }
+]
