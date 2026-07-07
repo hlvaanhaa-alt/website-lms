@@ -70,19 +70,6 @@
     "demo_seed": true
   },
   {
-    "id": "comment_0009",
-    "post_id": "post_0006",
-    "author_id": "6",
-    "author_name": "Kimchi",
-    "author_role": "student",
-    "content": "sdibfBNk",
-    "created_at": "2026-07-07T05:16:33.509053",
-    "attachments": [],
-    "points_awarded": 0,
-    "best_bonus_awarded": 0,
-    "is_best_answer": false
-  },
-  {
     "id": "comment_0010",
     "post_id": "post_0006",
     "author_id": "6",
