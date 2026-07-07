@@ -32,7 +32,19 @@
                 </label>
                 <label>
                     Điểm thưởng
-                    <input type="number" name="reward_points" min="0" max="500" value="{% if edit_mode %}{{ post.reward_points|default(10) }}{% else %}10{% endif %}">
+                    <select name="reward_points" {% if edit_mode %}disabled{% endif %} required>
+                        {% for level in reward_levels %}
+                        <option value="{{ level }}" {% if (edit_mode and post.reward_points == level) or (not edit_mode and level == 10) %}selected{% endif %}>{{ level }} kim cương</option>
+                        {% endfor %}
+                        {% if edit_mode and post.reward_points not in reward_levels %}
+                        <option value="{{ post.reward_points }}" selected>{{ post.reward_points }} kim cương</option>
+                        {% endif %}
+                    </select>
+                    {% if edit_mode %}
+                    <small>Điểm thưởng không đổi sau khi đã đăng.</small>
+                    {% else %}
+                    <small>Số dư hiện có: {{ current_user_stats.points }} kim cương.</small>
+                    {% endif %}
                 </label>
                 <label>
                     Loại câu hỏi
@@ -153,6 +165,11 @@ label {
     gap: 7px;
     color: #374151;
     font-weight: 700;
+}
+label small {
+    color: #64748b;
+    font-size: .86rem;
+    font-weight: 600;
 }
 input, select, textarea {
     width: 100%;

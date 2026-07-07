@@ -26,7 +26,7 @@ body {
     padding: 76px 0 58px;
     background:
         linear-gradient(90deg, rgba(13, 32, 54, .86) 0%, rgba(13, 32, 54, .72) 42%, rgba(13, 32, 54, .25) 100%),
-        url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1800&q=82") center / cover;
+        url("{{ url_for('static', filename='nen.jpg') }}") center / cover;
 }
 .home-hero::after {
     content: "";

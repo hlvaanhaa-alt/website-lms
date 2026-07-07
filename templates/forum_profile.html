@@ -33,6 +33,9 @@
                     <span class="title-badge {{ equipped.title.css_class }}">{{ equipped.title.name }}</span>
                     {% endif %}
                 </div>
+                {% if profile_user.full_name %}
+                <p class="real-name">Họ tên thật: <strong>{{ profile_user.full_name }}</strong></p>
+                {% endif %}
                 <p class="quote-mark">“ .................... ”</p>
                 {% if equipped.badges %}
                 <div class="owned-badges">
@@ -70,6 +73,26 @@
                 </div>
             </div>
         </header>
+
+        {% if session.user_id == profile_user.id %}
+        <section class="profile-section profile-edit-section">
+            <div class="section-title-row">
+                <h2>Cập nhật hồ sơ</h2>
+                <span class="edit-hint">Dùng username mới cho lần đăng nhập sau</span>
+            </div>
+            <form class="profile-edit-form" method="POST" action="{{ url_for('update_profile_basic') }}">
+                <label>
+                    <span>Họ và tên thật</span>
+                    <input type="text" name="full_name" value="{{ profile_user.full_name or '' }}" maxlength="80" placeholder="Ví dụ: Nguyễn Minh Tuấn">
+                </label>
+                <label>
+                    <span>Username</span>
+                    <input type="text" name="username" value="{{ profile_user.username }}" minlength="3" maxlength="30" required>
+                </label>
+                <button type="submit">Lưu thay đổi</button>
+            </form>
+        </section>
+        {% endif %}
 
         <section class="profile-section badge-section">
             <div class="section-title-row">
@@ -221,7 +244,6 @@
         <section class="profile-section info-grid">
             <div>
                 <p>Ngày tham gia: {{ profile_user.created_at[:10] if profile_user.created_at else '-' }}</p>
-                <p>Tuổi Hoidap247: {{ age_days }} ngày</p>
                 <a class="more-link" href="#">Xem thêm thông tin</a>
             </div>
             <div>
@@ -344,6 +366,14 @@ body { background: #eef1f4; }
     font-weight: 800;
     margin: 4px 0 16px;
 }
+.real-name {
+    color: #475569;
+    font-size: .92rem;
+    margin: 4px 0 8px;
+}
+.real-name strong {
+    color: #111827;
+}
 .owned-badges {
     display: flex;
     flex-wrap: wrap;
@@ -397,6 +427,63 @@ body { background: #eef1f4; }
     font-size: 1rem;
     margin: 0 0 16px;
     text-transform: uppercase;
+}
+.profile-edit-section {
+    background: #f8fbff;
+    border: 1px solid #dbe8f5;
+    border-radius: 6px;
+    margin-top: 20px;
+    padding: 16px;
+}
+.profile-edit-section h2 {
+    margin: 0;
+}
+.edit-hint {
+    color: #64748b;
+    font-size: .86rem;
+    font-weight: 700;
+}
+.profile-edit-form {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(160px, 260px) auto;
+    gap: 12px;
+    margin-top: 14px;
+    align-items: end;
+}
+.profile-edit-form label {
+    display: grid;
+    gap: 6px;
+}
+.profile-edit-form label span {
+    color: #334155;
+    font-size: .84rem;
+    font-weight: 800;
+}
+.profile-edit-form input {
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    color: #0f172a;
+    font: inherit;
+    min-height: 42px;
+    padding: 9px 11px;
+    width: 100%;
+}
+.profile-edit-form input:focus {
+    border-color: #4387b9;
+    box-shadow: 0 0 0 3px rgba(67, 135, 185, .16);
+    outline: none;
+}
+.profile-edit-form button {
+    background: #4387b9;
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 900;
+    min-height: 42px;
+    padding: 9px 14px;
+    white-space: nowrap;
 }
 .badge-wrap {
     display: inline-grid;
@@ -658,6 +745,12 @@ body { background: #eef1f4; }
     .section-title-row {
         align-items: flex-start;
         flex-direction: column;
+    }
+    .profile-edit-form {
+        grid-template-columns: 1fr;
+    }
+    .profile-edit-form button {
+        width: 100%;
     }
 }
 </style>

@@ -50,7 +50,11 @@
                     <div class="question-meta">
                         <strong>{{ post.subject }}</strong>
                         {% if post.grade %}<span>{{ post.grade }}</span>{% endif %}
-                        {% if post.author_title %}<span class="title-chip">{{ post.author_title.name }}</span>{% endif %}
+                        {% if post.answers_count > 0 %}
+                        <span class="answered-chip">Đã trả lời</span>
+                        {% elif post.author_title %}
+                        <span class="title-chip">{{ post.author_title.name }}</span>
+                        {% endif %}
                         <span>{{ post.reward_points }}đ</span>
                         <span>{{ post.time_ago }}</span>
                         <span>{{ post.answers_count }} trả lời</span>
@@ -256,15 +260,23 @@ body { background: #eef1f4; }
 .question-meta span::before { content: "· "; color: #6b7280; }
 .question-meta .solved,
 .question-meta .first,
-.title-chip {
+.title-chip,
+.answered-chip {
     color: #5d9b22;
     border: 1px solid #92c45b;
     padding: 1px 8px;
     border-radius: 2px;
 }
+.answered-chip {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #34d399;
+    font-weight: 800;
+}
 .question-meta .solved::before,
 .question-meta .first::before,
-.title-chip::before { content: ""; }
+.title-chip::before,
+.answered-chip::before { content: ""; }
 .question-title {
     display: block;
     margin: 10px 0 8px;

@@ -10,6 +10,7 @@ import requests
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 REPO_DATA_DIR = BASE_DIR / "data"
+STATIC_FORUM_UPLOAD_DIR = BASE_DIR / "static" / "uploads" / "forum"
 
 DATA_BACKEND = os.getenv("DATA_BACKEND", "file").lower()
 PERSISTENT_DIR = os.getenv("PERSISTENT_DIR")
@@ -177,6 +178,23 @@ def sync_file_to_remote(local_path, remote_path=None):
     if not remote_path or not local_path.exists():
         return
     _github_upload(remote_path, local_path.read_bytes(), f"Update {remote_path}")
+
+
+def ensure_forum_upload_available(filename):
+    safe_filename = Path(filename).name
+    target = FORUM_UPLOAD_DIR / safe_filename
+    if target.exists():
+        return True
+    if ensure_file_from_remote(target):
+        return True
+
+    seed = STATIC_FORUM_UPLOAD_DIR / safe_filename
+    if seed.exists():
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(seed, target)
+        sync_file_to_remote(target)
+        return True
+    return False
 
 
 def _lock_for(path):

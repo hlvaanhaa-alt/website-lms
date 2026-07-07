@@ -14,7 +14,7 @@ import os
 import random
 from werkzeug.utils import secure_filename
 import uuid
-from utils.auth import register_user, login_user, get_user_by_id, load_users
+from utils.auth import register_user, login_user, get_user_by_id, load_users, save_users
 from utils.database import Database
 from utils.gemini_api import (
     chat_with_gemini,
@@ -27,7 +27,7 @@ from utils.gemini_api import grade_essay_with_ai  ############
 from utils.storage import (
     FORUM_UPLOAD_DIR,
     attachment_storage_path,
-    ensure_file_from_remote,
+    ensure_forum_upload_available,
     forum_upload_path,
     forum_upload_url,
     read_json,
@@ -87,6 +87,7 @@ FORUM_REPORT_STATUSES = {
     "resolved": "Đã xử lý",
     "rejected": "Bỏ qua",
 }
+FORUM_REWARD_LEVELS = [10, 20, 30, 40, 50, 60]
 ONLINE_USERS = {}
 ONLINE_WINDOW_SECONDS = 300
 
@@ -1939,8 +1940,10 @@ def allowed_file(filename):
 @app.route("/uploads/forum/<path:filename>")
 @login_required
 def uploaded_forum_file(filename):
-    ensure_file_from_remote(FORUM_UPLOAD_DIR / filename)
-    return send_from_directory(FORUM_UPLOAD_DIR, filename)
+    ensure_forum_upload_available(filename)
+    response = send_from_directory(FORUM_UPLOAD_DIR, filename)
+    response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
 
 
 def forum_month_key(dt=None):
@@ -2754,7 +2757,13 @@ def forum_create_post():
                 reward_points = int(request.form.get("reward_points", 10))
             except (TypeError, ValueError):
                 reward_points = 10
-            reward_points = max(0, min(reward_points, 500))
+            if reward_points not in FORUM_REWARD_LEVELS:
+                return jsonify(
+                    {
+                        "success": False,
+                        "message": "Điểm thưởng chỉ được chọn theo mức 10, 20, 30, 40, 50 hoặc 60",
+                    }
+                )
 
             if not title or not content or subject not in FORUM_SUBJECTS or grade not in FORUM_GRADES:
                 return jsonify(
@@ -2771,6 +2780,14 @@ def forum_create_post():
 
             user = get_user_by_id(session["user_id"])
             existing_questions = db.get_forum_posts_by_user(session["user_id"])
+            current_balance = forum_user_stats(session["user_id"])["points"]
+            if current_balance < reward_points:
+                return jsonify(
+                    {
+                        "success": False,
+                        "message": f"Bạn cần có ít nhất {reward_points} kim cương để đặt câu hỏi mức {reward_points} điểm",
+                    }
+                )
 
             post_data = {
                 "title": title,
@@ -2790,6 +2807,14 @@ def forum_create_post():
             }
 
             post_id = db.create_forum_post(post_data)
+            add_forum_points(
+                session["user_id"],
+                session.get("username", "Unknown"),
+                user.get("role", "student") if user else "student",
+                -reward_points,
+                "question_reward_pool",
+                post_id=post_id,
+            )
 
             return jsonify(
                 {
@@ -2807,6 +2832,8 @@ def forum_create_post():
         username=session.get("username"),
         forum_subjects=FORUM_SUBJECTS,
         forum_grades=FORUM_GRADES,
+        reward_levels=FORUM_REWARD_LEVELS,
+        current_user_stats=forum_user_stats(session["user_id"]),
     )
 
 
@@ -2834,11 +2861,7 @@ def forum_edit_post(post_id):
             subject = request.form.get("subject", "").strip()
             grade = request.form.get("grade", "").strip()
             extra_tags = request.form.get("tags", "").strip()
-            try:
-                reward_points = int(request.form.get("reward_points", post.get("reward_points", 10)))
-            except (TypeError, ValueError):
-                reward_points = int(post.get("reward_points", 10) or 10)
-            reward_points = max(0, min(reward_points, 500))
+            reward_points = int(post.get("reward_points", 10) or 10)
 
             if not title or not content or subject not in FORUM_SUBJECTS or grade not in FORUM_GRADES:
                 return jsonify(
@@ -2886,6 +2909,8 @@ def forum_edit_post(post_id):
         username=session.get("username"),
         forum_subjects=FORUM_SUBJECTS,
         forum_grades=FORUM_GRADES,
+        reward_levels=FORUM_REWARD_LEVELS,
+        current_user_stats=forum_user_stats(session["user_id"]),
     )
 
 
@@ -3134,6 +3159,46 @@ def forum_leaderboard_page():
 @login_required
 def my_profile():
     return redirect(url_for("forum_profile", user_id=session["user_id"]))
+
+
+@app.route("/profile/basic", methods=["POST"])
+@login_required
+def update_profile_basic():
+    users = load_users()
+    user = next((record for record in users if record.get("id") == session["user_id"]), None)
+    if not user:
+        flash("Không tìm thấy tài khoản", "warning")
+        return redirect(url_for("forum"))
+
+    username = (request.form.get("username") or "").strip()
+    full_name = " ".join((request.form.get("full_name") or "").strip().split())
+
+    if not username:
+        flash("Tên đăng nhập không được để trống", "warning")
+        return redirect(url_for("my_profile"))
+    if len(username) < 3 or len(username) > 30:
+        flash("Tên đăng nhập cần từ 3 đến 30 ký tự", "warning")
+        return redirect(url_for("my_profile"))
+    if any(ch not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-" for ch in username):
+        flash("Tên đăng nhập chỉ dùng chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang", "warning")
+        return redirect(url_for("my_profile"))
+    if len(full_name) > 80:
+        flash("Họ và tên thật tối đa 80 ký tự", "warning")
+        return redirect(url_for("my_profile"))
+    if any(
+        record.get("id") != user.get("id")
+        and record.get("username", "").lower() == username.lower()
+        for record in users
+    ):
+        flash("Tên đăng nhập này đã có người dùng", "warning")
+        return redirect(url_for("my_profile"))
+
+    user["username"] = username
+    user["full_name"] = full_name
+    save_users(users)
+    session["username"] = username
+    flash("Đã cập nhật hồ sơ", "success")
+    return redirect(url_for("my_profile"))
 
 
 @app.route("/profile/<user_id>")
