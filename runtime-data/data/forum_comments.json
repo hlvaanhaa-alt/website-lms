@@ -78,21 +78,5 @@
     "best_bonus_awarded": 0,
     "is_best_answer": false,
     "demo_seed": true
-  },
-  {
-    "id": "comment_0006",
-    "post_id": "post_0005",
-    "author_id": "11",
-    "author_name": "Gia Vinh",
-    "author_role": "student",
-    "content": "`A = sqrt(12) + sqrt(27) - sqrt(3)`\r\n`A = sqrt(4) . sqrt(3) + sqrt(9) . sqrt(3) - sqrt(3)`\r\n`A = 2sqrt(3) + 3sqrt(3) - sqrt(3)`\r\n`A = (2 + 3 - 1)sqrt(3)`\r\n`A = 4sqrt(3)`",
-    "created_at": "2026-07-07T09:28:36.309681",
-    "attachments": [],
-    "points_awarded": 40,
-    "best_bonus_awarded": 0,
-    "is_best_answer": false,
-    "thank_user_ids": [],
-    "ratings": {},
-    "discussions": []
   }
 ]
