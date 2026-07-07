@@ -61,6 +61,7 @@ SHOP_ITEMS_FILE = writable_data_file("shop_items.json", [])
 SHOP_ORDERS_FILE = writable_data_file("shop_orders.json", [])
 USER_INVENTORY_FILE = writable_data_file("user_inventory.json", [])
 USER_PROFILES_FILE = writable_data_file("user_profiles.json", [])
+NOTIFICATIONS_FILE = writable_data_file("notifications.json", [])
 
 FORUM_SUBJECTS = [
     "Toán",
@@ -153,9 +154,88 @@ def admin_required(f):
     return decorated_function
 
 
+def staff_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user_id" not in session:
+            flash("Vui lòng đăng nhập", "warning")
+            return redirect(url_for("login"))
+
+        user = get_user_by_id(session["user_id"])
+        if not user or user.get("role") not in {"teacher", "admin"}:
+            flash("Chỉ giáo viên hoặc quản trị viên mới có quyền gửi thông báo", "danger")
+            return redirect(url_for("index"))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def notification_records():
+    records = read_json(NOTIFICATIONS_FILE, [])
+    return records if isinstance(records, list) else []
+
+
+def save_notification_records(records):
+    write_json(NOTIFICATIONS_FILE, records)
+
+
+def notification_visible_to(notification, user):
+    if not user:
+        return False
+    if notification.get("audience") == "all_students":
+        return user.get("role") == "student"
+    return notification.get("recipient_id") == user.get("id")
+
+
+def user_notification_items(user_id):
+    user = get_user_by_id(user_id)
+    items = [
+        dict(record)
+        for record in notification_records()
+        if notification_visible_to(record, user)
+    ]
+    items.sort(key=lambda item: item.get("created_at", ""), reverse=True)
+    for item in items:
+        read_by = item.get("read_by") or []
+        item["is_read"] = user_id in read_by
+        try:
+            created = datetime.fromisoformat(item.get("created_at", ""))
+            item["created_label"] = created.strftime("%d/%m/%Y %H:%M")
+        except Exception:
+            item["created_label"] = "-"
+    return items
+
+
+def unread_notifications_count(user_id):
+    return len([item for item in user_notification_items(user_id) if not item.get("is_read")])
+
+
+def mark_notifications_read(user_id):
+    changed = False
+    user = get_user_by_id(user_id)
+    records = notification_records()
+    for record in records:
+        if not notification_visible_to(record, user):
+            continue
+        read_by = record.setdefault("read_by", [])
+        if user_id not in read_by:
+            read_by.append(user_id)
+            changed = True
+    if changed:
+        save_notification_records(records)
+
+
 @app.context_processor
 def inject_admin_state():
-    return {"is_admin_session": is_admin_account()}
+    user_id = session.get("user_id")
+    return {
+        "is_admin_session": is_admin_account(),
+        "notification_unread_count": unread_notifications_count(user_id) if user_id else 0,
+    }
+
+
+def next_notification_id(records):
+    return f"notice_{len(records) + 1:05d}_{uuid.uuid4().hex[:6]}"
 
 
 @app.before_request
@@ -285,6 +365,109 @@ def logout():
     session.clear()
     flash(f"Tạm biệt {username}!", "info")
     return redirect(url_for("index"))
+
+
+@app.route("/notifications")
+@login_required
+def notifications_page():
+    user_id = session["user_id"]
+    notifications = user_notification_items(user_id)
+    mark_notifications_read(user_id)
+    return render_template(
+        "notifications.html",
+        notifications=notifications,
+        username=session.get("username"),
+    )
+
+
+@app.route("/notifications/send", methods=["GET", "POST"])
+@login_required
+@staff_required
+def send_notification():
+    users = load_users()
+    students = sorted(
+        [user for user in users if user.get("role") == "student"],
+        key=lambda user: user.get("username", "").lower(),
+    )
+
+    if request.method == "POST":
+        recipient_id = (request.form.get("recipient_id") or "all").strip()
+        title = (request.form.get("title") or "Thông báo mới").strip()
+        content = (request.form.get("content") or "").strip()
+
+        if not content:
+            flash("Vui lòng nhập nội dung thông báo", "warning")
+            return redirect(url_for("send_notification"))
+        if len(title) > 120:
+            flash("Tiêu đề tối đa 120 ký tự", "warning")
+            return redirect(url_for("send_notification"))
+        if len(content) > 2000:
+            flash("Nội dung thông báo tối đa 2000 ký tự", "warning")
+            return redirect(url_for("send_notification"))
+
+        records = notification_records()
+        now = datetime.now().isoformat()
+        sender = get_user_by_id(session["user_id"])
+        base_notice = {
+            "id": next_notification_id(records),
+            "title": title or "Thông báo mới",
+            "content": content,
+            "sender_id": session["user_id"],
+            "sender_name": session.get("username", "Unknown"),
+            "sender_role": sender.get("role", session.get("role", "teacher")) if sender else session.get("role", "teacher"),
+            "created_at": now,
+            "read_by": [],
+        }
+
+        if recipient_id == "all":
+            notice = dict(base_notice)
+            notice.update(
+                {
+                    "audience": "all_students",
+                    "recipient_id": "",
+                    "recipient_name": "Tất cả học sinh",
+                    "recipient_count": len(students),
+                }
+            )
+            records.append(notice)
+            flash(f"Đã gửi thông báo cho {len(students)} học sinh", "success")
+        else:
+            recipient = next((student for student in students if student.get("id") == recipient_id), None)
+            if not recipient:
+                flash("Không tìm thấy học sinh cần gửi", "danger")
+                return redirect(url_for("send_notification"))
+            notice = dict(base_notice)
+            notice.update(
+                {
+                    "audience": "student",
+                    "recipient_id": recipient["id"],
+                    "recipient_name": recipient.get("username", "Học sinh"),
+                    "recipient_count": 1,
+                }
+            )
+            records.append(notice)
+            flash(f"Đã gửi thông báo cho {recipient.get('username', 'học sinh')}", "success")
+
+        save_notification_records(records)
+        return redirect(url_for("send_notification"))
+
+    sent_notifications = [
+        dict(record)
+        for record in notification_records()
+        if record.get("sender_id") == session["user_id"] or is_admin_account()
+    ]
+    sent_notifications.sort(key=lambda item: item.get("created_at", ""), reverse=True)
+    for notice in sent_notifications:
+        try:
+            notice["created_label"] = datetime.fromisoformat(notice.get("created_at", "")).strftime("%d/%m/%Y %H:%M")
+        except Exception:
+            notice["created_label"] = "-"
+    return render_template(
+        "send_notifications.html",
+        students=students,
+        sent_notifications=sent_notifications[:20],
+        username=session.get("username"),
+    )
 
 
 @app.route("/student/dashboard")

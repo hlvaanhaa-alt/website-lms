@@ -10,6 +10,7 @@
             <p>{{ counts.pending }} báo cáo chờ xử lý · {{ stats.online_students }} học sinh online · {{ counts.active_bans }} tài khoản đang bị chặn</p>
         </div>
         <div class="admin-header-actions">
+            <a href="{{ url_for('send_notification') }}">Gửi thông báo</a>
             <a href="{{ url_for('admin_shop') }}">Quản lý shop</a>
             <a href="{{ url_for('forum') }}">Mở diễn đàn</a>
         </div>

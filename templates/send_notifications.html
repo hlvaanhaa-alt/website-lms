@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Gửi thông báo{% endblock %}
+
+{% block content %}
+<div class="notice-admin-page">
+    <header class="notice-admin-header">
+        <div>
+            <h1>Gửi thông báo</h1>
+            <p>Chọn một học sinh hoặc gửi cho toàn bộ học sinh.</p>
+        </div>
+        <a href="{{ url_for('admin_home') if is_admin_session else url_for('teacher_dashboard') }}">Dashboard</a>
+    </header>
+
+    <section class="notice-admin-grid">
+        <form class="send-card" method="POST" action="{{ url_for('send_notification') }}">
+            <label>
+                <span>Người nhận</span>
+                <select name="recipient_id">
+                    <option value="all">Tất cả học sinh ({{ students|length }})</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.username }}{% if student.full_name %} - {{ student.full_name }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                <span>Tiêu đề</span>
+                <input type="text" name="title" maxlength="120" value="Thông báo mới">
+            </label>
+
+            <label>
+                <span>Nội dung</span>
+                <textarea name="content" rows="8" maxlength="2000" required placeholder="Nhập nội dung thông báo gửi cho học sinh..."></textarea>
+            </label>
+
+            <button type="submit">Gửi thông báo</button>
+        </form>
+
+        <aside class="student-card">
+            <h2>Danh sách học sinh</h2>
+            <div class="student-list">
+                {% for student in students %}
+                <div>
+                    <strong>{{ student.username }}</strong>
+                    <span>{{ student.email }}</span>
+                </div>
+                {% else %}
+                <p>Chưa có học sinh nào.</p>
+                {% endfor %}
+            </div>
+        </aside>
+    </section>
+
+    <section class="sent-section">
+        <div class="sent-title">
+            <h2>Thông báo đã gửi gần đây</h2>
+            <span>{{ sent_notifications|length }} bản ghi</span>
+        </div>
+        <div class="sent-list">
+            {% for notice in sent_notifications %}
+            <article>
+                <div>
+                    <strong>{{ notice.title }}</strong>
+                    <span>{{ notice.sender_name }} gửi đến {{ notice.recipient_name }} · {{ notice.created_label }}</span>
+                </div>
+                <p>{{ notice.content }}</p>
+            </article>
+            {% else %}
+            <p class="empty-sent">Chưa gửi thông báo nào.</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<style>
+.notice-admin-page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 24px 16px 56px;
+}
+.notice-admin-header,
+.send-card,
+.student-card,
+.sent-section {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+}
+.notice-admin-header {
+    align-items: center;
+    display: flex;
+    gap: 18px;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 20px 22px;
+}
+.notice-admin-header h1 {
+    color: #111827;
+    margin: 0 0 6px;
+}
+.notice-admin-header p {
+    color: #64748b;
+    margin: 0;
+}
+.notice-admin-header a {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    color: #4387b9;
+    font-weight: 800;
+    padding: 9px 12px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.notice-admin-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr) 340px;
+}
+.send-card {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+}
+.send-card label {
+    display: grid;
+    gap: 7px;
+}
+.send-card span,
+.student-list span,
+.sent-title span,
+.sent-list span {
+    color: #64748b;
+}
+.send-card label > span {
+    color: #334155;
+    font-weight: 800;
+}
+.send-card input,
+.send-card select,
+.send-card textarea {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    color: #0f172a;
+    font: inherit;
+    padding: 10px 12px;
+    width: 100%;
+}
+.send-card textarea {
+    resize: vertical;
+}
+.send-card input:focus,
+.send-card select:focus,
+.send-card textarea:focus {
+    border-color: #4387b9;
+    box-shadow: 0 0 0 3px rgba(67, 135, 185, .16);
+    outline: none;
+}
+.send-card button {
+    background: #4387b9;
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 900;
+    justify-self: start;
+    padding: 10px 16px;
+}
+.student-card {
+    padding: 18px;
+}
+.student-card h2,
+.sent-title h2 {
+    color: #111827;
+    font-size: 1.05rem;
+    margin: 0;
+}
+.student-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    max-height: 360px;
+    overflow: auto;
+}
+.student-list div {
+    border: 1px solid #edf2f7;
+    border-radius: 6px;
+    padding: 10px;
+}
+.student-list strong,
+.student-list span {
+    display: block;
+}
+.sent-section {
+    margin-top: 16px;
+    padding: 18px;
+}
+.sent-title {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.sent-list {
+    display: grid;
+    gap: 10px;
+}
+.sent-list article {
+    border-top: 1px solid #edf2f7;
+    display: grid;
+    gap: 6px;
+    padding-top: 12px;
+}
+.sent-list article:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+.sent-list strong {
+    color: #111827;
+    display: block;
+}
+.sent-list p,
+.empty-sent {
+    color: #334155;
+    margin: 0;
+    white-space: pre-wrap;
+}
+@media (max-width: 880px) {
+    .notice-admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 640px) {
+    .notice-admin-header,
+    .sent-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .send-card button {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

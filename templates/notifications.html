@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Thông báo{% endblock %}
+
+{% block content %}
+<div class="notice-page">
+    <header class="notice-header">
+        <div>
+            <h1>Thông báo</h1>
+            <p>Các thông báo từ giáo viên và quản trị viên.</p>
+        </div>
+        <a href="{{ url_for('student_dashboard') if session.role == 'student' else url_for('index') }}">Quay lại</a>
+    </header>
+
+    <section class="notice-list">
+        {% for notice in notifications %}
+        <article class="notice-card {% if not notice.is_read %}unread{% endif %}">
+            <div class="notice-card-head">
+                <div>
+                    <h2>{{ notice.title }}</h2>
+                    <span>{{ notice.sender_name }} · {{ 'Quản trị viên' if notice.sender_role == 'admin' else 'Giáo viên' }} · {{ notice.created_label }}</span>
+                </div>
+                {% if not notice.is_read %}<em>Mới</em>{% endif %}
+            </div>
+            <p>{{ notice.content }}</p>
+        </article>
+        {% else %}
+        <div class="empty-notice">
+            <h2>Chưa có thông báo nào</h2>
+            <p>Khi giáo viên hoặc quản trị viên gửi thông báo, nội dung sẽ xuất hiện tại đây.</p>
+        </div>
+        {% endfor %}
+    </section>
+</div>
+
+<style>
+.notice-page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 24px 16px 56px;
+}
+.notice-header {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    display: flex;
+    gap: 18px;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 20px 22px;
+}
+.notice-header h1 {
+    color: #111827;
+    margin: 0 0 6px;
+}
+.notice-header p {
+    color: #64748b;
+    margin: 0;
+}
+.notice-header a {
+    border: 1px solid #4387b9;
+    border-radius: 6px;
+    color: #4387b9;
+    font-weight: 800;
+    padding: 9px 12px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.notice-list {
+    display: grid;
+    gap: 12px;
+}
+.notice-card,
+.empty-notice {
+    background: #fff;
+    border: 1px solid #dce2e8;
+    border-radius: 6px;
+    padding: 18px;
+}
+.notice-card.unread {
+    border-color: #4387b9;
+    box-shadow: 0 8px 22px rgba(67, 135, 185, .12);
+}
+.notice-card-head {
+    align-items: flex-start;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+}
+.notice-card h2,
+.empty-notice h2 {
+    color: #111827;
+    font-size: 1.05rem;
+    margin: 0 0 6px;
+}
+.notice-card span,
+.empty-notice p {
+    color: #64748b;
+}
+.notice-card em {
+    background: #eff6ff;
+    border-radius: 999px;
+    color: #2563eb;
+    font-size: .78rem;
+    font-style: normal;
+    font-weight: 900;
+    padding: 4px 8px;
+}
+.notice-card p {
+    color: #334155;
+    line-height: 1.65;
+    margin: 14px 0 0;
+    white-space: pre-wrap;
+}
+@media (max-width: 640px) {
+    .notice-header,
+    .notice-card-head {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
