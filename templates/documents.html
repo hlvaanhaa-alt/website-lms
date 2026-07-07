@@ -45,12 +45,6 @@ endblock %} {% block content %}
         >
             📕 Lớp 9
         </button>
-        <button
-            class="grade-btn {% if current_grade == '10' %}active{% endif %}"
-            onclick="location.href='{{ url_for('documents', grade='10', type=current_type) }}'"
-        >
-            📕 Lớp 10
-        </button>
     </div>
 
     <!-- Bộ LỌC THEO LOẠI -->

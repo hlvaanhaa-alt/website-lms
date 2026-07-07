@@ -77,7 +77,8 @@ FORUM_SUBJECTS = [
     "Công Nghệ",
     "Tin Học",
 ]
-FORUM_GRADES = ["Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9", "Lớp 10", "Lớp 11", "Lớp 12"]
+ALLOWED_GRADE_LEVELS = ["6", "7", "8", "9"]
+FORUM_GRADES = [f"Lớp {grade}" for grade in ALLOWED_GRADE_LEVELS]
 FORUM_REPORT_REASONS = {
     "spam": "Tài khoản spam",
     "insult": "Lăng mạ/xúc phạm",
@@ -1052,6 +1053,10 @@ def documents():
     type_filter = request.args.get("type", "all")  # document, lecture, exam, hoặc all
 
     docs = db.get_all_documents()
+    docs = [d for d in docs if d.get("grade") in ALLOWED_GRADE_LEVELS]
+
+    if grade_filter != "all" and grade_filter not in ALLOWED_GRADE_LEVELS:
+        grade_filter = "all"
 
     if grade_filter != "all":
         docs = [d for d in docs if d.get("grade") == grade_filter]
@@ -1059,11 +1064,8 @@ def documents():
         docs = [d for d in docs if d.get("doc_type") == type_filter]
 
     docs_by_grade = {
-        "6": [d for d in docs if d.get("grade") == "6"],
-        "7": [d for d in docs if d.get("grade") == "7"],
-        "8": [d for d in docs if d.get("grade") == "8"],
-        "9": [d for d in docs if d.get("grade") == "9"],
-        "10": [d for d in docs if d.get("grade") == "10"],
+        grade: [d for d in docs if d.get("grade") == grade]
+        for grade in ALLOWED_GRADE_LEVELS
     }
 
     return render_template(
@@ -1579,6 +1581,8 @@ def teacher_ai_generate_exam():
         question_count = int(payload.get("question_count") or 10)
         time_limit = int(payload.get("time_limit") or 30)
         grade = (payload.get("grade") or "").strip()
+        if grade and grade not in ALLOWED_GRADE_LEVELS:
+            return jsonify({"success": False, "message": "Chỉ hỗ trợ tạo đề cho lớp 6, 7, 8, 9"}), 400
         subject_name = SUBJECTS[subject]["name"]
 
         exam = generate_teacher_exam(
