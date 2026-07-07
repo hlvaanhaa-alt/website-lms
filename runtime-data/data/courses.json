@@ -44,5 +44,21 @@
       }
     ],
     "created_at": "2026-07-07T08:02:36.994666"
+  },
+  {
+    "id": "course_3",
+    "teacher_id": "1",
+    "title": "Toán - lớp 8",
+    "description": "Tới với khóa học này, các em có thể vận dụng vào làm các bài về toán lớp 8",
+    "lessons": [
+      {
+        "id": "1",
+        "title": "Cách vẽ hình chữ nhật",
+        "video_url": "",
+        "document_url": "https://drive.google.com/drive/folders/1tvFlU5HB8YKldh0lmRdptSNEoqhj2wbe",
+        "questions": []
+      }
+    ],
+    "created_at": "2026-07-07T08:03:39.330498"
   }
 ]
