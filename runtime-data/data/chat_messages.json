@@ -610,5 +610,23 @@
     },
     "has_diagrams": false,
     "has_image": false
+  },
+  {
+    "id": "msg_000067",
+    "content": "tạo cho tôi một vài đề kiểm tra về phương phaps trên",
+    "author_id": "6",
+    "author_name": "Kimchi",
+    "author_role": "student",
+    "created_at": "2026-07-08T03:36:33.222480",
+    "reply_to": null,
+    "response": "**Đề kiểm tra**\n\n**Bài 1:** Giải hệ phương trình sau:\n\n$$\\begin{cases}\n2x + y = 5 \\\\\n3\n",
+    "processed": {
+      "text": "**Đề kiểm tra**\n\n**Bài 1:** Giải hệ phương trình sau:\n\n$$\\begin{cases}\n2x + y = 5 \\\\\n3",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
   }
 ]
