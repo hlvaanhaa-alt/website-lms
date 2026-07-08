@@ -682,5 +682,85 @@
     },
     "has_diagrams": false,
     "has_image": false
+  },
+  {
+    "id": "msg_000071",
+    "content": "tạo cho tôi 5 câu trắc nghiệm liên quan đến kiến thức trên đi",
+    "author_id": "1",
+    "author_name": "admin",
+    "author_role": "teacher",
+    "created_at": "2026-07-08T07:39:02.317316",
+    "reply_to": null,
+    "response": "Mình đã tạo 5 câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé.",
+    "processed": {
+      "text": "Mình đã tạo 5 câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé.",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "quiz": {
+      "type": "quiz",
+      "title": "Bài Trắc Nghiệm Toán THCS Cơ Bản",
+      "subject": "Toán",
+      "questions": [
+        {
+          "question": "Giá trị của $x$ trong phương trình $2x + 7 = 15$ là gì?",
+          "options": [
+            "A) $x = 4$",
+            "B) $x = 8$",
+            "C) $x = 11$",
+            "D) $x = 22$"
+          ],
+          "correct_index": 0,
+          "explanation": "Để giải phương trình $2x + 7 = 15$, ta thực hiện các bước sau:\\\\$2x = 15 - 7 \\\\$2x = 8 \\\\$x = \\frac{8}{2} \\\\$x = 4$. Vậy đáp án đúng là A."
+        },
+        {
+          "question": "Một hình chữ nhật có chiều dài $10\\text{ cm}$ và chiều rộng $6\\text{ cm}$. Diện tích của hình chữ nhật đó là bao nhiêu?",
+          "options": [
+            "A) $16\\text{ cm}^2$",
+            "B) $32\\text{ cm}^2$",
+            "C) $60\\text{ cm}^2$",
+            "D) $100\\text{ cm}^2$"
+          ],
+          "correct_index": 2,
+          "explanation": "Diện tích hình chữ nhật được tính bằng công thức: Chiều dài $\\times$ Chiều rộng.\\\\Vậy, Diện tích = $10\\text{ cm} \\times 6\\text{ cm} = 60\\text{ cm}^2$. Đáp án đúng là C."
+        },
+        {
+          "question": "Số nào sau đây chia hết cho cả $2$, $3$ và $5$?",
+          "options": [
+            "A) $10$",
+            "B) $24$",
+            "C) $30$",
+            "D) $40$"
+          ],
+          "correct_index": 2,
+          "explanation": "Một số chia hết cho cả $2$, $3$ và $5$ khi và chỉ khi số đó chia hết cho bội chung nhỏ nhất của $2, 3, 5$, tức là $2 \\times 3 \\times 5 = 30$. Trong các lựa chọn, chỉ có $30$ là chia hết cho cả $2, 3, 5$. Đáp án đúng là C."
+        },
+        {
+          "question": "Kết quả của phép tính $5^2 - 3^2$ là gì?",
+          "options": [
+            "A) $2$",
+            "B) $4$",
+            "C) $16$",
+            "D) $34$"
+          ],
+          "correct_index": 2,
+          "explanation": "Ta có:\\\\$5^2 = 5 \\times 5 = 25 \\\\$3^2 = 3 \\times 3 = 9 \\\\Vậy, $5^2 - 3^2 = 25 - 9 = 16$. Đáp án đúng là C."
+        },
+        {
+          "question": "Nếu một góc có số đo là $60^\\circ$, thì góc bù với nó có số đo là bao nhiêu?",
+          "options": [
+            "A) $30^\\circ$",
+            "B) $90^\\circ$",
+            "C) $120^\\circ$",
+            "D) $180^\\circ$"
+          ],
+          "correct_index": 2,
+          "explanation": "Hai góc bù nhau là hai góc có tổng số đo bằng $180^\\circ$.\\\\Nếu một góc có số đo là $60^\\circ$, thì góc bù với nó sẽ là $180^\\circ - 60^\\circ = 120^\\circ$. Đáp án đúng là C."
+        }
+      ]
+    },
+    "has_diagrams": false,
+    "has_image": false
   }
 ]
