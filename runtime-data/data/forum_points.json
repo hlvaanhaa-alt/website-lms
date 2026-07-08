@@ -298,5 +298,17 @@
     "answer_id": null,
     "month": "2026-07",
     "created_at": "2026-07-08T14:59:39.658843"
+  },
+  {
+    "id": "fp_000025",
+    "user_id": "1",
+    "username": "admin",
+    "role": "teacher",
+    "points": 5,
+    "reason": "daily_attendance",
+    "post_id": null,
+    "answer_id": null,
+    "month": "2026-07",
+    "created_at": "2026-07-08T14:59:48.722472"
   }
 ]
