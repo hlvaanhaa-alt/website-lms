@@ -131,6 +131,12 @@ def is_quiz_request(message):
         'bai tap',
         'câu hỏi',
         'cau hoi',
+        'đề kiểm tra',
+        'de kiem tra',
+        'đề thi',
+        'de thi',
+        'kiểm tra',
+        'kiem tra',
     )
     create_markers = (
         'tạo',

@@ -52,6 +52,8 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 
 db = Database()
+HOME_STATS_CACHE_SECONDS = 60
+_home_stats_cache = {"expires_at": None, "value": None}
 QUESTIONS_FILE = writable_state_file("questions.json", {"topics": []})
 SCORES_FILE = writable_state_file("scores.json", [])
 FORUM_POINTS_FILE = writable_data_file("forum_points.json", [])
@@ -416,6 +418,12 @@ def student_required(f):
 
 
 def build_home_stats():
+    now = datetime.now()
+    cached_value = _home_stats_cache.get("value")
+    cached_expires_at = _home_stats_cache.get("expires_at")
+    if cached_value and cached_expires_at and now < cached_expires_at:
+        return cached_value
+
     users = load_users()
     courses = db.get_all_courses()
     documents = [
@@ -490,7 +498,7 @@ def build_home_stats():
         )[:5]
     ]
 
-    return {
+    stats = {
         "students": len([user for user in users if user.get("role") == "student"]),
         "teachers": len([user for user in users if user.get("role") == "teacher"]),
         "courses": len(courses),
@@ -507,6 +515,9 @@ def build_home_stats():
         "latest_course_lessons": len(latest_course.get("lessons", [])) if latest_course else 0,
         "chart_items": chart_items,
     }
+    _home_stats_cache["value"] = stats
+    _home_stats_cache["expires_at"] = now + timedelta(seconds=HOME_STATS_CACHE_SECONDS)
+    return stats
 
 
 @app.route("/")
@@ -721,7 +732,7 @@ def gift_checkin():
     date_key = gift_date_key()
     events = gift_events()
     if any(event.get("user_id") == user_id and event.get("type") == "attendance" and event.get("date") == date_key for event in events):
-        return jsonify({"success": False, "message": "Hôm nay bạn đã điểm danh rồi"})
+        return jsonify({"success": False, "message": "Hôm nay bạn đã điểm danh rồi", **gift_status_payload(user_id)})
 
     user = get_user_by_id(user_id)
     add_forum_points(

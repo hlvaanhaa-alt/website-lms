@@ -659,16 +659,17 @@ async function sendMessage(event) {
             body: formData
             // Không set Content-Type, để browser tự set cho FormData
         });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
+
         const data = await response.json();
         removeMessage(loadingId);
-        
+
+        if (!response.ok) {
+            addMessage(data.details || data.error || `Lỗi HTTP ${response.status}. Vui lòng thử lại.`, 'bot');
+            return;
+        }
+
         if (!data.success) {
-            addMessage(data.error || 'Có lỗi xảy ra', 'bot');
+            addMessage(data.details || data.error || 'Có lỗi xảy ra', 'bot');
             return;
         }
         
@@ -688,7 +689,15 @@ async function sendMessage(event) {
 }
 
 // ============== FORMAT TEXT ==============
+function normalizeLatexText(text) {
+    return String(text || '')
+        .replace(/\\r\\n/g, '\n')
+        .replace(/\\n/g, '\n')
+        .replace(/\\\\(?=(begin|end|frac|dfrac|sqrt|left|right|cdot|times|le|ge|ne|infty|sum|int|alpha|beta|gamma|theta|pi|Delta|Omega)\b)/g, '\\');
+}
+
 function formatText(text) {
+    text = normalizeLatexText(text);
     const latexBlocks = [];
     let index = 0;
     
@@ -744,7 +753,9 @@ function renderMathInNode(node) {
         renderMathInElement(node, {
             delimiters: [
                 {left: '$$', right: '$$', display: true},
-                {left: '$', right: '$', display: false}
+                {left: '\\[', right: '\\]', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false}
             ],
             throwOnError: false,
             trust: true,
@@ -826,7 +837,9 @@ function addMessage(text, sender, imageFile = null, isLoading = false) {
                     renderMathInElement(messageDiv, {
                         delimiters: [
                             {left: '$$', right: '$$', display: true},
-                            {left: '$', right: '$', display: false}
+                            {left: '\\[', right: '\\]', display: true},
+                            {left: '$', right: '$', display: false},
+                            {left: '\\(', right: '\\)', display: false}
                         ],
                         throwOnError: false,
                         trust: true,
@@ -854,7 +867,7 @@ function addMessageWithDiagrams(fullResponse, processed) {
     let contentHTML = '<div class="message-header">AI Assistant</div><div class="message-content"><div>';
     
     if (processed.text) {
-        contentHTML += formatText(processed.text);
+        contentHTML += formatText(escapeHTML(processed.text));
     }
     
     if (processed.svgs && processed.svgs.length > 0) {
@@ -893,7 +906,9 @@ function addMessageWithDiagrams(fullResponse, processed) {
                 renderMathInElement(messageDiv, {
                     delimiters: [
                         {left: '$$', right: '$$', display: true},
-                        {left: '$', right: '$', display: false}
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false}
                     ],
                     throwOnError: false,
                     trust: true,

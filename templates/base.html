@@ -1254,13 +1254,24 @@
             });
             if (giftCheckinBtn) {
                 giftCheckinBtn.addEventListener('click', async () => {
-                    const response = await fetch('/api/gift/checkin', {method: 'POST'});
-                    const data = await response.json();
-                    alert(data.message || 'Đã xử lý');
-                    if (data.success) {
+                    giftCheckinBtn.disabled = true;
+                    const originalText = giftCheckinBtn.textContent;
+                    giftCheckinBtn.textContent = 'Đang xử lý...';
+                    try {
+                        const response = await fetch('/api/gift/checkin', {method: 'POST'});
+                        const data = await response.json();
                         giftState = data;
+                        if (giftAttendanceText && data.message) {
+                            giftAttendanceText.textContent = data.message;
+                        }
                         renderGiftAttendance();
                         renderGiftBoxes();
+                    } catch (error) {
+                        if (giftAttendanceText) {
+                            giftAttendanceText.textContent = 'Không thể điểm danh lúc này. Vui lòng thử lại.';
+                        }
+                        giftCheckinBtn.disabled = false;
+                        giftCheckinBtn.textContent = originalText;
                     }
                 });
             }
