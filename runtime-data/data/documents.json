@@ -87,5 +87,16 @@
     "description": "",
     "teacher_id": "1",
     "created_at": "2026-07-07T07:10:26.667348"
+  },
+  {
+    "id": "doc_9",
+    "title": "Tổng hợp kiến thức toán lớp 9",
+    "grade": "9",
+    "doc_type": "document",
+    "link_type": "drive",
+    "url": "https://drive.google.com/file/d/1JXX_tmOkesLbf-IXzOCuHcnXn10FqAWx/view?usp=sharing",
+    "description": "Trong bài này,  sẽ giúp các em tìm hiểu tất cả các kiến thức trọng tâm nhất bài học. Từ đó, các em sẽ giải các dạng bài tập từ cơ bản nhất đến nâng cao. Các em chú ý theo dõi bài học nhé !",
+    "teacher_id": "1",
+    "created_at": "2026-07-08T03:15:04.257718"
   }
 ]
