@@ -113,5 +113,18 @@
     "month": "2026-07",
     "points": 5,
     "created_at": "2026-07-08T14:59:50.183820"
+  },
+  {
+    "id": "gift_000011",
+    "type": "daily_question",
+    "user_id": "11",
+    "username": "Harrymath",
+    "date": "2026-07-08",
+    "month": "2026-07",
+    "question_id": "math_02",
+    "selected_answer": 2,
+    "is_correct": true,
+    "points": 7,
+    "created_at": "2026-07-08T17:25:24.126185"
   }
 ]
