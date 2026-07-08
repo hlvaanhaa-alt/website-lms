@@ -592,5 +592,23 @@
     },
     "has_diagrams": false,
     "has_image": false
+  },
+  {
+    "id": "msg_000066",
+    "content": "tôi muốn học về đề cách giải hệ phương trình bằng phương pháp thế tho lớp 9",
+    "author_id": "6",
+    "author_name": "Kimchi",
+    "author_role": "student",
+    "created_at": "2026-07-08T03:35:46.009677",
+    "reply_to": null,
+    "response": "Để giải hệ phương trình bằng phương pháp thế, ta làm theo các bước sau:\n\n**Bước 1:** Từ một trong hai phương trình của hệ, biểu diễn một ẩn theo ẩn còn lại.\n\nVí dụ, từ phương trình $ax + by = c$, ta có thể biểu diễn $x$ theo $y$:\n\n$$\nx = \\frac{c - by}{a}\n$$\n\nHoặc biểu diễn $y$ theo $x$:\n\n$$\ny = \\frac{c - ax}{b}\n$$\n\n**Bước 2:** Thế biểu thức vừa tìm được vào phương trình còn lại để được một phương trình mới chỉ có một ẩn.\n\n**Bước 3:** Giải phương trình một ẩn vừa tìm được để tìm giá trị của ẩn đó.\n\n**Bước 4:** Thay giá trị của ẩn vừa tìm được vào biểu thức ở Bước 1 để tìm giá trị của ẩn còn lại.\n\n**Bước 5:** Kết luận nghiệm của hệ phương trình.\n\n**Ví dụ:** Giải hệ phương trình sau bằng phương pháp thế:\n\n$$\n\\begin{cases}\n2x + y = 7 \\\\\nx - y = 2\n\\end{cases}\n$$\n\n**Bước 1:** Từ phương trình thứ hai $x - y = 2$, biểu diễn $x$ theo $y$:\n\n$$\nx = y + 2\n$$\n\n**Bước 2:** Thế $x = y + 2$ vào phương trình thứ nhất $2x + y = 7$:\n\n$$\n2(y + 2) + y = 7\n$$\n\n**Bước 3:** Giải phương trình một ẩn vừa tìm được:\n\n$$\n2y + 4 + y = 7\n$$\n\n$$\n3y + 4 = 7\n$$\n\n$$\n3y = 7 - 4\n$$\n\n$$\n3y = 3\n$$\n\n$$\ny = 1\n$$\n\n**Bước 4:** Thay $y = 1$ vào biểu thức $x = y + 2$:\n\n$$\nx = 1 + 2\n$$\n\n$$\nx = 3\n$$\n\n**Bước 5:** Vậy, nghiệm của hệ phương trình là $(x; y) = (3; 1)$.\n",
+    "processed": {
+      "text": "Để giải hệ phương trình bằng phương pháp thế, ta làm theo các bước sau:\n\n**Bước 1:** Từ một trong hai phương trình của hệ, biểu diễn một ẩn theo ẩn còn lại.\n\nVí dụ, từ phương trình $ax + by = c$, ta có thể biểu diễn $x$ theo $y$:\n\n$$\nx = \\frac{c - by}{a}\n$$\n\nHoặc biểu diễn $y$ theo $x$:\n\n$$\ny = \\frac{c - ax}{b}\n$$\n\n**Bước 2:** Thế biểu thức vừa tìm được vào phương trình còn lại để được một phương trình mới chỉ có một ẩn.\n\n**Bước 3:** Giải phương trình một ẩn vừa tìm được để tìm giá trị của ẩn đó.\n\n**Bước 4:** Thay giá trị của ẩn vừa tìm được vào biểu thức ở Bước 1 để tìm giá trị của ẩn còn lại.\n\n**Bước 5:** Kết luận nghiệm của hệ phương trình.\n\n**Ví dụ:** Giải hệ phương trình sau bằng phương pháp thế:\n\n$$\n\\begin{cases}\n2x + y = 7 \\\\\nx - y = 2\n\\end{cases}\n$$\n\n**Bước 1:** Từ phương trình thứ hai $x - y = 2$, biểu diễn $x$ theo $y$:\n\n$$\nx = y + 2\n$$\n\n**Bước 2:** Thế $x = y + 2$ vào phương trình thứ nhất $2x + y = 7$:\n\n$$\n2(y + 2) + y = 7\n$$\n\n**Bước 3:** Giải phương trình một ẩn vừa tìm được:\n\n$$\n2y + 4 + y = 7\n$$\n\n$$\n3y + 4 = 7\n$$\n\n$$\n3y = 7 - 4\n$$\n\n$$\n3y = 3\n$$\n\n$$\ny = 1\n$$\n\n**Bước 4:** Thay $y = 1$ vào biểu thức $x = y + 2$:\n\n$$\nx = 1 + 2\n$$\n\n$$\nx = 3\n$$\n\n**Bước 5:** Vậy, nghiệm của hệ phương trình là $(x; y) = (3; 1)$.",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
   }
 ]
