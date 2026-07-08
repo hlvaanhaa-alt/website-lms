@@ -110,5 +110,16 @@
     "description": "Viết văn kể lại một trải nghiệm của bản thân là bài học quan trọng trong chương trình Ngữ Văn 6. Trong bài này,  sẽ giúp các em tìm hiểu tất cả các kiến thức trọng tâm nhất bài học. Từ đó, các em sẽ giải các dạng bài tập từ cơ bản nhất đến nâng cao. Các em chú ý theo dõi bài học nhé !",
     "teacher_id": "1",
     "created_at": "2026-07-08T03:27:47.668499"
+  },
+  {
+    "id": "doc_11",
+    "title": "Kiến thức cần nhớ - Ngữ văn 8",
+    "grade": "8",
+    "doc_type": "document",
+    "link_type": "drive",
+    "url": "https://drive.google.com/file/d/1t7dpncbkSFudMCHH6gHpBORXtwburg9W/view?usp=sharing",
+    "description": "Trong bài này,  sẽ giúp các em tìm hiểu tất cả các kiến thức trọng tâm nhất bài học. Từ đó, các em sẽ giải các dạng bài tập từ cơ bản nhất đến nâng cao. Các em chú ý theo dõi bài học nhé !",
+    "teacher_id": "1",
+    "created_at": "2026-07-08T03:55:48.403046"
   }
 ]
