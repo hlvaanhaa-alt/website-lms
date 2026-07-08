@@ -255,5 +255,16 @@
     "description": "Định lý viète là bài học quan trọng trong chương trình Toán 9. Trong bài này,  sẽ giúp các em tìm hiểu tất cả các kiến thức trọng tâm nhất bài học. Từ đó, các em sẽ giải các dạng bài tập từ cơ bản nhất đến nâng cao. Các em chú ý theo dõi bài học nhé !",
     "teacher_id": "1",
     "created_at": "2026-07-08T19:00:38.953859"
+  },
+  {
+    "id": "doc_24",
+    "title": "Viết bài văn nghị luận phân tích một tác phẩm - Ngữ văn 9",
+    "grade": "9",
+    "doc_type": "lecture",
+    "link_type": "youtube",
+    "url": "https://youtu.be/tcibRvCdBPA?si=GI9EmBEU8-e30Umz",
+    "description": "Viết bài văn nghị luận phân tích tác phẩm văn học là bài học quan trọng trong chương trình Ngữ Văn 9. Trong bài này,  sẽ giúp các em tìm hiểu tất cả các kiến thức trọng tâm nhất bài học. Từ đó, các em sẽ giải các dạng bài tập từ cơ bản nhất đến nâng cao. Các em chú ý theo dõi bài học nhé !",
+    "teacher_id": "1",
+    "created_at": "2026-07-08T19:02:55.805389"
   }
 ]
