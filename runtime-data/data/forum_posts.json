@@ -204,5 +204,29 @@
     "accepted_answer_id": null,
     "is_first_question": true,
     "question_type": "question"
+  },
+  {
+    "id": "post_0009",
+    "title": "Giúp em giải thích câu hỏi này với",
+    "content": "Vì sao Đông Nam Bộ là vùng có giá trị sản xuất công nghiệp lớn nhất cả nước vậy mọi người ?",
+    "author_id": "12",
+    "author_name": "Lắng",
+    "author_role": "student",
+    "created_at": "2026-07-09T11:59:27.038959",
+    "updated_at": null,
+    "attachments": [],
+    "tags": [
+      "Địa Lý",
+      "Lớp 9"
+    ],
+    "views": 0,
+    "comments_count": 0,
+    "subject": "Địa Lý",
+    "grade": "Lớp 9",
+    "reward_points": 30,
+    "status": "open",
+    "accepted_answer_id": null,
+    "is_first_question": true,
+    "question_type": "question"
   }
 ]
