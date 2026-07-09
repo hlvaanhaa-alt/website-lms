@@ -87,5 +87,13 @@
     "role": "student",
     "created_at": "2026-07-07T08:33:29.211376",
     "full_name": "Đặng Gia Vinh"
+  },
+  {
+    "id": "12",
+    "username": "Lắng",
+    "password": "scrypt:32768:8:1$cgsghUL3f3xXWwOS$ce15aab74870dfa95f82300e99fafcf9208fbdb49b32ed31429944de22981812d29bf9e1751fb78523355ab152593a47f688d7df1d029d828b757fb83cc3971e",
+    "email": "langd3919@gmail.com",
+    "role": "student",
+    "created_at": "2026-07-09T11:54:56.920473"
   }
 ]
