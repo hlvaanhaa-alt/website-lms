@@ -153,6 +153,15 @@
     "ratings": {
       "14": 5
     },
-    "discussions": []
+    "discussions": [
+      {
+        "id": "discussion_96cf32bfbc",
+        "author_id": "14",
+        "author_name": "lộc",
+        "author_role": "student",
+        "content": "cảm ơn bạn nhiều nhé !",
+        "created_at": "2026-07-12T05:48:06.458981"
+      }
+    ]
   }
 ]
