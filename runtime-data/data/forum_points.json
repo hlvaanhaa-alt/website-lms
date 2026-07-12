@@ -418,5 +418,17 @@
     "answer_id": "comment_0006",
     "month": "2026-07",
     "created_at": "2026-07-12T05:15:06.069001"
+  },
+  {
+    "id": "fp_000035",
+    "user_id": "13",
+    "username": "long",
+    "role": "student",
+    "points": -30,
+    "reason": "question_reward_pool",
+    "post_id": "post_0010",
+    "answer_id": null,
+    "month": "2026-07",
+    "created_at": "2026-07-12T05:18:46.831818"
   }
 ]
