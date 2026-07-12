@@ -252,5 +252,30 @@
     "accepted_answer_id": null,
     "is_first_question": true,
     "question_type": "question"
+  },
+  {
+    "id": "post_0011",
+    "title": "Cíuuuuu",
+    "content": "Phân tích nhân vật anh thanh niên trong truyện ngắn \"Lặng lẽ Sa Pa\" của Nguyễn Thành Long để làm rõ vẻ đẹp của người lao động mới trong thời kì xây dựng đất nước",
+    "author_id": "14",
+    "author_name": "lộc",
+    "author_role": "student",
+    "created_at": "2026-07-12T05:39:04.727609",
+    "updated_at": null,
+    "attachments": [],
+    "tags": [
+      "Ngữ Văn",
+      "Lớp 9",
+      "mọi người lập dàn ý thôi nhé ko viết !"
+    ],
+    "views": 0,
+    "comments_count": 0,
+    "subject": "Ngữ Văn",
+    "grade": "Lớp 9",
+    "reward_points": 40,
+    "status": "open",
+    "accepted_answer_id": null,
+    "is_first_question": true,
+    "question_type": "question"
   }
 ]
