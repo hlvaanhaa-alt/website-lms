@@ -111,5 +111,13 @@
     "email": "lcac6142@gmail.com",
     "role": "student",
     "created_at": "2026-07-12T05:20:48.325166"
+  },
+  {
+    "id": "15",
+    "username": "Trang",
+    "password": "scrypt:32768:8:1$Cr7qiU1xClx5kXqP$92d0bb2283b8cada5bde2ae004a4f1109ceae191cc6afa80b856b5511c5c41836a3e5913f27e945f369c73424d74946a44fca71f58067b356d4bb1a53959ef79",
+    "email": "lollol17102011@gmail.com",
+    "role": "student",
+    "created_at": "2026-07-12T05:40:02.042413"
   }
 ]
