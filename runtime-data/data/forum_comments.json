@@ -150,7 +150,9 @@
     "best_bonus_awarded": 20,
     "is_best_answer": true,
     "thank_user_ids": [],
-    "ratings": {},
+    "ratings": {
+      "14": 5
+    },
     "discussions": []
   }
 ]
