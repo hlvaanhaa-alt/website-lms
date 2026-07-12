@@ -120,5 +120,21 @@
     "thank_user_ids": [],
     "ratings": {},
     "discussions": []
+  },
+  {
+    "id": "comment_0008",
+    "post_id": "post_0008",
+    "author_id": "14",
+    "author_name": "lộc",
+    "author_role": "student",
+    "content": "P = 1/3 nhé bạn",
+    "created_at": "2026-07-12T05:33:31.262764",
+    "attachments": [],
+    "points_awarded": 20,
+    "best_bonus_awarded": 0,
+    "is_best_answer": false,
+    "thank_user_ids": [],
+    "ratings": {},
+    "discussions": []
   }
 ]
