@@ -127,5 +127,13 @@
     "email": "hannahlevanhah@gmail.com",
     "role": "student",
     "created_at": "2026-07-12T08:10:29.194930"
+  },
+  {
+    "id": "17",
+    "username": "hlvanha",
+    "password": "scrypt:32768:8:1$DoKaVPqi5PhlKY0O$7664605ce42d10b49d3fc0eaf7edabe992049dca2c0ab80d2545b15677086fd6c6d5951a728f529e0a17d2a6338434c2e7938e1e0fe4122621301a028d34dff2",
+    "email": "vanhahl@gmail.com",
+    "role": "student",
+    "created_at": "2026-07-12T08:12:58.236303"
   }
 ]
