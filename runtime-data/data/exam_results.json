@@ -1,0 +1,1472 @@
+[
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Hàm số và Đồ thị",
+    "score": 1.0,
+    "correct_count": 2,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 22:31:15",
+    "time_spent_seconds": 11
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Hàm số và Đồ thị",
+    "score": 3.0,
+    "correct_count": 6,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 22:32:14",
+    "time_spent_seconds": 28
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Hàm số và Đồ thị",
+    "score": 3.0,
+    "correct_count": 6,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 22:35:00",
+    "time_spent_seconds": 27
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Hàm số và Đồ thị",
+    "score": 4.0,
+    "correct_count": 8,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 23:28:37",
+    "time_spent_seconds": 30
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Hàm số và Đồ thị",
+    "score": 4.0,
+    "correct_count": 8,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 23:31:50",
+    "time_spent_seconds": 28
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Hàm số và Đồ thị",
+    "score": 2.5,
+    "correct_count": 5,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 23:35:23",
+    "time_spent_seconds": 24
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Hàm số và Đồ thị",
+    "score": 0.5,
+    "correct_count": 1,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 23:38:53",
+    "time_spent_seconds": 14
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_02",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Phương trình và Bất phương trình",
+    "score": 1.0,
+    "correct_count": 2,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 23:39:18",
+    "time_spent_seconds": 16
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_02",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Phương trình và Bất phương trình",
+    "score": 1.0,
+    "correct_count": 2,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 23:42:04",
+    "time_spent_seconds": 25
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_02",
+    "exam_title": "Đề trắc nghiệm Toán 10 - Phương trình và Bất phương trình",
+    "score": 3.5,
+    "correct_count": 7,
+    "total_questions": 20,
+    "submitted_at": "23/10/2025 23:46:09",
+    "time_spent_seconds": 19
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Python 10 - Cơ bản về Python",
+    "score": 1.5,
+    "correct_count": 3,
+    "total_questions": 20,
+    "submitted_at": "24/10/2025 08:03:19",
+    "time_spent_seconds": 31
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "grade": "10",
+    "exam_id": "exam_10_02",
+    "exam_title": "Đề trắc nghiệm Python 10 - Vòng lặp và Cấu trúc dữ liệu",
+    "score": 1.0,
+    "correct_count": 2,
+    "total_questions": 20,
+    "submitted_at": "24/10/2025 08:41:03",
+    "time_spent_seconds": 53
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "anh",
+    "exam_id": "exam_10_01",
+    "exam_title": "Đề trắc nghiệm Python 10 - Cơ bản về Python",
+    "score": 3.0,
+    "correct_count": 6,
+    "total_questions": 20,
+    "submitted_at": "25/10/2025 14:09:12",
+    "time_spent_seconds": 37
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "anh",
+    "exam_id": "exam_english_09_01",
+    "exam_title": "Đề trắc nghiệm Tiếng Anh 9 - Đề 1",
+    "score": 3.5,
+    "correct_count": 7,
+    "total_questions": 20,
+    "submitted_at": "08/12/2025 12:40:18",
+    "time_spent_seconds": 39
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "toan",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "score": 3.0,
+    "correct_count": 6,
+    "total_questions": 20,
+    "submitted_at": "08/12/2025 13:26:28",
+    "time_spent_seconds": 72,
+    "ai_analysis": null
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "toan",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "score": 2.5,
+    "correct_count": 5,
+    "total_questions": 20,
+    "submitted_at": "08/12/2025 13:29:36",
+    "time_spent_seconds": 36,
+    "ai_analysis": {
+      "overall_assessment": "Chào con! Thầy đã xem qua bài làm Toán 9 của con rồi. Với điểm số 2.5/10 và chỉ đúng 5/20 câu, thầy thấy con chưa thực sự thể hiện được năng lực của mình trong bài thi này. Đặc biệt, thời gian làm bài chỉ 36 giây là cực kỳ nhanh, có vẻ như con đã làm bài một cách vội vàng hoặc chưa kịp suy nghĩ kỹ lưỡng cho từng câu hỏi. Đây là một điểm số chưa đạt yêu cầu và thầy nghĩ con cần nhìn nhận nghiêm túc để cải thiện nhé.",
+      "strengths": "🎉 Con đã hoàn thành bài thi rất nhanh, điều này cho thấy con có tinh thần quyết đoán, chỉ cần điều chỉnh lại tốc độ để có thời gian suy nghĩ hơn thôi.\n👍 Dù điểm số chưa cao, nhưng con vẫn trả lời đúng 5 câu. Điều này chứng tỏ con vẫn có những kiến thức nền tảng nhất định và đó là một khởi đầu tốt.\n💡 Việc con đã cố gắng làm hết bài, dù thời gian rất ngắn, là một thái độ tích cực. Chúng ta sẽ cùng tìm cách để chuyển sự nhanh nhẹn này thành hiệu quả nhé!",
+      "weaknesses": "🤔 Kiến thức cơ bản về điều kiện xác định của căn thức còn nhầm lẫn (câu 1). Con quên rằng biểu thức dưới dấu căn phải luôn lớn hơn hoặc bằng 0.\n📉 Kỹ năng giải phương trình, bất phương trình bậc nhất và tìm nghiệm tự nhiên còn chưa vững (câu 2, câu 3). Có vẻ con đang gặp khó khăn trong việc chuyển vế, đổi dấu hoặc xác định tập nghiệm.\n✖️ Các công thức quan trọng như Hệ thức Vi-ét (câu 6) hay cách kiểm tra điểm thuộc đồ thị hàm số (câu 7) con chưa nắm chắc. Đây là những kiến thức cốt lõi của chương trình Toán 9.\n⏱️ Việc làm bài quá nhanh (chỉ 36 giây) có thể là nguyên nhân chính dẫn đến nhiều lỗi sai do thiếu thời gian đọc kỹ đề, suy nghĩ và kiểm tra lại kết quả. Con cần rèn luyện sự cẩn thận và tính toán kỹ lưỡng hơn.",
+      "study_plan": "📚 Bước 1: Ôn tập kỹ lưỡng các kiến thức nền tảng về căn bậc hai (điều kiện xác định), phương trình, bất phương trình bậc nhất và các công thức Vi-ét cho phương trình bậc hai.\n✍️ Bước 2: Thực hành giải nhiều bài tập cơ bản về các chủ đề vừa nêu. Tập trung vào việc giải từng bước một cách cẩn thận, không vội vàng.\n📖 Bước 3: Xem lại sách giáo khoa, ghi nhớ các định nghĩa, định lý, công thức quan trọng. Thử tự viết lại các công thức ra giấy để dễ nhớ hơn.\n⏱️ Bước 4: Khi làm bài tập hoặc đề thi, hãy dành đủ thời gian để đọc kỹ đề, suy nghĩ hướng giải và kiểm tra lại kết quả. Đừng quá chú trọng tốc độ ở giai đoạn này.\n🙋‍♀️ Bước 5: Đừng ngần ngại hỏi thầy/cô hoặc bạn bè những chỗ con chưa hiểu rõ hoặc còn băn khoăn về bất kỳ câu hỏi nào trong đề thi.",
+      "encouragement": "Con trai (hoặc con gái) à, điểm số này không nói lên tất cả về con đâu nhé! Ai cũng có lúc mắc lỗi và điều quan trọng là chúng ta học được gì từ đó. Thầy tin rằng với sự quyết tâm và một lộ trình học tập đúng đắn, con hoàn toàn có thể cải thiện được kết quả của mình. Cứ cố gắng từng bước một, thầy luôn ở đây để hỗ trợ con! Cố lên nhé! 💪"
+    }
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "nguvan",
+    "subject_name": "Ngữ Văn",
+    "subject_icon": "📖",
+    "subject_color": "#c0392b",
+    "exam_id": "exam_nguvan_9_02",
+    "exam_title": "Đề Ngữ Văn 9 - Văn học hiện đại",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 4,
+        "total_questions": 14,
+        "percentage": 28.6,
+        "raw_score": 2.0,
+        "weight": 70.0
+      },
+      "essay": {
+        "total_score": 1.5,
+        "max_score": 3,
+        "percentage": 50.0,
+        "weighted_score": 1.5,
+        "weight": 30.0,
+        "results": [
+          {
+            "question_number": 15,
+            "question": "Phân tích hình ảnh người lính trong bài thơ 'Tây Tiến' của Quang Dũng (khoảng 200 từ)",
+            "user_answer": "Hình ảnh người lính trong bài thơ *Tây Tiến* của Quang Dũng hiện lên vừa hào hùng, vừa lãng mạn, gắn với vẻ đẹp bi tráng của thế hệ trẻ thời kháng chiến chống Pháp. Họ là những chàng trai xuất thân từ đất Hà thành, mang trong mình lý tưởng lớn lao nhưng lại phải đối mặt với muôn vàn gian khổ nơi núi rừng Tây Bắc: “Sài Khao sương lấp đoàn quân mỏi”, “Mường Lát hoa về trong đêm hơi”. Thiên nhiên khắc nghiệt không làm họ chùn bước mà càng tô đậm ý chí kiên cường, tinh thần vượt khó của người lính.\n\nBên cạnh hiện thực gian lao, Quang Dũng còn khắc họa vẻ đẹp lãng mạn của người lính Tây Tiến. Đó là tâm hồn trẻ trung, giàu mộng mơ, yêu đời, biết rung động trước cảnh sắc và con người miền sơn cước. Hình ảnh “kẻ thù gục xuống súng bên đường” và “áo bào thay chiếu” kết hợp bút pháp bi tráng đã tôn vinh sự hy sinh cao cả của họ, khiến cái chết trở nên nhẹ nhàng, mang dáng vẻ của những tráng sĩ thời xưa.\n\nNhìn chung, người lính Tây Tiến hiện lên với vẻ đẹp toàn diện: hào hùng trong chiến đấu, lãng mạn trong tâm hồn và bất tử trong lý tưởng.",
+            "score": 1.5,
+            "max_score": 3,
+            "word_count": 224,
+            "feedback": "Không thể chấm bài. Vui lòng liên hệ giáo viên.",
+            "details": {
+              "content": {
+                "score": 5,
+                "weighted_score": 0.75,
+                "feedback": "Lỗi hệ thống"
+              },
+              "language": {
+                "score": 5,
+                "weighted_score": 0.45,
+                "feedback": "Lỗi hệ thống"
+              },
+              "structure": {
+                "score": 5,
+                "weighted_score": 0.3,
+                "feedback": "Lỗi hệ thống"
+              }
+            }
+          }
+        ]
+      },
+      "total_score": 3.5,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Tác giả của 'Số đỏ' là ai?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Tác phẩm 'Chí Phèo' thuộc thể loại văn học nào?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Bài thơ 'Đất nước' của Nguyễn Khoa Điềm được sáng tác vào thời kỳ nào?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Nhân vật chính trong truyện ngắn 'Làng' của Kim Lân là ai?",
+          "user_answer": "C",
+          "correct_answer": "D",
+          "explanation": ""
+        },
+        {
+          "question_number": 5,
+          "question_text": "Tác phẩm nào sau đây KHÔNG phải của Tô Hoài?",
+          "user_answer": "D",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "Biện pháp nghệ thuật chủ yếu trong đoạn thơ 'Khi tôi ngã xuống bùn lầy / Xin đừng giẫm thêm tay này để chôn' là gì?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Tác phẩm 'Tắt đèn' của Ngô Tất Tố phản ánh hiện thực xã hội nào?",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Tác giả nào được gọi là 'nhà văn của những số phận bé nhỏ'?",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Truyện 'Hai đứa trẻ' của Thạch Lam thuộc trào lưu văn học nào?",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Trong truyện 'Vợ nhặt', nhân vật người vợ có tên là gì?",
+          "user_answer": "C",
+          "correct_answer": "D",
+          "explanation": ""
+        }
+      ]
+    },
+    "submitted_at": "08/12/2025 14:05:46"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "nguvan",
+    "subject_name": "Ngữ Văn",
+    "subject_icon": "📖",
+    "subject_color": "#c0392b",
+    "exam_id": "exam_nguvan_9_02",
+    "exam_title": "Đề Ngữ Văn 9 - Văn học hiện đại",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 4,
+        "total_questions": 14,
+        "percentage": 28.6,
+        "raw_score": 2.0,
+        "weight": 70.0
+      },
+      "essay": {
+        "total_score": 2.01,
+        "max_score": 3,
+        "percentage": 67.0,
+        "weighted_score": 2.01,
+        "weight": 30.0,
+        "results": [
+          {
+            "question_number": 15,
+            "question": "Phân tích hình ảnh người lính trong bài thơ 'Tây Tiến' của Quang Dũng (khoảng 200 từ)",
+            "user_answer": "Hình ảnh người lính trong bài thơ *Tây Tiến* của Quang Dũng hiện lên vừa hào hùng, vừa lãng mạn, gắn với vẻ đẹp bi tráng của thế hệ trẻ thời kháng chiến chống Pháp. Họ là những chàng trai xuất thân từ đất Hà thành, mang trong mình lý tưởng lớn lao nhưng lại phải đối mặt với muôn vàn gian khổ nơi núi rừng Tây Bắc: “Sài Khao sương lấp đoàn quân mỏi”, “Mường Lát hoa về trong đêm hơi”. Thiên nhiên khắc nghiệt không làm họ chùn bước mà càng tô đậm ý chí kiên cường, tinh thần vượt khó của người lính.\n\nBên cạnh hiện thực gian lao, Quang Dũng còn khắc họa vẻ đẹp lãng mạn của người lính Tây Tiến. Đó là tâm hồn trẻ trung, giàu mộng mơ, yêu đời, biết rung động trước cảnh sắc và con người miền sơn cước. Hình ảnh “kẻ thù gục xuống súng bên đường” và “áo bào thay chiếu” kết hợp bút pháp bi tráng đã tôn vinh sự hy sinh cao cả của họ, khiến cái chết trở nên nhẹ nhàng, mang dáng vẻ của những tráng sĩ thời xưa.\n\nNhìn chung, người lính Tây Tiến hiện lên với vẻ đẹp toàn diện: hào hùng trong chiến đấu, lãng mạn trong tâm hồn và bất tử trong lý tưởng.",
+            "score": 2.01,
+            "max_score": 3,
+            "word_count": 224,
+            "feedback": "Bài làm có nhiều điểm tốt về bố cục và ngôn ngữ, đã nắm bắt được các ý lớn về hình ảnh người lính Tây Tiến. Tuy nhiên, lỗi sai về trích dẫn và phân tích hình ảnh không có trong tác phẩm là một điểm trừ rất lớn, cần đặc biệt lưu ý. Em hãy đọc kỹ và ghi nhớ chính xác các chi tiết, hình ảnh trong bài thơ để đảm bảo tính chính xác cho bài phân tích của mình.",
+            "details": {
+              "content": {
+                "score": 5,
+                "weighted_score": 0.75,
+                "feedback": "Bài làm đã nêu được đặc điểm chung của người lính Tây Tiến như hào hùng, lãng mạn, và bi tráng. Em cũng đã cố gắng phân tích một số hình ảnh cụ thể như 'Sài Khao sương lấp đoàn quân mỏi', 'Mường Lát hoa về trong đêm hơi' và 'áo bào thay chiếu', đồng thời nêu được ý nghĩa của sự hy sinh cao cả. Tuy nhiên, bài làm mắc một lỗi nghiêm trọng là đưa vào phân tích hình ảnh 'kẻ thù gục xuống súng bên đường' - một câu thơ không hề xuất hiện trong bài 'Tây Tiến' của Quang Dũng. Điều này cho thấy sự chưa nắm vững về tác phẩm, làm giảm đáng kể giá trị của phần phân tích hình ảnh cụ thể và ảnh hưởng đến điểm nội dung."
+              },
+              "language": {
+                "score": 8,
+                "weighted_score": 0.72,
+                "feedback": "Ngữ pháp chính xác, không mắc lỗi chính tả hay cấu trúc câu. Từ vựng phong phú, phù hợp với văn phong nghị luận văn học (ví dụ: 'hào hùng', 'lãng mạn', 'bi tráng', 'kiên cường', 'mộng mơ', 'tráng sĩ'). Các câu văn mạch lạc, trôi chảy, dễ hiểu, thể hiện khả năng diễn đạt tốt."
+              },
+              "structure": {
+                "score": 9,
+                "weighted_score": 0.54,
+                "feedback": "Bài làm có bố cục rõ ràng với mở bài giới thiệu vấn đề, thân bài triển khai các luận điểm (khắc họa gian khổ/ý chí kiên cường và vẻ đẹp lãng mạn/sự hy sinh), và kết bài tổng kết. Các đoạn văn được sắp xếp hợp lý, logic, giúp người đọc dễ dàng theo dõi lập luận của em."
+              }
+            }
+          }
+        ]
+      },
+      "total_score": 4.01,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Tác giả của 'Số đỏ' là ai?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Tác phẩm 'Chí Phèo' thuộc thể loại văn học nào?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Bài thơ 'Đất nước' của Nguyễn Khoa Điềm được sáng tác vào thời kỳ nào?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Nhân vật chính trong truyện ngắn 'Làng' của Kim Lân là ai?",
+          "user_answer": "A",
+          "correct_answer": "D",
+          "explanation": ""
+        },
+        {
+          "question_number": 5,
+          "question_text": "Tác phẩm nào sau đây KHÔNG phải của Tô Hoài?",
+          "user_answer": "D",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Tác giả nào được gọi là 'nhà văn của những số phận bé nhỏ'?",
+          "user_answer": "D",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Truyện 'Hai đứa trẻ' của Thạch Lam thuộc trào lưu văn học nào?",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Đặc điểm nào KHÔNG phải của văn học hiện đại Việt Nam?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 13,
+          "question_text": "Bài thơ 'Việt Bắc' của Tố Hữu viết về chủ đề gì?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Trong truyện 'Vợ nhặt', nhân vật người vợ có tên là gì?",
+          "user_answer": "A",
+          "correct_answer": "D",
+          "explanation": ""
+        }
+      ]
+    },
+    "submitted_at": "08/12/2025 14:11:03"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "toan",
+    "subject_name": "Toán",
+    "subject_icon": "🔢",
+    "subject_color": "#3498db",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 4,
+        "total_questions": 20,
+        "percentage": 20.0,
+        "raw_score": 2.0,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 2.0,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Điều kiện xác định của căn thức √(x-3) là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Nghiệm của phương trình 2x - 6 = 0 là",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Bất phương trình 3x - 9 < 0 có bao nhiêu nghiệm là số tự nhiên?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Phương trình nào sau đây không phải là phương trình bậc nhất hai ẩn của x và y?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "Gọi x₁, x₂ là hai nghiệm của phương trình x² - 5x + 6 = 0 khi đó x₁ + x₂ bằng",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Đồ thị hàm số y = 2x + 1 đi qua điểm nào trong các điểm dưới đây?",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 8,
+          "question_text": "Cho tam giác ABC vuông tại A có AB = 3, AC = 4. Khi đó BC bằng",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Tại thời điểm tia nắng chiếu xuống mặt đất tạo với mặt đất một góc 45° thì chiều dài bóng cây đo được là 8 mét. Hỏi cây cao bao nhiêu mét?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Một hộp có 10 quả bóng trong đó có 4 quả bóng màu vàng và 6 quả bóng màu xanh. Lấy ngẫu nhiên một quả bóng. Xác suất lấy được quả bóng màu vàng bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Cho tam giác ABC nội tiếp đường tròn và góc BAC = 50°. Số đo góc BOC bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Cho đường tròn (O; 5cm) và đường tròn (O'; 3cm) tiếp xúc ngoài với nhau. Độ dài đoạn thẳng OO' bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Phương trình x² - 4 = 0 có bao nhiêu nghiệm?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 15,
+          "question_text": "Trong tam giác vuông ABC, vuông tại A, sin B bằng",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 16,
+          "question_text": "Cho hàm số y = ax² (a ≠ 0). Đồ thị hàm số đi qua điểm A(2; 8). Giá trị của a là",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 17,
+          "question_text": "Diện tích hình tròn có bán kính 5 cm là",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 20,
+          "question_text": "Phương trình nào sau đây vô nghiệm?",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        }
+      ]
+    },
+    "submitted_at": "08/12/2025 14:11:40"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "nguvan",
+    "subject_name": "Ngữ Văn",
+    "subject_icon": "📖",
+    "subject_color": "#c0392b",
+    "exam_id": "exam_nguvan_9_02",
+    "exam_title": "Đề Ngữ Văn 9 - Văn học hiện đại",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 4,
+        "total_questions": 14,
+        "percentage": 28.6,
+        "raw_score": 2.0,
+        "weight": 70.0
+      },
+      "essay": {
+        "total_score": 2.1,
+        "max_score": 3,
+        "percentage": 70.0,
+        "weighted_score": 2.1,
+        "weight": 30.0,
+        "results": [
+          {
+            "question_number": 15,
+            "question": "Phân tích hình ảnh người lính trong bài thơ 'Tây Tiến' của Quang Dũng (khoảng 200 từ)",
+            "user_answer": "Hình ảnh người lính trong bài thơ *Tây Tiến* của Quang Dũng hiện lên vừa hào hùng, vừa lãng mạn, gắn với vẻ đẹp bi tráng của thế hệ trẻ thời kháng chiến chống Pháp. Họ là những chàng trai xuất thân từ đất Hà thành, mang trong mình lý tưởng lớn lao nhưng lại phải đối mặt với muôn vàn gian khổ nơi núi rừng Tây Bắc: “Sài Khao sương lấp đoàn quân mỏi”, “Mường Lát hoa về trong đêm hơi”. Thiên nhiên khắc nghiệt không làm họ chùn bước mà càng tô đậm ý chí kiên cường, tinh thần vượt khó của người lính.\n\nBên cạnh hiện thực gian lao, Quang Dũng còn khắc họa vẻ đẹp lãng mạn của người lính Tây Tiến. Đó là tâm hồn trẻ trung, giàu mộng mơ, yêu đời, biết rung động trước cảnh sắc và con người miền sơn cước. Hình ảnh “kẻ thù gục xuống súng bên đường” và “áo bào thay chiếu” kết hợp bút pháp bi tráng đã tôn vinh sự hy sinh cao cả của họ, khiến cái chết trở nên nhẹ nhàng, mang dáng vẻ của những tráng sĩ thời xưa.\n\nNhìn chung, người lính Tây Tiến hiện lên với vẻ đẹp toàn diện: hào hùng trong chiến đấu, lãng mạn trong tâm hồn và bất tử trong lý tưởng.",
+            "score": 2.1,
+            "max_score": 3,
+            "word_count": 224,
+            "feedback": "Bài làm thể hiện sự hiểu biết về hình ảnh người lính Tây Tiến với những phân tích khá tốt về các nét đặc trưng. Ngôn ngữ và bố cục bài viết rất tốt, thể hiện khả năng diễn đạt lưu loát. Tuy nhiên, em cần đặc biệt lưu ý về tính chính xác của dẫn chứng, tránh nhầm lẫn trích dẫn để đảm bảo độ tin cậy cho bài phân tích của mình. Đồng thời, hãy cố gắng mở rộng và đào sâu hơn các ý để đạt được độ dài và chiều sâu phân tích theo yêu cầu.",
+            "details": {
+              "content": {
+                "score": 5,
+                "weighted_score": 0.75,
+                "feedback": "Bài làm đã nêu được đặc điểm chung của người lính Tây Tiến với vẻ đẹp hào hùng, lãng mạn và bi tráng. Em cũng đã phân tích được các khía cạnh về sự gian khổ, tinh thần kiên cường, tâm hồn lãng mạn và sự hy sinh cao cả của người lính. Việc sử dụng các hình ảnh như 'Sài Khao sương lấp đoàn quân mỏi', 'Mường Lát hoa về trong đêm hơi' và 'áo bào thay chiếu' là hợp lý và có phân tích ý nghĩa. Tuy nhiên, bài viết mắc một lỗi nghiêm trọng: câu thơ 'kẻ thù gục xuống súng bên đường' không có trong bài 'Tây Tiến' của Quang Dũng. Đây là một sự nhầm lẫn về trích dẫn, làm giảm độ tin cậy của phần phân tích về sự hy sinh. Ngoài ra, bài viết còn hơi ngắn so với yêu cầu (khoảng 145 từ so với 200 từ), làm hạn chế chiều sâu phân tích."
+              },
+              "language": {
+                "score": 9,
+                "weighted_score": 0.81,
+                "feedback": "Ngữ pháp chính xác, không mắc lỗi cơ bản. Từ vựng phong phú, sử dụng linh hoạt các từ ngữ phù hợp với văn phong nghị luận văn học như 'hào hùng, lãng mạn, bi tráng, khắc nghiệt, kiên cường, mộng mơ, tráng sĩ, bất tử'. Câu văn mạch lạc, có sự liên kết chặt chẽ giữa các ý và các đoạn, tạo nên sự trôi chảy cho bài viết."
+              },
+              "structure": {
+                "score": 9,
+                "weighted_score": 0.54,
+                "feedback": "Bài làm có bố cục rõ ràng với đầy đủ mở bài, thân bài và kết bài. Mở bài giới thiệu khái quát hình ảnh người lính, thân bài triển khai các khía cạnh về sự hào hùng, lãng mạn và bi tráng, kết bài tổng kết lại vẻ đẹp toàn diện. Các ý được sắp xếp hợp lý, lập luận rõ ràng, dễ theo dõi."
+              }
+            }
+          }
+        ]
+      },
+      "total_score": 4.1,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Tác giả của 'Số đỏ' là ai?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Tác phẩm 'Chí Phèo' thuộc thể loại văn học nào?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Bài thơ 'Đất nước' của Nguyễn Khoa Điềm được sáng tác vào thời kỳ nào?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Nhân vật chính trong truyện ngắn 'Làng' của Kim Lân là ai?",
+          "user_answer": "A",
+          "correct_answer": "D",
+          "explanation": ""
+        },
+        {
+          "question_number": 5,
+          "question_text": "Tác phẩm nào sau đây KHÔNG phải của Tô Hoài?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "Biện pháp nghệ thuật chủ yếu trong đoạn thơ 'Khi tôi ngã xuống bùn lầy / Xin đừng giẫm thêm tay này để chôn' là gì?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 8,
+          "question_text": "Câu thơ 'Sông Đà dáng một con rồng / Uốn mình qua núi mây trông bao la' sử dụng biện pháp tu từ nào?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Bài thơ 'Sóng' của Xuân Quỳnh viết theo thể thơ nào?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Tác giả nào được gọi là 'nhà văn của những số phận bé nhỏ'?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Đặc điểm nào KHÔNG phải của văn học hiện đại Việt Nam?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        }
+      ]
+    },
+    "submitted_at": "08/12/2025 14:14:16"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "anh",
+    "subject_name": "Tiếng Anh",
+    "subject_icon": "🇬🇧",
+    "subject_color": "#e74c3c",
+    "exam_id": "exam_english_09_01",
+    "exam_title": "Đề trắc nghiệm Tiếng Anh 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 6,
+        "total_questions": 20,
+        "percentage": 30.0,
+        "raw_score": 3.0,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 3.0,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Teenagers can find a lot of career advice on ______ Internet.",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Sa Pa is famous for its ______ landmarks such as Fansipan Mountain, Tả Phìn Village and Mường Hoa Valley.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Although plastic bags are convenient, they are ______ to the environment.",
+          "user_answer": "A",
+          "correct_answer": "D",
+          "explanation": ""
+        },
+        {
+          "question_number": 5,
+          "question_text": "When riding a bike, you should wear ______ equipment such as helmets and knee pads.",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "She tried hard so that she ______ win a scholarship to study abroad.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 8,
+          "question_text": "The test was ______ that many students could finish it in only a few minutes.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Wait a second! I need to ______ my running shoes before we go for a run.",
+          "user_answer": "A",
+          "correct_answer": "D",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Sarah (wait) ______ for me when I arrived at the airport yesterday.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Linda (go) ______ to the cooking class every Thursday evening.",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 13,
+          "question_text": "Children should avoid (spend) ______ too much screen time.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Don't forget (buy) ______ some sugar. We haven't got any now.",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 15,
+          "question_text": "If you ______ harder, you would pass the exam easily.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 18,
+          "question_text": "My father suggested ______ a trip to the countryside this weekend.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 19,
+          "question_text": "The movie was ______ boring that I fell asleep.",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        }
+      ]
+    },
+    "submitted_at": "08/12/2025 14:15:23"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "anh",
+    "subject_name": "Tiếng Anh",
+    "subject_icon": "🇬🇧",
+    "subject_color": "#e74c3c",
+    "exam_id": "exam_english_09_01",
+    "exam_title": "Đề trắc nghiệm Tiếng Anh 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 8,
+        "total_questions": 20,
+        "percentage": 40.0,
+        "raw_score": 4.0,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 4.0,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Teenagers can find a lot of career advice on ______ Internet.",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Would you like to join our party ______ Saturday night?",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Sa Pa is famous for its ______ landmarks such as Fansipan Mountain, Tả Phìn Village and Mường Hoa Valley.",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Although plastic bags are convenient, they are ______ to the environment.",
+          "user_answer": "B",
+          "correct_answer": "D",
+          "explanation": ""
+        },
+        {
+          "question_number": 5,
+          "question_text": "When riding a bike, you should wear ______ equipment such as helmets and knee pads.",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "She tried hard so that she ______ win a scholarship to study abroad.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 8,
+          "question_text": "The test was ______ that many students could finish it in only a few minutes.",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Wait a second! I need to ______ my running shoes before we go for a run.",
+          "user_answer": "A",
+          "correct_answer": "D",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Linda (go) ______ to the cooking class every Thursday evening.",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Don't forget (buy) ______ some sugar. We haven't got any now.",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 16,
+          "question_text": "The book ______ by my brother last week was very interesting.",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 19,
+          "question_text": "The movie was ______ boring that I fell asleep.",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": null,
+    "submitted_at": "08/12/2025 14:19:06"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "nguvan",
+    "subject_name": "Ngữ Văn",
+    "subject_icon": "📖",
+    "subject_color": "#c0392b",
+    "exam_id": "exam_nguvan_9_02",
+    "exam_title": "Đề Ngữ Văn 9 - Văn học hiện đại",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 5,
+        "total_questions": 14,
+        "percentage": 35.7,
+        "raw_score": 2.5,
+        "weight": 70.0
+      },
+      "essay": {
+        "total_score": 2.55,
+        "max_score": 3,
+        "percentage": 85.0,
+        "weighted_score": 2.55,
+        "weight": 30.0,
+        "results": [
+          {
+            "question_number": 15,
+            "question": "Phân tích hình ảnh người lính trong bài thơ 'Tây Tiến' của Quang Dũng (khoảng 200 từ)",
+            "user_answer": "Hình ảnh người lính trong bài thơ *Tây Tiến* của Quang Dũng hiện lên vừa hào hùng, vừa lãng mạn, gắn với vẻ đẹp bi tráng của thế hệ trẻ thời kháng chiến chống Pháp. Họ là những chàng trai xuất thân từ đất Hà thành, mang trong mình lý tưởng lớn lao nhưng lại phải đối mặt với muôn vàn gian khổ nơi núi rừng Tây Bắc: “Sài Khao sương lấp đoàn quân mỏi”, “Mường Lát hoa về trong đêm hơi”. Thiên nhiên khắc nghiệt không làm họ chùn bước mà càng tô đậm ý chí kiên cường, tinh thần vượt khó của người lính.\n\nBên cạnh hiện thực gian lao, Quang Dũng còn khắc họa vẻ đẹp lãng mạn của người lính Tây Tiến. Đó là tâm hồn trẻ trung, giàu mộng mơ, yêu đời, biết rung động trước cảnh sắc và con người miền sơn cước. Hình ảnh “kẻ thù gục xuống súng bên đường” và “áo bào thay chiếu” kết hợp bút pháp bi tráng đã tôn vinh sự hy sinh cao cả của họ, khiến cái chết trở nên nhẹ nhàng, mang dáng vẻ của những tráng sĩ thời xưa.\n\nNhìn chung, người lính Tây Tiến hiện lên với vẻ đẹp toàn diện: hào hùng trong chiến đấu, lãng mạn trong tâm hồn và bất tử trong lý tưởng.",
+            "score": 2.55,
+            "max_score": 3,
+            "word_count": 224,
+            "feedback": "Bài làm đã thể hiện sự hiểu biết khá sâu sắc về hình ảnh người lính Tây Tiến với những đặc trưng nổi bật là vẻ đẹp hào hùng, lãng mạn và bi tráng. Bố cục bài viết rõ ràng, mạch lạc, ngôn ngữ chuẩn xác, phong phú. Để bài phân tích thuyết phục và sâu sắc hơn, em cần đi sâu vào khai thác và phân tích đa chiều hơn ý nghĩa của từng hình ảnh, câu thơ được trích dẫn để làm nổi bật vẻ đẹp đặc trưng và độc đáo của người lính Tây Tiến.",
+            "details": {
+              "content": {
+                "score": 8,
+                "weighted_score": 1.2,
+                "feedback": "Bài viết đã nắm bắt được những đặc điểm cốt lõi của người lính Tây Tiến là sự hào hùng, lãng mạn và bi tráng, đây là một nhận định rất chuẩn xác. Em đã đưa ra được các luận điểm chính và các ý nghĩa quan trọng của hình ảnh người lính. Tuy nhiên, việc phân tích hình ảnh cụ thể từ bài thơ còn có chỗ chưa thật sự sâu sắc và đôi khi chưa hoàn toàn chính xác về hàm ý của câu thơ trong ngữ cảnh toàn bài (ví dụ câu 'Mường Lát hoa về trong đêm hơi' thường được hiểu theo hướng lãng mạn, cảnh đẹp và nỗi nhớ hơn là để tô đậm ý chí kiên cường một cách trực tiếp). Nếu có thêm dung lượng, em nên khai thác nhiều hơn các dẫn chứng khác để làm rõ thêm các khía cạnh đã nêu."
+              },
+              "language": {
+                "score": 9,
+                "weighted_score": 0.81,
+                "feedback": "Ngôn ngữ trong bài viết khá trau chuốt, giàu tính biểu cảm và phù hợp với văn phong nghị luận văn học. Ngữ pháp chính xác, không mắc lỗi. Từ ngữ được sử dụng phong phú, các câu văn mạch lạc, rõ ràng, giúp người đọc dễ dàng theo dõi lập luận của em."
+              },
+              "structure": {
+                "score": 9,
+                "weighted_score": 0.54,
+                "feedback": "Bài viết có bố cục rõ ràng với đầy đủ mở bài, thân bài và kết bài. Các đoạn văn được sắp xếp hợp lý, mỗi đoạn trình bày một khía cạnh riêng biệt của hình ảnh người lính, tạo sự mạch lạc trong lập luận. Kết bài đã tổng kết được những luận điểm chính một cách cô đọng."
+              }
+            }
+          }
+        ]
+      },
+      "total_score": 5.05,
+      "wrong_answers": [
+        {
+          "question_number": 3,
+          "question_text": "Bài thơ 'Đất nước' của Nguyễn Khoa Điềm được sáng tác vào thời kỳ nào?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Nhân vật chính trong truyện ngắn 'Làng' của Kim Lân là ai?",
+          "user_answer": "B",
+          "correct_answer": "D",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "Biện pháp nghệ thuật chủ yếu trong đoạn thơ 'Khi tôi ngã xuống bùn lầy / Xin đừng giẫm thêm tay này để chôn' là gì?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Tác phẩm 'Tắt đèn' của Ngô Tất Tố phản ánh hiện thực xã hội nào?",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Bài thơ 'Sóng' của Xuân Quỳnh viết theo thể thơ nào?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Tác giả nào được gọi là 'nhà văn của những số phận bé nhỏ'?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Đặc điểm nào KHÔNG phải của văn học hiện đại Việt Nam?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 13,
+          "question_text": "Bài thơ 'Việt Bắc' của Tố Hữu viết về chủ đề gì?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Trong truyện 'Vợ nhặt', nhân vật người vợ có tên là gì?",
+          "user_answer": "A",
+          "correct_answer": "D",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": {
+      "success": true,
+      "overall_assessment": "Chào con! Thầy/cô đã xem qua bài làm của con rồi. Điểm số 0/10 (tương đương 35.7%) trong bài kiểm tra về Văn học hiện đại cho thấy con còn nhiều kiến thức cần củng cố. Thời gian làm bài 0 phút 0 giây có vẻ như chưa được ghi nhận chính xác, nên thầy/cô không thể nhận xét về tốc độ của con được. Tuy nhiên, việc con đã làm bài và hoàn thành các câu hỏi là một sự cố gắng đáng ghi nhận.",
+      "strengths": "💪 Con đã rất cố gắng khi không bỏ trống bất kỳ câu hỏi nào, đây là một tinh thần học tập rất tích cực!\n💡 Con đã nhận diện được một số tác phẩm và tác giả quan trọng trong chương trình, cho thấy con có sự tiếp xúc ban đầu với kiến thức.\n✨ Con đã bắt đầu làm quen với các dạng câu hỏi về văn học hiện đại, đó là bước đầu tiên để tiến bộ.",
+      "weaknesses": "🤔 Kiến thức cơ bản về lý thuyết văn học như thời kỳ sáng tác của tác phẩm, thể loại thơ hoặc biện pháp tu từ chủ yếu trong đoạn thơ cụ thể (như câu 3, 6, 9) con còn chưa nắm chắc.\n📚 Con chưa ghi nhớ kỹ các chi tiết quan trọng về nội dung tác phẩm, ví dụ như nhân vật chính trong truyện hoặc hiện thực xã hội mà tác phẩm phản ánh (như câu 4, 7).\n🤯 Có vẻ như con chưa có phương pháp tổng hợp và hệ thống hóa kiến thức giữa tác giả, tác phẩm, nội dung và các đặc điểm nghệ thuật một cách hiệu quả.",
+      "study_plan": "📖 Bước 1: Ôn tập lại các tác phẩm văn học hiện đại theo từng nhóm (ví dụ: thơ, truyện) một cách hệ thống, tập trung vào tác giả, hoàn cảnh sáng tác, nội dung chính, nhân vật tiêu biểu và các chi tiết nghệ thuật đặc sắc.\n📝 Bước 2: Lập sơ đồ tư duy hoặc bảng tổng hợp cho mỗi tác phẩm, ghi rõ tên tác phẩm, tác giả, thể loại, thời kỳ sáng tác, nhân vật chính, chủ đề và các biện pháp nghệ thuật nổi bật.\n🧐 Bước 3: Đọc lại kỹ các văn bản gốc hoặc đoạn trích trọng tâm, đặc biệt là những tác phẩm con đã làm sai câu hỏi để hiểu sâu hơn, thay vì chỉ ghi nhớ các ý chính.\n✍️ Bước 4: Thực hành làm nhiều dạng bài tập trắc nghiệm và tự luận về nhận diện kiến thức cơ bản để củng cố và kiểm tra lại sự ghi nhớ của mình. Con có thể tự đặt câu hỏi cho mình hoặc nhờ bạn bè hỗ trợ.\n🤝 Bước 5: Đừng ngần ngại hỏi thầy/cô hoặc bạn bè những phần kiến thức con còn băn khoăn hoặc chưa hiểu rõ. Việc trao đổi sẽ giúp con ghi nhớ tốt hơn rất nhiều đấy!",
+      "encouragement": "Con đừng quá lo lắng về kết quả lần này nhé! Đây chỉ là một bài kiểm tra để chúng ta cùng nhau nhìn nhận lại những phần con cần cải thiện thôi. Thầy/cô tin rằng với sự kiên trì và một kế hoạch học tập rõ ràng, con chắc chắn sẽ tiến bộ vượt bậc trong môn Ngữ Văn. Cứ cố gắng từng chút một mỗi ngày, thầy/cô sẽ luôn đồng hành cùng con! ✨"
+    },
+    "submitted_at": "08/12/2025 14:24:10"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "toan",
+    "subject_name": "Toán",
+    "subject_icon": "🔢",
+    "subject_color": "#3498db",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 6,
+        "total_questions": 20,
+        "percentage": 30.0,
+        "raw_score": 3.0,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 3.0,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Điều kiện xác định của căn thức √(x-3) là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Nghiệm của phương trình 2x - 6 = 0 là",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Phương trình nào sau đây không phải là phương trình bậc nhất hai ẩn của x và y?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "Gọi x₁, x₂ là hai nghiệm của phương trình x² - 5x + 6 = 0 khi đó x₁ + x₂ bằng",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Đồ thị hàm số y = 2x + 1 đi qua điểm nào trong các điểm dưới đây?",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Tại thời điểm tia nắng chiếu xuống mặt đất tạo với mặt đất một góc 45° thì chiều dài bóng cây đo được là 8 mét. Hỏi cây cao bao nhiêu mét?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Một hộp có 10 quả bóng trong đó có 4 quả bóng màu vàng và 6 quả bóng màu xanh. Lấy ngẫu nhiên một quả bóng. Xác suất lấy được quả bóng màu vàng bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Cho tam giác ABC nội tiếp đường tròn và góc BAC = 50°. Số đo góc BOC bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 13,
+          "question_text": "Rút gọn biểu thức √48 - √12 ta được",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Phương trình x² - 4 = 0 có bao nhiêu nghiệm?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 15,
+          "question_text": "Trong tam giác vuông ABC, vuông tại A, sin B bằng",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 16,
+          "question_text": "Cho hàm số y = ax² (a ≠ 0). Đồ thị hàm số đi qua điểm A(2; 8). Giá trị của a là",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 18,
+          "question_text": "Giá trị của biểu thức √9 + √16 bằng",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 20,
+          "question_text": "Phương trình nào sau đây vô nghiệm?",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": {
+      "success": true,
+      "overall_assessment": "Chào con! 😊 Thầy/cô đã xem qua bài làm Toán 9 của con rồi. Điểm số 0/10 (đúng 6/20 câu) cho thấy con đang gặp một số thử thách lớn với kiến thức trong đề này. Đặc biệt, việc con hoàn thành bài trong 0 phút 0 giây khiến thầy/cô hơi lo lắng, có thể con đã bấm nộp nhầm hoặc chưa có đủ thời gian để suy nghĩ kỹ các câu hỏi. Chúng ta hãy cùng tìm hiểu nguyên nhân và cách khắc phục nhé!",
+      "strengths": "👍 Con đã đúng được 6 câu hỏi, điều này cho thấy con vẫn có những nền tảng kiến thức nhất định về Toán 9, không phải là tất cả đều 'mất gốc' đâu nhé!\n💪 Con đã mạnh dạn chọn đáp án cho tất cả các câu hỏi (hoặc phần lớn), đây là tinh thần rất đáng khen, không ngại thử sức.\n✨ Có thể con đã nắm được một số khái niệm cơ bản về phương trình bậc nhất, hoặc nhận diện được một số dạng bài tập quen thuộc.",
+      "weaknesses": "🤔 Con còn lúng túng với kiến thức về điều kiện xác định của căn thức (như Câu 1), đây là kiến thức nền tảng rất quan trọng khi học về biểu thức đại số chứa căn.\n✖️ Các lỗi tính toán cơ bản hoặc nhầm lẫn dấu khi giải phương trình (như Câu 2) và áp dụng công thức (như Câu 6 về Vi-ét) cho thấy con cần rèn luyện cẩn thận hơn nữa.\n❓ Con chưa thật sự nắm vững khái niệm về phương trình bậc nhất hai ẩn (Câu 4) và cách kiểm tra một điểm có thuộc đồ thị hàm số hay không (Câu 7).\n⏱️ Việc làm bài quá nhanh (0 phút 0 giây) có thể là nguyên nhân khiến con chưa đọc kỹ đề, chưa kịp tư duy và dẫn đến các lỗi sai đáng tiếc. Con hãy nhớ, làm bài không phải chạy đua với thời gian, mà là chạy đua với chính bản thân mình để đạt kết quả tốt nhất.",
+      "study_plan": "📚 Bước 1: Ôn lại thật kỹ các kiến thức cơ bản về: Điều kiện xác định của căn thức, cách giải phương trình bậc nhất một ẩn, định nghĩa phương trình bậc nhất hai ẩn và hệ số của nó, công thức Vi-ét (tổng, tích các nghiệm của phương trình bậc hai), và cách kiểm tra điểm thuộc đồ thị hàm số.\n✍️ Bước 2: Luyện tập các dạng bài tập cơ bản tương ứng với các kiến thức trên. Con hãy làm từng bài một, thật chậm và cẩn thận, không cần vội vàng. Cố gắng tự giải thích từng bước mình làm.\n💡 Bước 3: Sau khi làm bài, con hãy tự dò lại kết quả và xem lại các bước giải. Nếu có câu nào chưa hiểu, con có thể xem lại sách giáo khoa, vở ghi hoặc tìm kiếm các video bài giảng trên mạng về chủ đề đó.\n⏰ Bước 4: Khi làm bài tập hoặc bài kiểm tra, con hãy dành thời gian đọc kỹ đề bài và kiểm tra lại câu trả lời trước khi nộp nhé. Dù làm bài trên máy hay trên giấy, việc dành thời gian suy nghĩ kỹ càng là rất quan trọng.\n🙋‍♀️ Bước 5: Đừng ngại ngùng khi có thắc mắc! Con hãy mạnh dạn hỏi thầy/cô hoặc bạn bè những phần kiến thức mà con vẫn còn chưa hiểu rõ. Thầy/cô luôn sẵn lòng giúp đỡ con.",
+      "encouragement": "Thầy/cô biết con đang gặp một chút khó khăn, nhưng đừng vì thế mà nản lòng nhé! 💪 Mỗi lỗi sai đều là một cơ hội để chúng ta học hỏi và tiến bộ. Thầy/cô tin rằng với sự kiên trì và nỗ lực, cùng với một kế hoạch học tập cụ thể, con chắc chắn sẽ vượt qua được những thử thách này và đạt được kết quả tốt hơn rất nhiều trong tương lai! Con hãy tin vào bản thân mình!"
+    },
+    "submitted_at": "08/12/2025 14:25:38"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "toan",
+    "subject_name": "Toán",
+    "subject_icon": "🔢",
+    "subject_color": "#3498db",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 7,
+        "total_questions": 20,
+        "percentage": 35.0,
+        "raw_score": 3.5,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 3.5,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Điều kiện xác định của căn thức √(x-3) là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Nghiệm của phương trình 2x - 6 = 0 là",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Phương trình nào sau đây không phải là phương trình bậc nhất hai ẩn của x và y?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Đồ thị hàm số y = 2x + 1 đi qua điểm nào trong các điểm dưới đây?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Tại thời điểm tia nắng chiếu xuống mặt đất tạo với mặt đất một góc 45° thì chiều dài bóng cây đo được là 8 mét. Hỏi cây cao bao nhiêu mét?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Cho đường tròn (O; 5cm) và đường tròn (O'; 3cm) tiếp xúc ngoài với nhau. Độ dài đoạn thẳng OO' bằng",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 13,
+          "question_text": "Rút gọn biểu thức √48 - √12 ta được",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 15,
+          "question_text": "Trong tam giác vuông ABC, vuông tại A, sin B bằng",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 16,
+          "question_text": "Cho hàm số y = ax² (a ≠ 0). Đồ thị hàm số đi qua điểm A(2; 8). Giá trị của a là",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 17,
+          "question_text": "Diện tích hình tròn có bán kính 5 cm là",
+          "user_answer": "D",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 18,
+          "question_text": "Giá trị của biểu thức √9 + √16 bằng",
+          "user_answer": "D",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 19,
+          "question_text": "Cho tam giác ABC có AB = AC = 5cm, BC = 6cm. Độ dài đường cao AH là",
+          "user_answer": "D",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 20,
+          "question_text": "Phương trình nào sau đây vô nghiệm?",
+          "user_answer": "D",
+          "correct_answer": "A",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": {
+      "success": true,
+      "overall_assessment": "Chào em! Cô đã xem qua kết quả bài kiểm tra Toán 9 của em rồi. Với số điểm 7/20, đạt 35%, cho thấy em vẫn còn một số kiến thức cơ bản cần ôn lại để đạt được kết quả tốt hơn. Về thời gian làm bài là 0 phút 0 giây, có thể là một lỗi kỹ thuật hoặc em chưa hoàn thành bài thi một cách chính thức, nhưng điều đó không sao cả, chúng ta sẽ tập trung vào những gì em đã làm được và những điểm cần cải thiện nhé! Ấn tượng của cô là em đã rất cố gắng làm bài và hoàn thành được 7 câu hỏi đúng.",
+      "strengths": "👍 Em đã nắm được một số kiến thức nền tảng trong chương trình Toán 9, thể hiện qua 7 câu trả lời đúng của mình.\n🎯 Có vẻ em vẫn giữ được sự tập trung và cố gắng suy nghĩ, không bỏ trống quá nhiều câu hỏi.\n🌟 Em có khả năng giải quyết được các bài toán cơ bản về số học hoặc hình học mà không gặp quá nhiều khó khăn.\n💡 Em đã có tinh thần làm bài, đó là điều rất đáng khen ngợi để tiếp tục học hỏi và tiến bộ.",
+      "weaknesses": "🧐 Em còn nhầm lẫn về điều kiện xác định của căn thức (như câu 1), đây là kiến thức nền tảng rất quan trọng khi học về biểu thức chứa căn.\n❓ Kỹ năng giải phương trình bậc nhất một ẩn của em chưa vững chắc (như câu 2), có thể do tính toán nhầm lẫn hoặc chưa nắm rõ các bước chuyển vế đổi dấu.\n📝 Định nghĩa về các loại phương trình (như phương trình bậc nhất hai ẩn ở câu 4) chưa thực sự rõ ràng trong đầu em, dẫn đến việc chọn sai khái niệm.\n📉 Em gặp khó khăn trong việc áp dụng kiến thức hàm số vào đồ thị (như câu 7) và giải các bài toán hình học thực tế có yếu tố lượng giác (như câu 9), cho thấy em cần thực hành nhiều hơn về cả hai phần này.",
+      "study_plan": "📚 Bước 1: Ôn tập lại thật kỹ các kiến thức cơ bản về Điều kiện xác định của căn thức và Phương trình bậc nhất một ẩn, đặc biệt là các quy tắc giải và biến đổi phương trình.\n✍️ Bước 2: Làm thêm nhiều bài tập về nhận dạng phương trình, giải phương trình bậc nhất và bài tập về điểm thuộc đồ thị hàm số. Em hãy thử thế tọa độ điểm vào phương trình hàm số để kiểm tra nhé!\n🎬 Bước 3: Xem lại các bài giảng hoặc video hướng dẫn về định nghĩa các loại phương trình, cách vẽ và đọc đồ thị hàm số y = ax + b, và các bài toán thực tế áp dụng tỉ số lượng giác của góc nhọn.\n💡 Bước 4: Luyện tập giải các bài tập tổng hợp và thử sức với các đề kiểm tra tương tự, chú ý đọc kỹ đề và kiểm tra lại kết quả sau khi làm xong.\n🤝 Bước 5: Đừng ngần ngại hỏi thầy cô hoặc bạn bè nếu có bất kỳ chỗ nào chưa hiểu rõ, đặc biệt là các phần kiến thức căn bản như điều kiện xác định hay giải phương trình.",
+      "encouragement": "Cô biết điểm số lần này chưa được như mong đợi, nhưng đây chỉ là một bài kiểm tra để chúng ta biết mình cần cố gắng ở đâu thôi! Em đừng nản chí nhé. Cô tin rằng với sự chăm chỉ và quyết tâm, em hoàn toàn có thể cải thiện kết quả học tập của mình. Hãy biến những lỗi sai thành cơ hội để học hỏi và tiến bộ hơn nữa nha! Cố lên!"
+    },
+    "submitted_at": "08/12/2025 15:09:30"
+  },
+  {
+    "user_id": "4",
+    "username": "tuan",
+    "subject": "toan",
+    "subject_name": "Toán",
+    "subject_icon": "🔢",
+    "subject_color": "#3498db",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 5,
+        "total_questions": 20,
+        "percentage": 25.0,
+        "raw_score": 2.5,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 2.5,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Điều kiện xác định của căn thức √(x-3) là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Nghiệm của phương trình 2x - 6 = 0 là",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Bất phương trình 3x - 9 < 0 có bao nhiêu nghiệm là số tự nhiên?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Phương trình nào sau đây không phải là phương trình bậc nhất hai ẩn của x và y?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 5,
+          "question_text": "Hệ phương trình {x + y = 5; x - y = 1} có nghiệm là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Đồ thị hàm số y = 2x + 1 đi qua điểm nào trong các điểm dưới đây?",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 8,
+          "question_text": "Cho tam giác ABC vuông tại A có AB = 3, AC = 4. Khi đó BC bằng",
+          "user_answer": "Không trả lời",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Tại thời điểm tia nắng chiếu xuống mặt đất tạo với mặt đất một góc 45° thì chiều dài bóng cây đo được là 8 mét. Hỏi cây cao bao nhiêu mét?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Một hộp có 10 quả bóng trong đó có 4 quả bóng màu vàng và 6 quả bóng màu xanh. Lấy ngẫu nhiên một quả bóng. Xác suất lấy được quả bóng màu vàng bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Cho tam giác ABC nội tiếp đường tròn và góc BAC = 50°. Số đo góc BOC bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Cho đường tròn (O; 5cm) và đường tròn (O'; 3cm) tiếp xúc ngoài với nhau. Độ dài đoạn thẳng OO' bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Phương trình x² - 4 = 0 có bao nhiêu nghiệm?",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 17,
+          "question_text": "Diện tích hình tròn có bán kính 5 cm là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 18,
+          "question_text": "Giá trị của biểu thức √9 + √16 bằng",
+          "user_answer": "A",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 19,
+          "question_text": "Cho tam giác ABC có AB = AC = 5cm, BC = 6cm. Độ dài đường cao AH là",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": {
+      "success": true,
+      "overall_assessment": "Chào con! Cô đã xem kỹ bài kiểm tra Toán của con rồi. Mặc dù số điểm 5/20 đúng và xếp loại 'Cần cố gắng' có thể làm con hơi buồn, nhưng điều quan trọng là con đã cố gắng hoàn thành bài thi và bắt đầu hành trình học tập của mình. Về thời gian '0p 0s' chắc là có chút trục trặc kỹ thuật thôi, không sao cả con nhé! Cô tin rằng con có tiềm năng để làm tốt hơn rất nhiều!",
+      "strengths": "Cô thấy con đã làm đúng 5 câu trong đề bài! Điều đó cho thấy con đã nắm được một số kiến thức cơ bản nhất định trong chương trình Toán 9 rồi đấy. Đây là một nền tảng tốt để con tiếp tục phát triển và học hỏi thêm. Việc con không bỏ trống câu nào cũng là một điểm cộng rất lớn, thể hiện sự nỗ lực và tinh thần không ngại thử thách! ✨",
+      "weaknesses": "Qua các câu sai cụ thể, cô nhận thấy một số điểm mà con cần tập trung cải thiện hơn nhé: \n1.  **Chưa vững chắc các định nghĩa và điều kiện cơ bản:** Ví dụ như ở Câu 1 về điều kiện xác định của căn thức √(x-3), con cần nhớ biểu thức dưới dấu căn phải *lớn hơn hoặc bằng 0*. Tương tự, Câu 4 về phương trình bậc nhất hai ẩn cũng cho thấy con cần xem lại định nghĩa các loại phương trình. \n2.  **Sai sót trong kỹ năng giải phương trình và bất phương trình bậc nhất:** Ở Câu 2 (phương trình 2x - 6 = 0) và Câu 3 (bất phương trình 3x - 9 < 0), con đã giải chưa chính xác. Có thể con còn nhầm lẫn trong các phép tính chuyển vế, đổi dấu hoặc chia số. \n3.  **Bỏ sót yêu cầu hoặc nhầm lẫn tập hợp nghiệm:** Đặc biệt ở Câu 3, sau khi giải bất phương trình, con cần xác định đúng các số tự nhiên thỏa mãn điều kiện. Việc này đòi hỏi sự cẩn thận và hiểu rõ các tập hợp số. \n4.  **Chưa thành thạo giải hệ phương trình:** Ở Câu 5, việc giải hệ phương trình hai ẩn {x + y = 5; x - y = 1} vẫn còn lúng túng. Đây là dạng bài rất cơ bản và quan trọng, cần luyện tập nhiều hơn.",
+      "study_plan": "Để giúp con tiến bộ rõ rệt, cô có một vài gợi ý cho kế hoạch học tập sắp tới nhé: \n1.  **Ôn tập kỹ lưỡng lý thuyết:** Hãy dành thời gian đọc lại thật chậm các định nghĩa, quy tắc và công thức trong sách giáo khoa, đặc biệt là phần căn thức, hàm số bậc nhất và hệ phương trình. Hãy ghi chép lại những điểm quan trọng vào một cuốn sổ tay nhỏ nhé! 📝\n2.  **Luyện tập giải bài tập cơ bản theo từng dạng:** Sau khi nắm lý thuyết, hãy bắt đầu với các bài tập ví dụ đơn giản nhất. Chia nhỏ ra thành từng dạng: điều kiện xác định của căn, giải phương trình bậc nhất, giải bất phương trình, và giải hệ phương trình bằng cả phương pháp cộng đại số và phương pháp thế. \n3.  **Cẩn thận và kiểm tra lại bài:** Khi làm bài, hãy viết rõ từng bước giải, đừng vội vàng. Sau khi có kết quả, hãy thử thay nghiệm ngược lại vào đề bài để kiểm tra xem có đúng không. Điều này sẽ giúp con tránh được những lỗi sai đáng tiếc. \n4.  **Tập trung vào các lỗi sai đã mắc:** Xem lại các câu con đã làm sai trong bài kiểm tra này, cố gắng tự giải lại và so sánh với đáp án đúng để hiểu rõ mình đã nhầm ở đâu. \n5.  **Đừng ngại hỏi và tìm kiếm sự giúp đỡ:** Khi gặp bất kỳ câu hỏi hay kiến thức nào chưa hiểu, con đừng ngần ngại hỏi cô giáo, bạn bè, hoặc bố mẹ. Cùng nhau trao đổi sẽ giúp con hiểu bài nhanh và sâu hơn rất nhiều!",
+      "encouragement": "Con trai/gái à, học Toán là cả một quá trình và không ai có thể giỏi ngay lập tức cả. Quan trọng nhất là con có tinh thần học hỏi và sự quyết tâm. Cô tin rằng với sự kiên trì và kế hoạch học tập hợp lý, con chắc chắn sẽ tiến bộ vượt bậc và đạt được những kết quả tốt trong môn Toán. Cố lên nhé, cô luôn ở đây và ủng hộ con! 💪✨"
+    },
+    "submitted_at": "09/12/2025 09:54:14"
+  }
+]
