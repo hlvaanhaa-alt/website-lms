@@ -104,5 +104,21 @@
     "thank_user_ids": [],
     "ratings": {},
     "discussions": []
+  },
+  {
+    "id": "comment_0007",
+    "post_id": "post_0010",
+    "author_id": "14",
+    "author_name": "lộc",
+    "author_role": "student",
+    "content": "Vì ADN chứa và truyền đạt thông tin di truyền từ thế hệ này sang thế hệ khác, đồng thời có khả năng tự nhân đôi để duy trì các đặc điểm di truyền của sinh vật",
+    "created_at": "2026-07-12T05:30:39.704216",
+    "attachments": [],
+    "points_awarded": 15,
+    "best_bonus_awarded": 0,
+    "is_best_answer": false,
+    "thank_user_ids": [],
+    "ratings": {},
+    "discussions": []
   }
 ]
