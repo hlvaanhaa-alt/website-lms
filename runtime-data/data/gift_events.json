@@ -195,15 +195,12 @@
   },
   {
     "id": "gift_000018",
-    "type": "daily_question",
+    "type": "attendance",
     "user_id": "15",
     "username": "Trang",
     "date": "2026-07-12",
     "month": "2026-07",
-    "question_id": "math_01",
-    "selected_answer": 1,
-    "is_correct": true,
     "points": 5,
-    "created_at": "2026-07-12T05:40:27.693154"
+    "created_at": "2026-07-12T05:40:40.424619"
   }
 ]
