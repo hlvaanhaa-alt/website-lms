@@ -136,5 +136,21 @@
     "thank_user_ids": [],
     "ratings": {},
     "discussions": []
+  },
+  {
+    "id": "comment_0009",
+    "post_id": "post_0011",
+    "author_id": "15",
+    "author_name": "Trang",
+    "author_role": "student",
+    "content": "1. Mở bài\r\n - Giới thiệu vấn đề cần nghị luận.\r\n - Dẫn vào lòng biết ơn.\r\nVí dụ :\r\nTrong cuộc sống, mỗi người đều nhận được sự giúp đỡ từ gia đình, thầy cô và xã hội. Vì vậy, lòng biết ơn là một phẩm chất tốt đẹp mà mỗi người cần có.\r\n\r\n2. Thân bài\r\n a) Giải thích\r\n   - Lòng biết ơn là gì ? ( Là sự trân trọng, ghi nhớ công lao của người khác đối với mình )\r\n b) Biểu hiện\r\n   - Kính trọng ông bà, cha mẹ.\r\n   - Biết ơn thầy cô.\r\n   - Ghi nhớ công lao của những người có ích cho đất nước.\r\n c) Ý nghĩa\r\n   - Giúp con người sống tốt đẹp hơn.\r\n   - Gắn kết các mối quan hệ.\r\n   - Được mọi người yêu quý, tôn trọng.\r\nd) Phê phán\r\n   - Những người vô ơn, sống ích kỷ, không biết trân trọng công lao của người khác.\r\ne) Liên hệ bản thân\r\n   - Em cần cố gắng học tập, kính trọng cha mẹ, thầy cô và giúp đỡ mọi người.\r\n\r\n3. Kết bài\r\n - Khẳng định lại ý nghĩa của lòng biết ơn.\r\n - Rút ra bài học cho bản thân.\r\n\r\nVí dụ ý:\r\nLòng biết ơn là truyền thống tốt đẹp của dân tộc Việt Nam. Mỗi người cần rèn luyện phẩm chất này để trở thành người có ích cho gia đình và xã hội.",
+    "created_at": "2026-07-12T05:45:56.592176",
+    "attachments": [],
+    "points_awarded": 20,
+    "best_bonus_awarded": 0,
+    "is_best_answer": false,
+    "thank_user_ids": [],
+    "ratings": {},
+    "discussions": []
   }
 ]
