@@ -147,8 +147,8 @@
     "created_at": "2026-07-12T05:45:56.592176",
     "attachments": [],
     "points_awarded": 20,
-    "best_bonus_awarded": 0,
-    "is_best_answer": false,
+    "best_bonus_awarded": 20,
+    "is_best_answer": true,
     "thank_user_ids": [],
     "ratings": {},
     "discussions": []
