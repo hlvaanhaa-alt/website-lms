@@ -521,10 +521,10 @@
     "username": "Trang",
     "role": "student",
     "points": 5,
-    "reason": "daily_math_question",
+    "reason": "daily_attendance",
     "post_id": null,
     "answer_id": null,
     "month": "2026-07",
-    "created_at": "2026-07-12T05:40:26.539516"
+    "created_at": "2026-07-12T05:40:39.100739"
   }
 ]
