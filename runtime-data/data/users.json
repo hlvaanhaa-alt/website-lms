@@ -95,5 +95,13 @@
     "email": "langd3919@gmail.com",
     "role": "student",
     "created_at": "2026-07-09T11:54:56.920473"
+  },
+  {
+    "id": "13",
+    "username": "long",
+    "password": "scrypt:32768:8:1$iJegEmTWecomS666$ebdd6873bca704f60fd504bd9e0e749578aebe3cc186577e49d4113e408f631953af65259f1d8bcebadf14860eb4f979a6e8401e48f33aebaa9c54ef859aa932",
+    "email": "daol5160@gmail.com",
+    "role": "student",
+    "created_at": "2026-07-12T05:10:26.324954"
   }
 ]
