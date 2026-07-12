@@ -213,7 +213,7 @@
     "author_name": "Lắng",
     "author_role": "student",
     "created_at": "2026-07-09T11:59:27.038959",
-    "updated_at": "2026-07-12T05:14:59.850041",
+    "updated_at": null,
     "attachments": [],
     "tags": [
       "Địa Lý",
@@ -224,7 +224,7 @@
     "subject": "Địa Lý",
     "grade": "Lớp 9",
     "reward_points": 30,
-    "status": "answered",
+    "status": "open",
     "accepted_answer_id": null,
     "is_first_question": true,
     "question_type": "question"
