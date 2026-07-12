@@ -261,7 +261,7 @@
     "author_name": "lộc",
     "author_role": "student",
     "created_at": "2026-07-12T05:39:04.727609",
-    "updated_at": "2026-07-12T05:46:01.804445",
+    "updated_at": "2026-07-12T05:47:38.556357",
     "attachments": [],
     "tags": [
       "Ngữ Văn",
@@ -273,8 +273,8 @@
     "subject": "Ngữ Văn",
     "grade": "Lớp 9",
     "reward_points": 40,
-    "status": "answered",
-    "accepted_answer_id": null,
+    "status": "resolved",
+    "accepted_answer_id": "comment_0009",
     "is_first_question": true,
     "question_type": "question"
   }
