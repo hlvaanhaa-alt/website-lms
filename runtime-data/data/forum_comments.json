@@ -120,21 +120,5 @@
     "thank_user_ids": [],
     "ratings": {},
     "discussions": []
-  },
-  {
-    "id": "comment_0008",
-    "post_id": "post_0009",
-    "author_id": "13",
-    "author_name": "long",
-    "author_role": "student",
-    "content": "Đông Nam Bộ là vùng có giá trị sản xuất công nghiệp lớn nhất cả nước vì có vị trí địa lí thuận lợi, cơ sở hạ tầng phát triển, tập trung nhiều khu công nghiệp và khu chế xuất, thu hút mạnh vốn đầu tư trong và ngoài nước, có nguồn lao động dồi dào và tay nghề cao, đồng thời có thị trường tiêu thụ rộng lớn nên công nghiệp phát triển mạnh",
-    "created_at": "2026-07-12T05:15:10.928169",
-    "attachments": [],
-    "points_awarded": 0,
-    "best_bonus_awarded": 0,
-    "is_best_answer": false,
-    "thank_user_ids": [],
-    "ratings": {},
-    "discussions": []
   }
 ]
