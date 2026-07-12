@@ -526,5 +526,17 @@
     "answer_id": null,
     "month": "2026-07",
     "created_at": "2026-07-12T05:40:39.100739"
+  },
+  {
+    "id": "fp_000044",
+    "user_id": "15",
+    "username": "Trang",
+    "role": "student",
+    "points": 20,
+    "reason": "answer_half_reward",
+    "post_id": "post_0011",
+    "answer_id": "comment_0009",
+    "month": "2026-07",
+    "created_at": "2026-07-12T05:46:00.646101"
   }
 ]
