@@ -70,5 +70,14 @@
     "note": "Trao thưởng top 5 tháng demo",
     "created_at": "2026-07-07T03:26:40.402672",
     "demo_seed": true
+  },
+  {
+    "id": "order_000007",
+    "user_id": "18",
+    "username": "test",
+    "item_id": "frame_sky",
+    "item_name": "Khung xanh học tập",
+    "price": 50,
+    "created_at": "2026-07-13T12:45:40.299511"
   }
 ]
