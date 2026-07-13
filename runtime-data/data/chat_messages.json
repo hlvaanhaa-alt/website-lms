@@ -789,5 +789,23 @@
     },
     "has_diagrams": false,
     "has_image": false
+  },
+  {
+    "id": "msg_000074",
+    "content": "cho biểu thức vẽ ra hình này",
+    "author_id": "18",
+    "author_name": "test",
+    "author_role": "student",
+    "created_at": "2026-07-13T13:25:36.952034",
+    "reply_to": null,
+    "response": "Đây là hình ảnh logo Batman bạn yêu cầu:\n\n```svg\n<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <!-- Nền đen -->\n  <rect x=\"0\"\n",
+    "processed": {
+      "text": "Đây là hình ảnh logo Batman bạn yêu cầu:\n\n```svg\n<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <!-- Nền đen -->\n  <rect x=\"0\"",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": true
   }
 ]
