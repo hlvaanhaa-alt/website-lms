@@ -277,5 +277,30 @@
     "accepted_answer_id": "comment_0009",
     "is_first_question": true,
     "question_type": "question"
+  },
+  {
+    "id": "post_0012",
+    "title": "ttest",
+    "content": "test",
+    "author_id": "18",
+    "author_name": "test",
+    "author_role": "student",
+    "created_at": "2026-07-13T12:52:37.768551",
+    "updated_at": null,
+    "attachments": [],
+    "tags": [
+      "Tin Học",
+      "Lớp 9",
+      "tset"
+    ],
+    "views": 0,
+    "comments_count": 0,
+    "subject": "Tin Học",
+    "grade": "Lớp 9",
+    "reward_points": 10,
+    "status": "open",
+    "accepted_answer_id": null,
+    "is_first_question": true,
+    "question_type": "question"
   }
 ]
