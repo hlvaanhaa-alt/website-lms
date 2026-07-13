@@ -1188,8 +1188,8 @@
         function renderGiftAttendance() {
             if (!giftAttendanceText || !giftAttendanceGrid || !giftCheckinBtn || !giftState) return;
             giftAttendanceText.textContent = giftState.attendance_claimed
-                ? `Bạn đã điểm danh hôm nay. Tháng này đã điểm danh ${giftState.attendance_count} ngày.`
-                : `Điểm danh hôm nay để nhận ${giftState.attendance_points} kim cương.`;
+                ? `Bạn đã điểm danh hôm nay. Chuỗi hiện tại: ${giftState.attendance_count} ngày.`
+                : `Điểm danh hôm nay để nhận ${giftState.attendance_points} kim cương. Chuỗi hiện tại: ${giftState.attendance_count} ngày.`;
             giftCheckinBtn.disabled = giftState.attendance_claimed;
             giftCheckinBtn.textContent = giftState.attendance_claimed ? 'Đã điểm danh hôm nay' : 'Điểm danh nhận kim cương';
             giftAttendanceGrid.innerHTML = giftState.attendance_days.map(item => `

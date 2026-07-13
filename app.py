@@ -310,6 +310,34 @@ def gift_month_key(dt=None):
     return (dt or datetime.now()).strftime("%Y-%m")
 
 
+def gift_attendance_streak(user_events, dt=None):
+    today = (dt or datetime.now()).date()
+    attendance_dates = set()
+    for event in user_events:
+        if event.get("type") != "attendance" or not event.get("date"):
+            continue
+        try:
+            checked_date = datetime.strptime(event["date"], "%Y-%m-%d").date()
+        except (TypeError, ValueError):
+            continue
+        if checked_date <= today:
+            attendance_dates.add(checked_date)
+
+    if not attendance_dates:
+        return 0
+
+    latest_date = max(attendance_dates)
+    if (today - latest_date).days > 1:
+        return 0
+
+    streak = 0
+    cursor = latest_date
+    while cursor in attendance_dates:
+        streak += 1
+        cursor -= timedelta(days=1)
+    return streak
+
+
 def daily_math_question_for(user_id, date_key=None):
     date_key = date_key or gift_date_key()
     seed = sum(ord(ch) for ch in f"{user_id}:{date_key}")
@@ -337,12 +365,7 @@ def gift_status_payload(user_id):
         (event for event in user_events if event.get("type") == "daily_question" and event.get("date") == date_key),
         None,
     )
-    month_checkins = [
-        event
-        for event in user_events
-        if event.get("type") == "attendance" and event.get("month") == month_key
-    ]
-    attendance_count = len(month_checkins)
+    attendance_count = gift_attendance_streak(user_events)
     opened_counts = {
         box_type: len(
             [
