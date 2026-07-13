@@ -1580,5 +1580,166 @@
       "error": "AI trả về định dạng không hợp lệ"
     },
     "submitted_at": "13/07/2026 12:49:43"
+  },
+  {
+    "user_id": "18",
+    "username": "test",
+    "subject": "toan",
+    "subject_name": "Toán",
+    "subject_icon": "🔢",
+    "subject_color": "#3498db",
+    "exam_id": "exam_math_09_02",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 2",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 1,
+        "total_questions": 20,
+        "percentage": 5.0,
+        "raw_score": 0.5,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 0.5,
+      "wrong_answers": [
+        {
+          "question_number": 1,
+          "question_text": "Điều kiện xác định của căn thức √(2x-4) là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 2,
+          "question_text": "Nghiệm của phương trình 3x + 9 = 0 là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 3,
+          "question_text": "Bất phương trình 2x + 4 > 0 có nghiệm là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 4,
+          "question_text": "Hệ số góc của đường thẳng y = -3x + 2 là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 5,
+          "question_text": "Hệ phương trình {2x + y = 7; x - y = 2} có nghiệm là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "Tích hai nghiệm của phương trình x² - 7x + 12 = 0 bằng",
+          "user_answer": "Không trả lời",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 7,
+          "question_text": "Parabol y = x² đi qua điểm nào sau đây?",
+          "user_answer": "Không trả lời",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 8,
+          "question_text": "Trong tam giác vuông ABC, vuông tại A, có AB = 6, BC = 10. Độ dài AC bằng",
+          "user_answer": "Không trả lời",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Cho tam giác ABC vuông tại A có AB = 4, AC = 3. Giá trị của tan B là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Gieo một con xúc xắc cân đối, đồng chất. Xác suất để xuất hiện mặt có số chấm chẵn là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Cho đường tròn (O) có dây AB = 8cm và khoảng cách từ O đến AB là 3cm. Bán kính của đường tròn là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Hai đường tròn (O; 4cm) và (O'; 6cm) tiếp xúc trong. Độ dài OO' bằng",
+          "user_answer": "Không trả lời",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 13,
+          "question_text": "Rút gọn biểu thức √75 + √27 ta được",
+          "user_answer": "Không trả lời",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Phương trình x² + 2x - 3 = 0 có nghiệm là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 15,
+          "question_text": "Cho tam giác ABC vuông tại A, có cos B = 0,6. Giá trị của sin C là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 16,
+          "question_text": "Độ dài cung tròn có số đo 60° trên đường tròn bán kính 6cm là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 17,
+          "question_text": "Diện tích hình quạt tròn có bán kính 10cm và số đo cung 90° là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 18,
+          "question_text": "Giá trị của biểu thức √(25 - 16) bằng",
+          "user_answer": "Không trả lời",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 19,
+          "question_text": "Cho hình trụ có bán kính đáy 3cm và chiều cao 4cm. Diện tích xung quanh của hình trụ là",
+          "user_answer": "Không trả lời",
+          "correct_answer": "B",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": {
+      "success": false,
+      "error": "AI trả về định dạng không hợp lệ"
+    },
+    "submitted_at": "13/07/2026 13:24:20"
   }
 ]
