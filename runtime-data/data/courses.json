@@ -54,13 +54,43 @@
     "lessons": [
       {
         "id": "1",
-        "title": "Cách vẽ hình chữ nhật",
-        "video_url": "",
-        "document_url": "https://drive.google.com/drive/folders/1tvFlU5HB8YKldh0lmRdptSNEoqhj2wbe",
-        "questions": []
+        "title": "Đa Thức",
+        "video_url": "https://www.youtube.com/watch?v=Dk1KNo88UHU",
+        "document_url": "",
+        "questions": [
+          {
+            "question": "Đa thức một biến là gì?",
+            "correct_answer": "C",
+            "options": [
+              "3x + 2y - 9",
+              "4xy - 8z",
+              "8t + 2t + 100t",
+              "25yz²"
+            ]
+          },
+          {
+            "question": "Đa thức nào đã được thu gọn?",
+            "correct_answer": "A",
+            "options": [
+              "5y - 9",
+              "4xy - 8z",
+              "8t + 2t + 100t",
+              "35x⁴yz"
+            ]
+          },
+          {
+            "question": "Bậc của đa thức được lấy như thế nào?",
+            "correct_answer": "B",
+            "options": [
+              "Là bậc của hạng tử có số mũ nhỏ nhất trong dạng thu gọn của đa thức đó",
+              "Là bậc của hạng tử có số mũ lớn nhất trong dạng thu gọn của đa thức đó"
+            ]
+          }
+        ]
       }
     ],
-    "created_at": "2026-07-07T08:03:39.330498"
+    "created_at": "2026-07-07T08:03:39.330498",
+    "updated_at": "2026-07-13T05:59:00.675262"
   },
   {
     "id": "course_4",
