@@ -173,6 +173,43 @@ def normalize_choice_answer(value):
     return strip_option_prefix(text).casefold()
 
 
+def youtube_embed_url(url):
+    text = str(url or "").strip()
+    if not text:
+        return ""
+
+    patterns = [
+        r"(?:https?:)?//(?:www\.)?youtube\.com/watch\?[^#]*v=([^&#]+)",
+        r"(?:https?:)?//youtu\.be/([^?&#/]+)",
+        r"(?:https?:)?//(?:www\.)?youtube\.com/embed/([^?&#/]+)",
+        r"(?:https?:)?//(?:www\.)?youtube\.com/shorts/([^?&#/]+)",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            video_id = match.group(1).strip()
+            if re.match(r"^[A-Za-z0-9_-]{6,}$", video_id):
+                return f"https://www.youtube.com/embed/{video_id}"
+    return ""
+
+
+@app.template_filter("youtube_embed_url")
+def youtube_embed_url_filter(value):
+    return youtube_embed_url(value)
+
+
+def sanitize_course_payload(course_data):
+    clean_data = dict(course_data or {})
+    lessons = []
+    for index, lesson in enumerate(clean_data.get("lessons", []), start=1):
+        clean_lesson = dict(lesson or {})
+        clean_lesson["id"] = str(clean_lesson.get("id") or index)
+        clean_lesson["video_url"] = youtube_embed_url(clean_lesson.get("video_url"))
+        lessons.append(clean_lesson)
+    clean_data["lessons"] = lessons
+    return clean_data
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -989,7 +1026,7 @@ def course_detail(course_id):
 def create_course():
     if request.method == "POST":
         try:
-            data = request.get_json()
+            data = sanitize_course_payload(request.get_json())
 
             if not data.get("title"):
                 return jsonify(
@@ -1037,7 +1074,7 @@ def edit_course(course_id):
 
     if request.method == "POST":
         try:
-            data = request.get_json()
+            data = sanitize_course_payload(request.get_json())
             success = db.update_course(course_id, data)
 
             if success:

@@ -26,12 +26,101 @@
         <div class="form-section">
             <div class="section-header">
                 <h3> Bài học</h3>
-                <button type="button" id="addLessonBtn" class="btn btn-primary btn-small">
+                <button type="button" id="addLessonBtn" class="btn btn-primary btn-small" onclick="addLesson(null, true)">
                     + Thêm bài học
                 </button>
             </div>
             
-            <div id="lessons-container"></div>
+            {% set initial_lessons = course.lessons if edit_mode and course.lessons else [{}] %}
+            <div id="lessons-container">
+                {% for lesson in initial_lessons %}
+                <div class="lesson-form">
+                    <div class="lesson-header">
+                        <h4> Bài học {{ loop.index }}</h4>
+                        <button type="button" onclick="removeLesson(this)" class="btn btn-danger btn-small">
+                            Xóa
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tiêu đề bài học: <span class="required">*</span></label>
+                        <input type="text" class="lesson-title" placeholder="VD: Giới thiệu về Python" required
+                               value="{{ lesson.title|default('')|e }}">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Link video YouTube:</label>
+                            <input type="url" class="lesson-video" placeholder="https://youtube.com/watch?v=..."
+                                   value="{{ lesson.video_url|default('')|e }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Link tài liệu (Google Drive):</label>
+                            <input type="url" class="lesson-doc" placeholder="https://drive.google.com/..."
+                                   value="{{ lesson.document_url|default('')|e }}">
+                        </div>
+                    </div>
+
+                    <div class="questions-section">
+                        <div class="questions-header">
+                            <label>Câu hỏi kiểm tra:</label>
+                            <button type="button" onclick="addQuestion(this)" class="btn btn-secondary btn-small">
+                                + Thêm câu hỏi
+                            </button>
+                        </div>
+                        <div class="questions-container">
+                            {% for q in lesson.questions|default([]) %}
+                            {% set has_options = q.options is defined and q.options %}
+                            <div class="question-item">
+                                <div class="question-header-small">
+                                    <strong>Câu {{ loop.index }}</strong>
+                                    <button type="button" onclick="removeQuestion(this)" class="btn-remove-small">×</button>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Nội dung câu hỏi:</label>
+                                    <div class="input-with-toolbar">
+                                        <input type="text" class="question-text" placeholder="Nhập câu hỏi..." required
+                                               value="{{ q.question|default('')|e }}">
+                                        <button type="button" class="btn-show-symbols" onclick="showToolbar(this.previousElementSibling)">Σ Ký hiệu</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Loại câu hỏi:</label>
+                                    <select class="question-type" onchange="toggleQuestionType(this)">
+                                        <option value="text" {% if not has_options %}selected{% endif %}>Tự luận</option>
+                                        <option value="multiple" {% if has_options %}selected{% endif %}>Trắc nghiệm</option>
+                                    </select>
+                                </div>
+
+                                <div class="multiple-choice-section" style="display: {% if has_options %}block{% else %}none{% endif %};">
+                                    <div class="form-group">
+                                        <label>Các lựa chọn (mỗi dòng 1 lựa chọn):</label>
+                                        <div class="input-with-toolbar">
+                                            <textarea class="question-options" rows="4" placeholder="A. Lựa chọn 1&#10;B. Lựa chọn 2&#10;C. Lựa chọn 3&#10;D. Lựa chọn 4">{% if has_options %}{{ q.options|join('\n') }}{% endif %}</textarea>
+                                            <button type="button" class="btn-show-symbols" onclick="showToolbar(this.previousElementSibling)">Σ Ký hiệu</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Đáp án đúng: <span class="required">*</span></label>
+                                    <div class="input-with-toolbar">
+                                        <input type="text" class="question-answer" placeholder="Nhập đáp án đúng (VD: A hoặc câu trả lời)" required
+                                               value="{{ q.correct_answer|default('')|e }}">
+                                        <button type="button" class="btn-show-symbols" onclick="showToolbar(this.previousElementSibling)">Σ Ký hiệu</button>
+                                    </div>
+                                    <small class="form-hint">Với trắc nghiệm: nhập A, B, C hoặc D. Với tự luận: nhập câu trả lời mẫu</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
         
         <div class="form-actions">
@@ -291,28 +380,16 @@
 </div>
 
 <script>
-let lessonCount = 0;
+let lessonCount = document.querySelectorAll('.lesson-form').length;
 let currentInputField = null; // Lưu trữ ô input đang được focus
 
-document.addEventListener('DOMContentLoaded', () => {
-    const addLessonBtn = document.getElementById('addLessonBtn');
-    if (addLessonBtn) {
-        addLessonBtn.addEventListener('click', () => addLesson());
-    }
-});
-
-{% if edit_mode and course.lessons %}
-const existingLessons = {{ course.lessons | tojson }};
-existingLessons.forEach(lesson => {
-    addLesson(lesson);
-});
-{% else %}
-addLesson();
-{% endif %}
-
-function addLesson(existingData = null) {
+function addLesson(existingData = null, focusNewLesson = false) {
     lessonCount++;
     const container = document.getElementById('lessons-container');
+    if (!container) {
+        console.error('Không tìm thấy vùng chứa bài học.');
+        return;
+    }
     
     const lessonDiv = document.createElement('div');
     lessonDiv.className = 'lesson-form';
@@ -363,7 +440,19 @@ function addLesson(existingData = null) {
             addQuestionToContainer(questionsContainer, q);
         });
     }
+
+    if (focusNewLesson) {
+        lessonDiv.classList.add('new-lesson-highlight');
+        lessonDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const titleInput = lessonDiv.querySelector('.lesson-title');
+        if (titleInput) {
+            setTimeout(() => titleInput.focus(), 250);
+        }
+        setTimeout(() => lessonDiv.classList.remove('new-lesson-highlight'), 1400);
+    }
 }
+
+window.addLesson = addLesson;
 
 function removeLesson(btn) {
     if (confirm('Bạn có chắc muốn xóa bài học này?')) {
@@ -371,11 +460,15 @@ function removeLesson(btn) {
     }
 }
 
+window.removeLesson = removeLesson;
+
 function addQuestion(btn) {
     const lessonDiv = btn.closest('.lesson-form');
     const questionsContainer = lessonDiv.querySelector('.questions-container');
     addQuestionToContainer(questionsContainer);
 }
+
+window.addQuestion = addQuestion;
 
 function addQuestionToContainer(container, existingData = null) {
     const questionDiv = document.createElement('div');
@@ -441,6 +534,8 @@ function toggleQuestionType(select) {
     }
 }
 
+window.toggleQuestionType = toggleQuestionType;
+
 function removeQuestion(btn) {
     if (confirm('Bạn có chắc muốn xóa câu hỏi này?')) {
         btn.closest('.question-item').remove();
@@ -492,10 +587,23 @@ function insertSymbol(symbol) {
     currentInputField.focus();
 }
 
+window.showToolbar = showToolbar;
+window.closeToolbar = closeToolbar;
+window.switchTab = switchTab;
+window.insertSymbol = insertSymbol;
+window.removeQuestion = removeQuestion;
+
+function isYouTubeUrl(url) {
+    if (!url || url.trim() === '') return true;
+    const value = url.trim();
+    return /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?[^#]*v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)/i.test(value);
+}
+
 document.getElementById('courseForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const lessons = [];
+    let invalidVideoUrl = '';
     document.querySelectorAll('.lesson-form').forEach((lessonDiv, index) => {
         const questions = [];
         
@@ -524,10 +632,15 @@ document.getElementById('courseForm').addEventListener('submit', async function(
             questions.push(questionData);
         });
         
+        const videoUrl = lessonDiv.querySelector('.lesson-video').value.trim();
+        if (videoUrl && !isYouTubeUrl(videoUrl)) {
+            invalidVideoUrl = videoUrl;
+        }
+
         lessons.push({
             id: String(index + 1),
             title: lessonDiv.querySelector('.lesson-title').value.trim(),
-            video_url: lessonDiv.querySelector('.lesson-video').value.trim(),
+            video_url: videoUrl,
             document_url: lessonDiv.querySelector('.lesson-doc').value.trim(),
             questions: questions
         });
@@ -549,6 +662,11 @@ document.getElementById('courseForm').addEventListener('submit', async function(
         return;
     }
     
+    if (invalidVideoUrl) {
+        alert('Link video chi nhan YouTube. Neu la Google Drive hoac tai lieu, hay dan vao o Link tai lieu.');
+        return;
+    }
+
     try {
     const url = '{% if edit_mode %}/teacher/edit_course/{{ course.id }}{% else %}/teacher/create_course{% endif %}';
         const response = await fetch(url, {
@@ -603,6 +721,8 @@ document.getElementById('courseForm').addEventListener('submit', async function(
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    position: relative;
+    z-index: 5;
 }
 
 .section-header h3 {
@@ -662,6 +782,12 @@ document.getElementById('courseForm').addEventListener('submit', async function(
     margin-bottom: 20px;
     border-radius: 8px;
     border: 2px solid #e0e0e0;
+}
+
+.lesson-form.new-lesson-highlight {
+    border-color: #007bff;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.16);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .lesson-header {
@@ -749,6 +875,7 @@ document.getElementById('courseForm').addEventListener('submit', async function(
     text-decoration: none;
     display: inline-block;
     transition: all 0.3s;
+    pointer-events: auto;
 }
 
 .btn-primary {

@@ -36,11 +36,13 @@
                 </h3>
             </div>
             
-            {% if lesson.video_url %}
+            {% set embed_url = lesson.video_url|youtube_embed_url %}
+            {% if embed_url %}
             <div class="video-container">
                 <iframe class="youtube-iframe" 
                     width="100%" 
                     height="450" 
+                    src="{{ embed_url }}"
                     data-original-url="{{ lesson.video_url }}"
                     frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -139,7 +141,7 @@ function convertYouTubeToEmbed(url) {
     
     url = url.trim();
     
-    if (url.includes('/embed/')) {
+    if (url.includes('youtube.com/embed/')) {
         return url;
     }
     
@@ -165,7 +167,7 @@ function convertYouTubeToEmbed(url) {
         console.error('Error converting YouTube URL:', e);
     }
     
-    return url;
+    return '';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -175,7 +177,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const originalUrl = iframe.getAttribute('data-original-url');
         if (originalUrl) {
             const embedUrl = convertYouTubeToEmbed(originalUrl);
-            iframe.setAttribute('src', embedUrl);
+            if (embedUrl) {
+                iframe.setAttribute('src', embedUrl);
+            } else {
+                iframe.closest('.video-container')?.remove();
+            }
         }
     });
 });
