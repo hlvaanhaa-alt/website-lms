@@ -33,10 +33,11 @@
     "avatar_url": "/uploads/forum/avatar_18_ebd5f28e_61BcXeX8B9L._AC_UF8941000_QL80__avatar.webp",
     "avatar_storage_path": "/opt/render/project/src/.runtime_data/uploads/forum/avatar_18_ebd5f28e_61BcXeX8B9L._AC_UF8941000_QL80_.jpg",
     "equipped_avatar_item_id": "",
-    "equipped_frame_id": "",
+    "equipped_frame_id": "frame_sky",
     "equipped_title_id": "",
     "created_at": "2026-07-13T12:44:23.460486",
     "avatar_original_url": "/uploads/forum/avatar_18_ebd5f28e_61BcXeX8B9L._AC_UF8941000_QL80_.jpg",
-    "avatar_optimized_storage_path": "/opt/render/project/src/.runtime_data/uploads/forum/avatar_18_ebd5f28e_61BcXeX8B9L._AC_UF8941000_QL80__avatar.webp"
+    "avatar_optimized_storage_path": "/opt/render/project/src/.runtime_data/uploads/forum/avatar_18_ebd5f28e_61BcXeX8B9L._AC_UF8941000_QL80__avatar.webp",
+    "updated_at": "2026-07-13T12:45:42.258892"
   }
 ]
