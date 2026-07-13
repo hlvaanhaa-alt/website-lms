@@ -68,6 +68,8 @@ else:
 FORUM_UPLOAD_URL_PREFIX = "/uploads/forum"
 _json_locks = {}
 _json_locks_guard = threading.Lock()
+_github_sha_cache = {}
+_github_sha_cache_lock = threading.Lock()
 
 
 def _github_headers():
@@ -112,9 +114,15 @@ def _github_get_metadata(remote_path):
         timeout=20,
     )
     if response.status_code == 404:
+        with _github_sha_cache_lock:
+            _github_sha_cache[remote_path] = None
         return None
     response.raise_for_status()
-    return response.json()
+    metadata = response.json()
+    if metadata.get("type") == "file":
+        with _github_sha_cache_lock:
+            _github_sha_cache[remote_path] = metadata.get("sha")
+    return metadata
 
 
 def _github_download(remote_path):
@@ -126,14 +134,18 @@ def _github_download(remote_path):
 
 
 def _github_upload(remote_path, data, message):
-    metadata = _github_get_metadata(remote_path)
     payload = {
         "message": message,
         "branch": GITHUB_DATA_BRANCH,
         "content": base64.b64encode(data).decode("ascii"),
     }
-    if metadata and metadata.get("sha"):
-        payload["sha"] = metadata["sha"]
+    with _github_sha_cache_lock:
+        cached_sha = _github_sha_cache.get(remote_path)
+    if remote_path not in _github_sha_cache:
+        metadata = _github_get_metadata(remote_path)
+        cached_sha = metadata.get("sha") if metadata else None
+    if cached_sha:
+        payload["sha"] = cached_sha
 
     response = requests.put(
         _github_content_url(remote_path),
@@ -152,6 +164,13 @@ def _github_upload(remote_path, data, message):
                 timeout=30,
             )
     response.raise_for_status()
+    try:
+        updated_sha = response.json().get("content", {}).get("sha")
+    except ValueError:
+        updated_sha = None
+    if updated_sha:
+        with _github_sha_cache_lock:
+            _github_sha_cache[remote_path] = updated_sha
 
 
 def ensure_file_from_remote(local_path, remote_path=None):
