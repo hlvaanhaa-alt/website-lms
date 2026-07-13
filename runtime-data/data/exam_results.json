@@ -1468,5 +1468,117 @@
       "encouragement": "Con trai/gái à, học Toán là cả một quá trình và không ai có thể giỏi ngay lập tức cả. Quan trọng nhất là con có tinh thần học hỏi và sự quyết tâm. Cô tin rằng với sự kiên trì và kế hoạch học tập hợp lý, con chắc chắn sẽ tiến bộ vượt bậc và đạt được những kết quả tốt trong môn Toán. Cố lên nhé, cô luôn ở đây và ủng hộ con! 💪✨"
     },
     "submitted_at": "09/12/2025 09:54:14"
+  },
+  {
+    "user_id": "18",
+    "username": "test",
+    "subject": "toan",
+    "subject_name": "Toán",
+    "subject_icon": "🔢",
+    "subject_color": "#3498db",
+    "exam_id": "exam_math_09_01",
+    "exam_title": "Đề trắc nghiệm Toán 9 - Đề 1",
+    "result": {
+      "multiple_choice": {
+        "correct_count": 8,
+        "total_questions": 20,
+        "percentage": 40.0,
+        "raw_score": 4.0,
+        "weight": 100.0
+      },
+      "essay": null,
+      "total_score": 4.0,
+      "wrong_answers": [
+        {
+          "question_number": 3,
+          "question_text": "Bất phương trình 3x - 9 < 0 có bao nhiêu nghiệm là số tự nhiên?",
+          "user_answer": "D",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 6,
+          "question_text": "Gọi x₁, x₂ là hai nghiệm của phương trình x² - 5x + 6 = 0 khi đó x₁ + x₂ bằng",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 8,
+          "question_text": "Cho tam giác ABC vuông tại A có AB = 3, AC = 4. Khi đó BC bằng",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 9,
+          "question_text": "Tại thời điểm tia nắng chiếu xuống mặt đất tạo với mặt đất một góc 45° thì chiều dài bóng cây đo được là 8 mét. Hỏi cây cao bao nhiêu mét?",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 10,
+          "question_text": "Một hộp có 10 quả bóng trong đó có 4 quả bóng màu vàng và 6 quả bóng màu xanh. Lấy ngẫu nhiên một quả bóng. Xác suất lấy được quả bóng màu vàng bằng",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 11,
+          "question_text": "Cho tam giác ABC nội tiếp đường tròn và góc BAC = 50°. Số đo góc BOC bằng",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 12,
+          "question_text": "Cho đường tròn (O; 5cm) và đường tròn (O'; 3cm) tiếp xúc ngoài với nhau. Độ dài đoạn thẳng OO' bằng",
+          "user_answer": "A",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 14,
+          "question_text": "Phương trình x² - 4 = 0 có bao nhiêu nghiệm?",
+          "user_answer": "D",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 16,
+          "question_text": "Cho hàm số y = ax² (a ≠ 0). Đồ thị hàm số đi qua điểm A(2; 8). Giá trị của a là",
+          "user_answer": "C",
+          "correct_answer": "A",
+          "explanation": ""
+        },
+        {
+          "question_number": 17,
+          "question_text": "Diện tích hình tròn có bán kính 5 cm là",
+          "user_answer": "C",
+          "correct_answer": "B",
+          "explanation": ""
+        },
+        {
+          "question_number": 18,
+          "question_text": "Giá trị của biểu thức √9 + √16 bằng",
+          "user_answer": "B",
+          "correct_answer": "C",
+          "explanation": ""
+        },
+        {
+          "question_number": 20,
+          "question_text": "Phương trình nào sau đây vô nghiệm?",
+          "user_answer": "B",
+          "correct_answer": "A",
+          "explanation": ""
+        }
+      ]
+    },
+    "ai_analysis": {
+      "success": false,
+      "error": "AI trả về định dạng không hợp lệ"
+    },
+    "submitted_at": "13/07/2026 12:49:43"
   }
 ]
