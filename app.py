@@ -12,6 +12,7 @@ from flask import (
 from functools import wraps
 import os
 import random
+import re
 from werkzeug.utils import secure_filename
 import uuid
 from PIL import Image, UnidentifiedImageError
@@ -156,6 +157,20 @@ def prevent_stale_html_cache(response):
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "0"
     return response
+
+
+@app.template_filter("strip_option_prefix")
+def strip_option_prefix(value):
+    text = str(value or "").strip()
+    return re.sub(r"^[A-Da-d]\s*[\.\)]\s*", "", text, count=1).strip()
+
+
+def normalize_choice_answer(value):
+    text = str(value or "").strip()
+    letter_match = re.match(r"^([A-Da-d])(?:\s*[\.\)]|\s*$)", text)
+    if letter_match:
+        return letter_match.group(1).upper()
+    return strip_option_prefix(text).casefold()
 
 
 def login_required(f):
@@ -1134,12 +1149,7 @@ def submit_exercise():
                     correct_answer = q.get("correct_answer", "").strip()
 
                     if user_answer and correct_answer:
-                        user_first_char = user_answer.split(".")[0].strip().upper()
-                        correct_first_char = (
-                            correct_answer.split(".")[0].strip().upper()
-                        )
-
-                        if user_first_char == correct_first_char:
+                        if normalize_choice_answer(user_answer) == normalize_choice_answer(correct_answer):
                             correct += 1
 
                 score = round((correct / total * 100) if total > 0 else 0, 1)

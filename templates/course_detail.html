@@ -74,7 +74,7 @@
                                        name="question_{{ lesson.id }}_{{ question_idx }}" 
                                        value="{{ opt }}" 
                                        required>
-                                <span>{{ opt }}</span>
+                                <span>{{ opt|strip_option_prefix }}</span>
                             </label>
                             {% endfor %}
                         </div>
