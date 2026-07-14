@@ -682,5 +682,17 @@
     "answer_id": null,
     "month": "2026-07",
     "created_at": "2026-07-14T09:41:17.551108"
+  },
+  {
+    "id": "fp_000057",
+    "user_id": "11",
+    "username": "Harrymath",
+    "role": "student",
+    "points": 5,
+    "reason": "daily_attendance",
+    "post_id": null,
+    "answer_id": null,
+    "month": "2026-07",
+    "created_at": "2026-07-14T09:41:27.216338"
   }
 ]
