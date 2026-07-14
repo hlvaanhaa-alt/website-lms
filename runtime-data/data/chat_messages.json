@@ -908,15 +908,15 @@
   },
   {
     "id": "msg_000077",
-    "content": "Tạo một bài toán về kiến thức tổ hợp cho học sinh chuyên Toán",
+    "content": "Khó hơn nữa đi, khó cấp quốc gia luôn",
     "author_id": "11",
     "author_name": "Harrymath",
     "author_role": "student",
-    "created_at": "2026-07-14T10:33:58.929836",
+    "created_at": "2026-07-14T10:34:16.540194",
     "reply_to": null,
-    "response": "Có bao nhiêu số tự nhiên có 7 chữ số, trong đó chữ số 0 xuất hiện đúng 2 lần, chữ số 1 xuất hiện đúng 2 lần,\n",
+    "response": "Tìm tất cả các số nguyên dương $n$ sao cho $n^2 + 2023$ là số chính phương.\n\nGiải:\nĐặt\n\n$$\n",
     "processed": {
-      "text": "Có bao nhiêu số tự nhiên có 7 chữ số, trong đó chữ số 0 xuất hiện đúng 2 lần, chữ số 1 xuất hiện đúng 2 lần,",
+      "text": "Tìm tất cả các số nguyên dương $n$ sao cho $n^2 + 2023$ là số chính phương.\n\nGiải:\nĐặt\n\n$$",
       "svgs": [],
       "mermaids": [],
       "has_diagrams": false
