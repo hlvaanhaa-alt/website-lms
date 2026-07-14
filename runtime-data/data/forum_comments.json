@@ -136,7 +136,9 @@
     "best_bonus_awarded": 0,
     "is_best_answer": false,
     "thank_user_ids": [],
-    "ratings": {},
+    "ratings": {
+      "11": 5
+    },
     "discussions": []
   },
   {
