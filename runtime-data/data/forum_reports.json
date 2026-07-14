@@ -58,5 +58,19 @@
     "reporter_name": "Kimchi",
     "status": "pending",
     "created_at": "2026-07-06T23:06:49.386733"
+  },
+  {
+    "id": "fr_000005",
+    "target_type": "answer",
+    "target_id": "comment_0008",
+    "post_id": "post_0008",
+    "reason": "other",
+    "detail": "Câu trả lời không chính xác!",
+    "reported_user_id": "14",
+    "reported_username": "lộc",
+    "reporter_id": "11",
+    "reporter_name": "Harrymath",
+    "status": "pending",
+    "created_at": "2026-07-14T09:44:39.448633"
   }
 ]
