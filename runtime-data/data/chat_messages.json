@@ -807,5 +807,85 @@
     },
     "has_diagrams": false,
     "has_image": true
+  },
+  {
+    "id": "msg_000075",
+    "content": "Tạo một đề thi tuyển sinh 10 môn Toán theo format đề ở Khánh Hòa",
+    "author_id": "11",
+    "author_name": "Harrymath",
+    "author_role": "student",
+    "created_at": "2026-07-14T10:32:25.379270",
+    "reply_to": null,
+    "response": "Mình đã tạo 5 câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé.",
+    "processed": {
+      "text": "Mình đã tạo 5 câu trắc nghiệm. Bạn làm trực tiếp bên dưới nhé.",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "quiz": {
+      "type": "quiz",
+      "title": "Đề thi tuyển sinh 10 môn Toán (Khánh Hòa)",
+      "subject": "Toán",
+      "questions": [
+        {
+          "question": "Cho phương trình $x^2 - 5x + 6 = 0$. Tổng các nghiệm của phương trình là:",
+          "options": [
+            "A. 5",
+            "B. -5",
+            "C. 6",
+            "D. -6"
+          ],
+          "correct_index": 0,
+          "explanation": "Theo định lí Vi-ét, tổng các nghiệm của phương trình bậc hai $ax^2 + bx + c = 0$ là $x_1 + x_2 = -\\frac{b}{a}$.\\Trong phương trình $x^2 - 5x + 6 = 0$, ta có $a=1$, $b=-5$, $c=6$.\\Vậy tổng các nghiệm là $x_1 + x_2 = -\\frac{-5}{1} = 5$."
+        },
+        {
+          "question": "Điểm nào sau đây thuộc đồ thị hàm số $y = 2x^2$?",
+          "options": [
+            "A. $(-1; 2)$",
+            "B. $(1; -2)$",
+            "C. $(2; 4)$",
+            "D. $(-2; -8)$"
+          ],
+          "correct_index": 0,
+          "explanation": "Để kiểm tra một điểm có thuộc đồ thị hàm số hay không, ta thay tọa độ của điểm đó vào phương trình hàm số.\\Với điểm $(-1; 2)$: Thay $x=-1$ vào $y = 2x^2$, ta được $y = 2(-1)^2 = 2(1) = 2$. Vậy điểm $(-1; 2)$ thuộc đồ thị hàm số."
+        },
+        {
+          "question": "Cho đường tròn $(O; R)$ và dây $AB$ có độ dài $R\\sqrt{3}$. Số đo góc $AOB$ là:",
+          "options": [
+            "A. $60^\\circ$",
+            "B. $90^\\circ$",
+            "C. $120^\\circ$",
+            "D. $150^\\circ$"
+          ],
+          "correct_index": 2,
+          "explanation": "Trong tam giác $OAB$, ta có $OA = OB = R$ (bán kính đường tròn) và $AB = R\\sqrt{3}$.\\Áp dụng định lí cosin trong $\\triangle OAB$: $AB^2 = OA^2 + OB^2 - 2 \\cdot OA \\cdot OB \\cdot \\cos(\\angle AOB)$.\\$(R\\sqrt{3})^2 = R^2 + R^2 - 2 \\cdot R \\cdot R \\cdot \\cos(\\angle AOB)$.\\$3R^2 = 2R^2 - 2R^2 \\cos(\\angle AOB)$.\\$R^2 = -2R^2 \\cos(\\angle AOB)$.\\$\\cos(\\angle AOB) = -\\frac{1}{2}$.\\Vậy $\\angle AOB = 120^\\circ$."
+        },
+        {
+          "question": "Cho tam giác vuông $ABC$ tại $A$, có $AB = 3cm$, $AC = 4cm$. Độ dài cạnh huyền $BC$ là:",
+          "options": [
+            "A. $5cm$",
+            "B. $6cm$",
+            "C. $7cm$",
+            "D. $8cm$"
+          ],
+          "correct_index": 0,
+          "explanation": "Áp dụng định lí Pythagore trong tam giác vuông $ABC$ tại $A$: $BC^2 = AB^2 + AC^2$.\\$BC^2 = 3^2 + 4^2 = 9 + 16 = 25$.\\$BC = \\sqrt{25} = 5cm$."
+        },
+        {
+          "question": "Một mảnh vườn hình chữ nhật có chu vi là $28m$. Chiều dài hơn chiều rộng $2m$. Diện tích của mảnh vườn là:",
+          "options": [
+            "A. $48m^2$",
+            "B. $45m^2$",
+            "C. $42m^2$",
+            "D. $36m^2$"
+          ],
+          "correct_index": 0,
+          "explanation": "Gọi chiều dài mảnh vườn là $l$ (mét) và chiều rộng là $w$ (mét).\\Theo đề bài, chu vi là $28m$, nên $2(l+w) = 28 \\Rightarrow l+w = 14$ (1).\\Chiều dài hơn chiều rộng $2m$, nên $l-w = 2$ (2).\\Cộng (1) và (2) ta được: $(l+w) + (l-w) = 14+2 \\Rightarrow 2l = 16 \\Rightarrow l = 8m$.\\Thay $l=8$ vào (1) ta được: $8+w = 14 \\Rightarrow w = 6m$.\\Diện tích của mảnh vườn là $S = l \\times w = 8 \\times 6 = 48m^2$."
+        }
+      ]
+    },
+    "has_diagrams": false,
+    "has_image": false
   }
 ]
