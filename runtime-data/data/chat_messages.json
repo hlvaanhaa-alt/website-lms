@@ -887,5 +887,23 @@
     },
     "has_diagrams": false,
     "has_image": false
+  },
+  {
+    "id": "msg_000076",
+    "content": "Full đề mà, sao có 5 câu vậy",
+    "author_id": "11",
+    "author_name": "Harrymath",
+    "author_role": "student",
+    "created_at": "2026-07-14T10:32:47.274269",
+    "reply_to": null,
+    "response": "Tôi chỉ nhận được 5 câu hỏi bạn đã cung cấp.\n",
+    "processed": {
+      "text": "Tôi chỉ nhận được 5 câu hỏi bạn đã cung cấp.",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
   }
 ]
