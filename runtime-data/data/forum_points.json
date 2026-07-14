@@ -694,5 +694,17 @@
     "answer_id": null,
     "month": "2026-07",
     "created_at": "2026-07-14T09:41:27.216338"
+  },
+  {
+    "id": "fp_000058",
+    "user_id": "11",
+    "username": "Harrymath",
+    "role": "student",
+    "points": -60,
+    "reason": "question_reward_pool",
+    "post_id": "post_0013",
+    "answer_id": null,
+    "month": "2026-07",
+    "created_at": "2026-07-14T10:10:14.394462"
   }
 ]
