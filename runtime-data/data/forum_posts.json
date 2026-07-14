@@ -302,5 +302,30 @@
     "accepted_answer_id": null,
     "is_first_question": true,
     "question_type": "question"
+  },
+  {
+    "id": "post_0013",
+    "title": "Bài toán tổ hợp",
+    "content": "Cho một chiếc bảng vuông có dạng $7\\times 7$ có $49$ ô vuông nhỏ. Hai bạn H và L cùng nhau chơi một trò chơi \"Đặt đồng xu\" như sau:\r\nHai bạn sẽ có tổng cộng 49 đồng xu, mỗi khi đến lượt của người này, người đó sẽ đặt lên bảng vuông trên một đồng xu vào một ô vuông nhỏ. Biết rằng đồng xu được đặt vào ô vuông đó không được chung cạnh hoặc chung đỉnh với ô vuông có xu được đặt trước đó. Ai không còn khả năng đặt đồng xu hợp lệ quy tắc trên sẽ là người thua cuộc\r\nGiả sử bạn L là người chơi trước, hỏi lúc này ai là người chủ động có chiến lược thắng cho bản thân trong mọi trường hợp của trò chơi và giải thích về chiến lược này.",
+    "author_id": "11",
+    "author_name": "Harrymath",
+    "author_role": "student",
+    "created_at": "2026-07-14T10:10:13.355954",
+    "updated_at": null,
+    "attachments": [],
+    "tags": [
+      "Toán",
+      "Lớp 9",
+      "bài khó (dành cho học sinh chuyên Toán)."
+    ],
+    "views": 0,
+    "comments_count": 0,
+    "subject": "Toán",
+    "grade": "Lớp 9",
+    "reward_points": 60,
+    "status": "open",
+    "accepted_answer_id": null,
+    "is_first_question": false,
+    "question_type": "question"
   }
 ]
