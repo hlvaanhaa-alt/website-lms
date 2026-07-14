@@ -905,5 +905,23 @@
     },
     "has_diagrams": false,
     "has_image": false
+  },
+  {
+    "id": "msg_000077",
+    "content": "Tạo một bài toán về kiến thức tổ hợp cho học sinh chuyên Toán",
+    "author_id": "11",
+    "author_name": "Harrymath",
+    "author_role": "student",
+    "created_at": "2026-07-14T10:33:58.929836",
+    "reply_to": null,
+    "response": "Có bao nhiêu số tự nhiên có 7 chữ số, trong đó chữ số 0 xuất hiện đúng 2 lần, chữ số 1 xuất hiện đúng 2 lần,\n",
+    "processed": {
+      "text": "Có bao nhiêu số tự nhiên có 7 chữ số, trong đó chữ số 0 xuất hiện đúng 2 lần, chữ số 1 xuất hiện đúng 2 lần,",
+      "svgs": [],
+      "mermaids": [],
+      "has_diagrams": false
+    },
+    "has_diagrams": false,
+    "has_image": false
   }
 ]
