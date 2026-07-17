@@ -341,5 +341,15 @@
       "1": "Người vợ độc ác, cấm đoán chồng"
     },
     "submitted_at": "2026-07-08T03:28:56.894721"
+  },
+  {
+    "id": "sub_33",
+    "user_id": "1",
+    "course_id": "course_5",
+    "exercise_id": "1",
+    "answers": {
+      "0": "C. Đỗ Chu"
+    },
+    "submitted_at": "2026-07-17T16:43:26.959367"
   }
 ]
