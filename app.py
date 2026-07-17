@@ -200,6 +200,8 @@ def youtube_embed_url_filter(value):
 
 def sanitize_course_payload(course_data):
     clean_data = dict(course_data or {})
+    grade = str(clean_data.get("grade", "")).strip()
+    clean_data["grade"] = grade if grade in ALLOWED_GRADE_LEVELS else ""
     lessons = []
     for index, lesson in enumerate(clean_data.get("lessons", []), start=1):
         clean_lesson = dict(lesson or {})
@@ -1033,6 +1035,11 @@ def create_course():
                     {"success": False, "message": "Vui lòng nhập tên khóa học"}
                 )
 
+            if not data.get("grade"):
+                return jsonify(
+                    {"success": False, "message": "Vui lòng chọn lớp 6, 7, 8 hoặc 9"}
+                )
+
             all_courses = db.get_all_courses()
             if any(
                 c["title"].lower() == data["title"].lower()
@@ -1075,6 +1082,11 @@ def edit_course(course_id):
     if request.method == "POST":
         try:
             data = sanitize_course_payload(request.get_json())
+            if not data.get("grade"):
+                return jsonify(
+                    {"success": False, "message": "Vui lòng chọn lớp 6, 7, 8 hoặc 9"}
+                )
+
             success = db.update_course(course_id, data)
 
             if success:

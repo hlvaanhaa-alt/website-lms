@@ -5,6 +5,9 @@
 {% block content %}
 <div class="container">
     <div class="course-header">
+        {% if course.grade %}
+        <span class="course-grade-badge">Lớp {{ course.grade }}</span>
+        {% endif %}
         <h1>{{ course.title }}</h1>
         <p class="course-description">{{ course.description }}</p>
         <div class="course-meta">
@@ -336,6 +339,17 @@ async function markComplete(courseId, lessonId, autoReload = true) {
     padding: 30px;
     border-radius: 12px;
     margin-bottom: 30px;
+}
+
+.course-grade-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.9);
+    color: #0b5ed7;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 
 .course-header h1 {

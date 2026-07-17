@@ -56,11 +56,20 @@ function createCourse() {
     .catch(error => console.error('Error:', error));
 }
 
-// Thêm bài học vào khóa học
-function addLesson(courseId) {
-    const title = document.getElementById('lesson-title').value;
-    const videoUrl = document.getElementById('video-url').value;
-    const docUrl = document.getElementById('doc-url').value;
+// Thêm bài học vào khóa học từ form legacy, tránh ghi đè hàm addLesson của trang tạo khóa học.
+function addLessonToExistingCourse(courseId) {
+    const titleInput = document.getElementById('lesson-title');
+    const videoInput = document.getElementById('video-url');
+    const docInput = document.getElementById('doc-url');
+
+    if (!titleInput || !videoInput || !docInput) {
+        console.warn('Không tìm thấy form thêm bài học legacy.');
+        return;
+    }
+
+    const title = titleInput.value;
+    const videoUrl = videoInput.value;
+    const docUrl = docInput.value;
     
     const lesson = {
         id: 'l' + Date.now(),

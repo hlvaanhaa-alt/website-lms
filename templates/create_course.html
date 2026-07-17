@@ -21,12 +21,22 @@
                 <label for="description">Mô tả khóa học:</label>
                 <textarea id="description" rows="4" placeholder="Mô tả nội dung và mục tiêu của khóa học...">{% if edit_mode %}{{ course.description }}{% endif %}</textarea>
             </div>
+
+            <div class="form-group">
+                <label for="grade">Lớp: <span class="required">*</span></label>
+                <select id="grade" required>
+                    <option value="">Chọn lớp</option>
+                    {% for grade in ['6', '7', '8', '9'] %}
+                    <option value="{{ grade }}" {% if edit_mode and course.grade|default('') == grade %}selected{% endif %}>Lớp {{ grade }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
         
         <div class="form-section">
             <div class="section-header">
                 <h3> Bài học</h3>
-                <button type="button" id="addLessonBtn" class="btn btn-primary btn-small" onclick="addLesson(null, true)">
+                <button type="button" id="addLessonBtn" class="btn btn-primary btn-small">
                     + Thêm bài học
                 </button>
             </div>
@@ -593,6 +603,14 @@ window.switchTab = switchTab;
 window.insertSymbol = insertSymbol;
 window.removeQuestion = removeQuestion;
 
+const addLessonButton = document.getElementById('addLessonBtn');
+if (addLessonButton) {
+    addLessonButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        addLesson(null, true);
+    });
+}
+
 function isYouTubeUrl(url) {
     if (!url || url.trim() === '') return true;
     const value = url.trim();
@@ -649,11 +667,17 @@ document.getElementById('courseForm').addEventListener('submit', async function(
     const courseData = {
         title: document.getElementById('title').value.trim(),
         description: document.getElementById('description').value.trim(),
+        grade: document.getElementById('grade').value,
         lessons: lessons
     };
     
     if (!courseData.title) {
         alert('Vui lòng nhập tên khóa học!');
+        return;
+    }
+
+    if (!courseData.grade) {
+        alert('Vui lòng chọn lớp 6, 7, 8 hoặc 9!');
         return;
     }
     

@@ -56,6 +56,7 @@ class Database:
             'teacher_id': teacher_id,
             'title': course_data['title'],
             'description': course_data.get('description', ''),
+            'grade': course_data.get('grade', ''),
             'lessons': course_data.get('lessons', []),
             'created_at': datetime.now().isoformat()
         }

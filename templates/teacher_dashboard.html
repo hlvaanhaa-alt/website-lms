@@ -53,6 +53,9 @@
                 </div>
                 
                 <h3>{{ item.course.title }}</h3>
+                {% if item.course.grade %}
+                <span class="course-grade-badge">Lớp {{ item.course.grade }}</span>
+                {% endif %}
                 <p class="course-description">{{ item.course.description[:100] }}{% if item.course.description|length > 100 %}...{% endif %}</p>
                 
                 <div class="course-stats">
@@ -313,6 +316,18 @@ async function deleteCourse(courseId, courseTitle) {
     font-size: 14px;
     margin-bottom: 15px;
     min-height: 60px;
+}
+
+.course-grade-badge {
+    display: inline-block;
+    background: #e7f1ff;
+    color: #0b5ed7;
+    border: 1px solid #b6d4fe;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
 .course-stats {

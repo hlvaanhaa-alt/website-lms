@@ -11,6 +11,13 @@
     
     <div class="filters">
         <input type="text" id="searchInput" placeholder=" Tìm kiếm khóa học..." onkeyup="searchCourses()">
+        <select id="gradeSelect" onchange="filterCourses()">
+            <option value="all">Tất cả lớp</option>
+            <option value="6">Lớp 6</option>
+            <option value="7">Lớp 7</option>
+            <option value="8">Lớp 8</option>
+            <option value="9">Lớp 9</option>
+        </select>
         <select id="sortSelect" onchange="sortCourses()">
             <option value="default">Sắp xếp mặc định</option>
             <option value="name-asc">Tên: A → Z</option>
@@ -27,12 +34,15 @@
         
         <div class="courses-grid" id="coursesGrid">
             {% for course in courses %}
-            <div class="course-card" data-name="{{ course.title|lower }}" data-lessons="{{ course.lessons|length }}">
+            <div class="course-card" data-name="{{ course.title|lower }}" data-grade="{{ course.grade|default('') }}" data-lessons="{{ course.lessons|length }}">
                 <div class="course-image">
                     <div class="course-icon"></div>
                 </div>
                 
                 <div class="course-content">
+                    {% if course.grade %}
+                    <span class="course-grade-badge">Lớp {{ course.grade }}</span>
+                    {% endif %}
                     <h3>{{ course.title }}</h3>
                     <p class="course-description">{{ course.description[:120] }}{% if course.description|length > 120 %}...{% endif %}</p>
                     
@@ -66,16 +76,20 @@
 </div>
 
 <script>
-function searchCourses() {
+function filterCourses() {
     const input = document.getElementById('searchInput');
     const filter = input.value.toLowerCase();
+    const selectedGrade = document.getElementById('gradeSelect').value;
     const grid = document.getElementById('coursesGrid');
     const cards = grid.getElementsByClassName('course-card');
     let visibleCount = 0;
     
     for (let i = 0; i < cards.length; i++) {
         const name = cards[i].getAttribute('data-name');
-        if (name.indexOf(filter) > -1) {
+        const grade = cards[i].getAttribute('data-grade');
+        const matchesSearch = name.indexOf(filter) > -1;
+        const matchesGrade = selectedGrade === 'all' || grade === selectedGrade;
+        if (matchesSearch && matchesGrade) {
             cards[i].style.display = 'block';
             visibleCount++;
         } else {
@@ -84,6 +98,10 @@ function searchCourses() {
     }
     
     document.getElementById('courseCount').textContent = visibleCount;
+}
+
+function searchCourses() {
+    filterCourses();
 }
 
 function sortCourses() {
@@ -155,6 +173,7 @@ function sortCourses() {
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
+#gradeSelect,
 #sortSelect {
     padding: 12px 15px;
     border: 2px solid #e0e0e0;
@@ -165,6 +184,7 @@ function sortCourses() {
     min-width: 200px;
 }
 
+#gradeSelect:focus,
 #sortSelect:focus {
     outline: none;
     border-color: #007bff;
@@ -217,6 +237,18 @@ function sortCourses() {
     flex: 1;
     display: flex;
     flex-direction: column;
+}
+
+.course-grade-badge {
+    align-self: flex-start;
+    background: #e7f1ff;
+    color: #0b5ed7;
+    border: 1px solid #b6d4fe;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
 .course-content h3 {
