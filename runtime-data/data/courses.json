@@ -185,9 +185,31 @@
         "title": "Sơ lược về bảng tuần hoàn các nguyên tố hóa học",
         "video_url": "https://www.youtube.com/embed/s9MGybD8wSE",
         "document_url": "",
-        "questions": []
+        "questions": [
+          {
+            "question": "Trong bảng tuần hoàn, ô số 13 thuộc chu kì 3, nhóm IIIA, đó là nguyên tố nào ? . Gợi ý : đây là một kim loại nhẹ, có màu trắng bạc, khả năng dẫn điện và dẫn nhiệt tốt, thường được dùng để làm vỏ lon nước ngọt, khung cửa sổ hoặc vỏ máy bay.",
+            "correct_answer": "B",
+            "options": [
+              "A. Oxygen (O)",
+              "B. Aluminium (Al)",
+              "C. Carbon (C)",
+              "D. Hydrogen (H)"
+            ]
+          },
+          {
+            "question": "Ô số 40 nằm ở chu kì 5, nhóm IVB, là nguyên tố nào ? . Gợi ý đây là một kim loại chuyển tiếp có khả năng chống ăn mòn cực cao (thậm chí tốt hơn cả titanium) và thường được ứng dụng trong ngành công nghiệp hạt nhân hoặc làm trang sức giả kim cương (đá CZ - Cubic Zirconia).",
+            "correct_answer": "A",
+            "options": [
+              "A. Zicronium (Zr)",
+              "B. Iron / Sắt (Fe)",
+              "C. Zinc (Zn)",
+              "D. Manganese (Mn)"
+            ]
+          }
+        ]
       }
     ],
-    "created_at": "2026-07-17T17:02:19.197355"
+    "created_at": "2026-07-17T17:02:19.197355",
+    "updated_at": "2026-07-17T17:22:11.864372"
   }
 ]
