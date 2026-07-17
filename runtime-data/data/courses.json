@@ -132,12 +132,13 @@
             ]
           },
           {
-            "question": "Xác định đề tài và chủ đề của văn bản trên",
+            "question": "Xác định chủ đề của văn bản trên",
             "correct_answer": "Chủ đề: Ca ngợi tình yêu thiên nhiên, lòng nhân hậu và sự trân trọng vẻ đẹp của muôn loài trong tự nhiên.  Thức tỉnh con người (đặc biệt là trẻ em) vượt qua lòng ích kỷ của bản thân: Yêu thương đích thực một sinh mệnh không phải là bắt nó làm sở hữu riêng, mà là tôn trọng quyền sống tự do của nó trong thế giới tự nhiên."
           }
         ]
       }
     ],
-    "created_at": "2026-07-17T16:39:59.900766"
+    "created_at": "2026-07-17T16:39:59.900766",
+    "updated_at": "2026-07-17T16:40:27.639651"
   }
 ]
